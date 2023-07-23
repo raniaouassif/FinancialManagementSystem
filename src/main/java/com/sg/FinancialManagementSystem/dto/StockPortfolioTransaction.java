@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class StockPortfolioTransaction {
     private int stockPortfolioTransactionID;
     private LocalDateTime dateTime;
+    private StockTransactionType type;
     private int numberOfShares;
     private BigDecimal transactionCost;
 
