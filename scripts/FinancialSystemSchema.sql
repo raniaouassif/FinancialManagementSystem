@@ -31,9 +31,8 @@ CREATE TABLE Customer (
 CREATE TABLE Stock (
 	stockID INT AUTO_INCREMENT PRIMARY KEY, 
     tickerCode VARCHAR(10) NOT NULL, 
-    name VARCHAR(50) NOT NULL, 
     sharePrice DECIMAL(10,2) NOT NULL,
-    numberOfShares INT NOT NULL,
+    numberOfOutstandingShares INT NOT NULL,
     marketCap DECIMAL(10,2) NOT NULL,
     dailyVolume INT, 
     companyID INT NOT NULL,

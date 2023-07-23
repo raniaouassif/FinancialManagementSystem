@@ -8,11 +8,11 @@ import java.math.BigDecimal;
 public class Stock {
     private int stockID;
     private String tickerCode;
-    private String name;
     private BigDecimal sharePrice;
     private int numberOfOutstandingShares;
     private BigDecimal marketCap;
     private int dailyVolume;
+    private Company company;
 
     public int getStockID() {
         return stockID;
@@ -29,15 +29,7 @@ public class Stock {
     public void setTickerCode(String tickerCode) {
         this.tickerCode = tickerCode;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    
     public BigDecimal getSharePrice() {
         return sharePrice;
     }
@@ -68,5 +60,13 @@ public class Stock {
 
     public void setDailyVolume(int dailyVolume) {
         this.dailyVolume = dailyVolume;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }
