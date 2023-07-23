@@ -42,6 +42,7 @@ CREATE TABLE Stock (
 CREATE TABLE AccountType (
 	accountTypeID INT AUTO_INCREMENT PRIMARY KEY, 
     type VARCHAR(50) NOT NULL, 
+	minimumStartDeposit DECIMAL(5,2) NOT NULL,
     interestRate DECIMAL(5,2),
     compoundRate VARCHAR(50)
 );
@@ -49,7 +50,7 @@ CREATE TABLE AccountType (
 CREATE TABLE Account (
 	accountID INT AUTO_INCREMENT PRIMARY KEY, 
     openingDate DATE NOT NULL,
-	depositBalance DECIMAL(10,2) NOT NULL, 
+	depositBalance DECIMAL(10,2) NOT NULL,
     interestBalance DECIMAL(10,2),
     totalBalance DECIMAL(10,2),
     customerID INT NOT NULL, 

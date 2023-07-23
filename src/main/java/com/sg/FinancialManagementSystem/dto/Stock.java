@@ -29,7 +29,7 @@ public class Stock {
     public void setTickerCode(String tickerCode) {
         this.tickerCode = tickerCode;
     }
-    
+
     public BigDecimal getSharePrice() {
         return sharePrice;
     }
