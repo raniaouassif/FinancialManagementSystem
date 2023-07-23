@@ -11,4 +11,27 @@ public class Portfolio {
     private BigDecimal balance;
     private List<Stock> stocks;
 
+    public int getPortfolioID() {
+        return portfolioID;
+    }
+
+    public void setPortfolioID(int portfolioID) {
+        this.portfolioID = portfolioID;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public List<Stock> getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(List<Stock> stocks) {
+        this.stocks = stocks;
+    }
 }

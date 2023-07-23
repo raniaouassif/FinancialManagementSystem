@@ -12,4 +12,35 @@ public class AccountTransaction {
     private AccountTransactionType transactionType;
     private BigDecimal amount;
 
+    public int getAccountTransactionID() {
+        return accountTransactionID;
+    }
+
+    public void setAccountTransactionID(int accountTransactionID) {
+        this.accountTransactionID = accountTransactionID;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public AccountTransactionType getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(AccountTransactionType transactionType) {
+        this.transactionType = transactionType;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
 }
