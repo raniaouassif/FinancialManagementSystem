@@ -10,7 +10,6 @@ public class ExchangeOrganization {
     private String tickerCode;
     private String name;
     private List<Stock> stocks;
-
     public int getExchangeOrganizationID() {
         return exchangeOrganizationID;
     }

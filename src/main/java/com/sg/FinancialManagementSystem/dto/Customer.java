@@ -8,10 +8,10 @@ import java.util.List;
 public class Customer {
     private  int customerID;
     private String firstName;
+    private String lastName;
     private String phoneNumber;
     private List<Account> accounts;
     private Portfolio portfolio;
-
 
     public int getCustomerID() {
         return customerID;
@@ -51,5 +51,13 @@ public class Customer {
 
     public void setPortfolio(Portfolio portfolio) {
         this.portfolio = portfolio;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

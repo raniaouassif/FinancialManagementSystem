@@ -15,6 +15,7 @@ public class Account {
     private BigDecimal interestBalance;
     private BigDecimal totalBalance;
     private AccountType accountType;
+    private Customer customer;
     private List<AccountTransaction> accountTransactions;
 
     public int getAccountID() {
@@ -74,4 +75,11 @@ public class Account {
     }
 
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 }

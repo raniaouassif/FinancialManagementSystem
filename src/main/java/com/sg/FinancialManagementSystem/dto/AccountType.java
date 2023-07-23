@@ -9,6 +9,7 @@ import java.util.List;
 public class AccountType {
     private int accountTypeID;
     private BankAccountType type;
+    private BigDecimal minimumStartDeposit;
     private BigDecimal interestRate;
     private CompoundRate compoundRate;
     private List<Account> accounts;
@@ -51,5 +52,13 @@ public class AccountType {
 
     public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
+    }
+
+    public BigDecimal getMinimumStartDeposit() {
+        return minimumStartDeposit;
+    }
+
+    public void setMinimumStartDeposit(BigDecimal minimumStartDeposit) {
+        this.minimumStartDeposit = minimumStartDeposit;
     }
 }

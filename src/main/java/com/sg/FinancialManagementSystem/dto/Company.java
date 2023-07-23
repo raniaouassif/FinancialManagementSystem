@@ -7,8 +7,7 @@ public class Company {
     private int companyID;
     private String name;
     private String industry;
-    private String status;
-    private Stock stock;
+    private CompanyStatus status;
 
     public int getCompanyID() {
         return companyID;
@@ -34,19 +33,12 @@ public class Company {
         this.industry = industry;
     }
 
-    public String getStatus() {
+    public CompanyStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(CompanyStatus status) {
         this.status = status;
     }
 
-    public Stock getStock() {
-        return stock;
-    }
-
-    public void setStock(Stock stock) {
-        this.stock = stock;
-    }
 }

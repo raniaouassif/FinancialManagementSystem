@@ -12,6 +12,8 @@ public class AccountTransaction {
     private AccountTransactionType transactionType;
     private BigDecimal amount;
 
+    private Account account;
+
     public int getAccountTransactionID() {
         return accountTransactionID;
     }
@@ -42,5 +44,13 @@ public class AccountTransaction {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

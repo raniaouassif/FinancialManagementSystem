@@ -11,6 +11,8 @@ public class Portfolio {
     private BigDecimal balance;
     private List<Stock> stocks;
 
+    private Customer customer;
+
     public int getPortfolioID() {
         return portfolioID;
     }
@@ -33,5 +35,13 @@ public class Portfolio {
 
     public void setStocks(List<Stock> stocks) {
         this.stocks = stocks;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }
