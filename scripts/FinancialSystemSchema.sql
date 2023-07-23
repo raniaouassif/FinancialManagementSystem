@@ -35,7 +35,7 @@ CREATE TABLE Stock (
     sharePrice DECIMAL(10,2) NOT NULL,
     numberOfShares INT NOT NULL,
     marketCap DECIMAL(10,2) NOT NULL,
-    dailyVolume INT NOT NULL, 
+    dailyVolume INT, 
     companyID INT NOT NULL,
     FOREIGN KEY (companyID) REFERENCES Company(companyID)
 );
@@ -64,23 +64,10 @@ CREATE TABLE Account (
 CREATE TABLE AccountTransaction (
 	accountTransactionID INT AUTO_INCREMENT PRIMARY KEY, 
     dateTime DATETIME NOT NULL, 
+    transactionType VARCHAR(20) NOT NULL, -- deposit or withdrawal
     amount DECIMAL(10,2) NOT NULL, 
     accountID INT NOT NULL, 
     FOREIGN KEY (accountID) REFERENCES Account(accountID)
-);
-
--- Create the HeroOrganization table
-CREATE TABLE HeroOrganization (
-    heroID INT,
-    organizationID INT,
-    CONSTRAINT pk_HeroOrganization
-    	PRIMARY KEY (heroID, organizationID),
-    CONSTRAINT fk_pk_HeroOrganization_Hero
-    	FOREIGN KEY (heroID)
-    	REFERENCES Hero(heroID),
-    CONSTRAINT fk_pk_HeroOrganization_Organization
-    	FOREIGN KEY (organizationID)
-    	REFERENCES Organization(organizationID)
 );
 
 -- BRIDGE TABLE BETWEEN STOCK & EXCHANGE ORGANIZATION
@@ -97,26 +84,36 @@ CREATE TABLE StockExchangeOrganization (
         REFERENCES ExchangeOrganization(exchangeOrganizationID)
 );
 
+CREATE TABLE Portfolio (
+	portfolioID INT AUTO_INCREMENT PRIMARY KEY, 
+    balance DECIMAL(10,2),
+    customerID INT NOT NULL, 
+    FOREIGN KEY (customerID) REFERENCES Customer(customerID)
+);
+
 -- BRIDGE TABLE BETWEEN CUSTOMER AND STOCK 
-CREATE TABLE CustomerStock (
-	customerID INT, 
+CREATE TABLE StockPortfolio (
+	portfolioID INT, 
     stockID INT,
-    CONSTRAINT pk_CustomerStock
-		PRIMARY KEY (customerID, stockID),
-	CONSTRAINT fk_pk_CustomerStock_Customer
-		FOREIGN KEY (customerID)
-        REFERENCES Customer(customerID),
-	CONSTRAINT fk_pk_CustomerStock_Stock
+	numberOfShares INT NOT NULL,
+	sharesValue DECIMAL(10,2) NOT NULL, 
+    CONSTRAINT pk_StockPortfolio
+		PRIMARY KEY (portfolioID, stockID),
+	CONSTRAINT fk_pk_StockPortfolio_Portfolio
+		FOREIGN KEY (portfolioID)
+        REFERENCES Portfolio(portfolioID),
+	CONSTRAINT fk_pk_StockPortfolio_Stock
 		FOREIGN KEY (stockID)
         REFERENCES Stock(stockID)
 );
 
-CREATE TABLE CustomerStockTransaction (
-	customerStockTransactionID INT AUTO_INCREMENT PRIMARY KEY, 
+CREATE TABLE StockPortfolioTransaction (
+	stockPortfolioTransactionID INT AUTO_INCREMENT PRIMARY KEY, 
 	dateTime DATETIME NOT NULL, 
+    transactionType VARCHAR(20) NOT NULL, -- buy or sell
 	numberOfShares INT NOT NULL,
-    transactionCost DECIMAL(10,2) NOT NULL
-	customerID INT NOT NULL,
+    transactionCost DECIMAL(10,2) NOT NULL,
+	portfolioID INT NOT NULL,
     stockID INT NOT NULL, 
-	FOREIGN KEY (customerID, stockID) REFERENCES CustomerStock (customerID, stockID)
+	FOREIGN KEY (portfolioID, stockID) REFERENCES StockPortfolio (portfolioID, stockID)
 );
