@@ -9,9 +9,9 @@ public class Stock {
     private int stockID;
     private String tickerCode;
     private BigDecimal sharePrice;
-    private int numberOfOutstandingShares;
+    private Long numberOfOutstandingShares;
     private BigDecimal marketCap;
-    private int dailyVolume;
+    private Long dailyVolume;
     private Company company;
 
     public int getStockID() {
@@ -38,11 +38,11 @@ public class Stock {
         this.sharePrice = sharePrice;
     }
 
-    public int getNumberOfOutstandingShares() {
+    public Long getNumberOfOutstandingShares() {
         return numberOfOutstandingShares;
     }
 
-    public void setNumberOfOutstandingShares(int numberOfOutstandingShares) {
+    public void setNumberOfOutstandingShares(Long numberOfOutstandingShares) {
         this.numberOfOutstandingShares = numberOfOutstandingShares;
     }
 
@@ -54,11 +54,11 @@ public class Stock {
         this.marketCap = marketCap;
     }
 
-    public int getDailyVolume() {
+    public Long getDailyVolume() {
         return dailyVolume;
     }
 
-    public void setDailyVolume(int dailyVolume) {
+    public void setDailyVolume(Long dailyVolume) {
         this.dailyVolume = dailyVolume;
     }
 

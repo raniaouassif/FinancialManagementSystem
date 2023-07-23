@@ -32,8 +32,8 @@ CREATE TABLE Stock (
 	stockID INT AUTO_INCREMENT PRIMARY KEY, 
     tickerCode VARCHAR(10) NOT NULL, 
     sharePrice DECIMAL(10,2) NOT NULL,
-    numberOfOutstandingShares INT NOT NULL,
-    marketCap DECIMAL(10,2) NOT NULL,
+    numberOfOutstandingShares BIGINT NOT NULL,
+    marketCap DECIMAL(18, 2) NOT NULL,
     dailyVolume INT, 
     companyID INT NOT NULL,
     FOREIGN KEY (companyID) REFERENCES Company(companyID)
@@ -42,7 +42,7 @@ CREATE TABLE Stock (
 CREATE TABLE AccountType (
 	accountTypeID INT AUTO_INCREMENT PRIMARY KEY, 
     type VARCHAR(50) NOT NULL, 
-	minimumStartDeposit DECIMAL(5,2) NOT NULL,
+	minimumStartDeposit DECIMAL(10,2) NOT NULL,
     interestRate DECIMAL(5,2),
     compoundRate VARCHAR(50)
 );
@@ -104,11 +104,11 @@ CREATE TABLE Portfolio (
     FOREIGN KEY (customerID) REFERENCES Customer(customerID)
 );
 
--- BRIDGE TABLE BETWEEN CUSTOMER AND STOCK 
+-- BRIDGE TABLE BETWEEN PORTFOLIO AND STOCK 
 CREATE TABLE StockPortfolio (
 	portfolioID INT, 
     stockID INT,
-	numberOfShares INT NOT NULL,
+	numberOfShares BIGINT NOT NULL,
 	sharesValue DECIMAL(10,2) NOT NULL, 
     CONSTRAINT pk_StockPortfolio
 		PRIMARY KEY (portfolioID, stockID),
