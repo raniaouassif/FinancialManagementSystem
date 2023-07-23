@@ -8,6 +8,7 @@ import java.util.List;
 public class Bank {
     private int bankID;
     private String name;
+    private String location;
     private List<AccountType> accountTypes;
 
     public int getBankID() {
@@ -32,5 +33,13 @@ public class Bank {
 
     public void setAccountTypes(List<AccountType> accountTypes) {
         this.accountTypes = accountTypes;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

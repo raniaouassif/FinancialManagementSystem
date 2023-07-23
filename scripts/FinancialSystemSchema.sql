@@ -4,7 +4,8 @@ USE FinancialManagementSystem;
 
 CREATE TABLE Bank (
 	bankID INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
+    name VARCHAR(50) NOT NULL,
+    location VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Company (
