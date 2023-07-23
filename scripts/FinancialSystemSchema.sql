@@ -44,9 +44,7 @@ CREATE TABLE AccountType (
 	accountTypeID INT AUTO_INCREMENT PRIMARY KEY, 
     type VARCHAR(50) NOT NULL, 
     interestRate DECIMAL(5,2),
-    compoundRate VARCHAR(50),
-    bankID INT NOT NULL, 
-    FOREIGN KEY (bankID) REFERENCES Bank(bankID)
+    compoundRate VARCHAR(50)
 );
 
 CREATE TABLE Account (
@@ -69,6 +67,21 @@ CREATE TABLE AccountTransaction (
     accountID INT NOT NULL, 
     FOREIGN KEY (accountID) REFERENCES Account(accountID)
 );
+
+-- BRIDGE TABLE BETWEEN BANK AND ACCOUNTTYPE
+CREATE TABLE BankAccountType (
+	bankID INT, 
+    accountTypeID INT, 
+    CONSTRAINT pk_BankAccountType
+		PRIMARY KEY(bankID, accountTypeID),
+	CONSTRAINT fk_pk_BankAccountType_Bank
+		FOREIGN KEY (bankID)
+        REFERENCES Bank(bankID),
+	CONSTRAINT fk_pk_BankAccountType_AccountType
+		FOREIGN KEY (accountTypeID)
+        REFERENCES AccountType(accountTypeID)
+);
+
 
 -- BRIDGE TABLE BETWEEN STOCK & EXCHANGE ORGANIZATION
 CREATE TABLE StockExchangeOrganization ( 
