@@ -34,6 +34,7 @@ CREATE TABLE Stock (
     sharePrice DECIMAL(10,2) NOT NULL,
     numberOfShares INT NOT NULL,
     marketCap DECIMAL(10,2) NOT NULL,
+    dailyVolume INT NOT NULL, 
     companyID INT NOT NULL,
     FOREIGN KEY (companyID) REFERENCES Company(companyID)
 );
