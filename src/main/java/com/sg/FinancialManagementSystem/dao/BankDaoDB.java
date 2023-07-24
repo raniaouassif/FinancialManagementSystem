@@ -5,8 +5,12 @@ import com.sg.FinancialManagementSystem.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +27,9 @@ public class BankDaoDB implements BankDao {
     public Bank getBankByID(int bankID) {
         try {
             final String GET_BANK_BY_ID = "SELECT * FROM Bank WHERE bankID = ? ";
-            return jdbcTemplate.queryForObject(GET_BANK_BY_ID, new BankMapper(), bankID);
+            Bank bank = jdbcTemplate.queryForObject(GET_BANK_BY_ID, new BankMapper(), bankID);
+            bank.setAccountTypes(getAccountTypesByBank(bankID));
+            return bank;
         } catch (DataAccessException e) {
             System.out.println("BankDaoDB : Get Bank by ID failed.");
             return null;
@@ -33,13 +39,18 @@ public class BankDaoDB implements BankDao {
     @Override
     public List<Bank> getAllBanks() {
         final String GET_ALL_BANKS = "SELECT * FROM Bank";
-        return jdbcTemplate.query(GET_ALL_BANKS, new BankMapper());
+        List<Bank> banks = jdbcTemplate.query(GET_ALL_BANKS, new BankMapper());
+
+        setAccountTypesForBankList(banks);
+
+        return banks;
     }
 
     @Override
     public Bank addBank(Bank bank) {
 
         final String ADD_BANK = "INSERT INTO Bank(name, location) VALUES (?, ?);";
+
         jdbcTemplate.update(ADD_BANK,
                 bank.getName(),
                 bank.getLocation());
@@ -122,6 +133,9 @@ public class BankDaoDB implements BankDao {
                 new BankMapper(),
                 customer.getCustomerID()
         );
+
+        setAccountTypesForBankList(retrievedBanks);
+
         return retrievedBanks.size() == 0 ? new ArrayList<>() : retrievedBanks;
     }
 
@@ -139,6 +153,8 @@ public class BankDaoDB implements BankDao {
                     account.getAccountID()
             );
 
+            retrievedBank.setAccountTypes(getAccountTypesByBank(retrievedBank.getBankID()));
+
             return retrievedBank;
         } catch(DataAccessException e) {
             System.out.println("BankDaoDB: GetBankByAccount() failed.");
@@ -147,6 +163,29 @@ public class BankDaoDB implements BankDao {
     }
 
     //PRIVATE HELPER FUNCTIONS
+
+    //PRIVATE HELPER FUNCTIONS
+    private List<AccountType> getAccountTypesByBank(int bankID) {
+        final String GET_ACCOUNT_TYPES_BY_BANK = "SELECT at.* FROM AccountType at "
+                +"JOIN BankAccountType bat ON bat.accountTypeID = at.accountTypeID "
+                +"JOIN Bank b ON b.bankID = bat.bankID "
+                +"WHERE b.bankID = ?";
+
+        List<AccountType> retrievedAccountTypes = jdbcTemplate.query(
+                GET_ACCOUNT_TYPES_BY_BANK,
+                new AccountTypeMapper(),
+                bankID
+        );
+
+        return retrievedAccountTypes.size() == 0 ? new ArrayList<>() : retrievedAccountTypes;
+    }
+
+    private void setAccountTypesForBankList(List<Bank> banks) {
+        for(Bank bank : banks) {
+            int bankID = bank.getBankID();
+            bank.setAccountTypes(getAccountTypesByBank(bankID));
+        }
+    }
     private void insertBankAccountTypes(Bank bank) {
         if(bank.getAccountTypes() != null) {
             final String INSERT_BANK_ACCOUNT_TYPES = "INSERT INTO "
