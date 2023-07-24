@@ -12,8 +12,6 @@ public class AccountType {
     private BigDecimal minimumStartDeposit;
     private BigDecimal interestRate;
     private CompoundRate compoundRate;
-    private List<Account> accounts;
-
     public int getAccountTypeID() {
         return accountTypeID;
     }
@@ -44,14 +42,6 @@ public class AccountType {
 
     public void setCompoundRate(CompoundRate compoundRate) {
         this.compoundRate = compoundRate;
-    }
-
-    public List<Account> getAccounts() {
-        return accounts;
-    }
-
-    public void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
     }
 
     public BigDecimal getMinimumStartDeposit() {

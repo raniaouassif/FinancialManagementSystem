@@ -15,6 +15,8 @@ public interface AccountTypeDao {
 
     List<AccountType> getAllAccountTypes();
 
+    AccountType addAccountType(AccountType accountType);
+
     void updateAccountType(AccountType accountType);
 
     void deleteAccountTypeByID(int accountTypeID);

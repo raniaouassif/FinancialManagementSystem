@@ -97,7 +97,7 @@ public class BankDaoDB implements BankDao {
                 + "closingReason = ? "
                 + "WHERE accountID = ?;";
 
-        String closingReason = "Bank " + bankName + " has been disolved.";
+        String closingReason = "Bank " + bankName + " has been dissolved.";
         LocalDate closingDate = LocalDate.now();
         for(Account account : accounts) {
             jdbcTemplate.update(UPDATE_ACCOUNTS_TO_CLOSED,
