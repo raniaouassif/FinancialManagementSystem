@@ -71,7 +71,8 @@ public class BankDaoDB implements BankDao {
         jdbcTemplate.update(
                 UPDATE_BANK,
                 bank.getName(),
-                bank.getLocation()
+                bank.getLocation(),
+                bank.getBankID()
         );
         //First delete the bank account types
         deleteBankAccountTypesByBankID(bank.getBankID());
@@ -99,6 +100,7 @@ public class BankDaoDB implements BankDao {
 
         String closingReason = "Bank " + bankName + " has been dissolved.";
         LocalDate closingDate = LocalDate.now();
+
         for(Account account : accounts) {
             jdbcTemplate.update(UPDATE_ACCOUNTS_TO_CLOSED,
                     closingDate,
@@ -216,7 +218,7 @@ public class BankDaoDB implements BankDao {
                 bankID
         );
 
-        return retrievedAccounts.size() == 0 ? null : retrievedAccounts;
+        return retrievedAccounts.size() == 0 ? new ArrayList<>() : retrievedAccounts;
     }
 
     private void deleteBankAccountTypesByBankID(int bankID) {

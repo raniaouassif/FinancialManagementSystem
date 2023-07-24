@@ -113,7 +113,7 @@ public class AccountTypeDaoDB implements AccountTypeDao {
         jdbcTemplate.update(DELETE_BANK_ACCOUNT_BY_ACCOUNT_TYPE_ID, accountTypeID);
 
         //Delete from the bankAccountType bridge table
-        String DELETE_BANK_ACCOUNT_TYPE_ACCOUNT_TYPE_ID = "DELETE FROM BankAccountType WHERE bankID = ?";
+        String DELETE_BANK_ACCOUNT_TYPE_ACCOUNT_TYPE_ID = "DELETE FROM BankAccountType WHERE accountTypeID = ?";
         jdbcTemplate.update(DELETE_BANK_ACCOUNT_TYPE_ACCOUNT_TYPE_ID, accountTypeID);
 
         //Finally Delete the ACCOUNT Type

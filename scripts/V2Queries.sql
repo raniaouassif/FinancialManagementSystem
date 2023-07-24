@@ -33,6 +33,18 @@ WHERE t.transactionID = 3;
 UPDATE Account SET depositBalance = 0.00, interestBalance = 0.00, totalBalance = 0.00, status = 'CLOSED', closingDate = '2023-01-01', closingReason = 'Switched to another bank'
 WHERE accountID = 5;
 
+-- GET ACCOUNTS BY CUSTOMER
+SELECT a.* FROM Account a 
+JOIN Customer c ON c.customerID = a.customerID 
+WHERE c.customerID = 1 ;
+
+-- GET OPEN ACCOUNTS BY CUSTOMER
+SELECT a.* FROM Account a 
+JOIN Customer c ON c.customerID = a.customerID 
+WHERE a.status = 'OPEN' AND c.customerID = 1;
+
+
+
 
 -- ------------------------------------------------------------------------------------------------------
 -- Bank
