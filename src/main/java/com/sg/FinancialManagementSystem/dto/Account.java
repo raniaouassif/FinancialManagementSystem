@@ -16,7 +16,7 @@ public class Account {
     private AccountStatus status;
     private LocalDate closingDate;
     private String closingReason;
-    private  Bank bank;
+    private Bank bank;
     private AccountType accountType;
     private Customer customer;
     private List<Transaction> transactions;

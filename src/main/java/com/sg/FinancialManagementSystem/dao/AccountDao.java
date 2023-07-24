@@ -22,7 +22,7 @@ public interface AccountDao {
 
     List<Account> getAccountsByCustomer(Customer customer);
 
-    List<Account> getAccountsByAccountType(AccountType accountType);
+    List<Account> getOpenAccountsByCustomer(Customer customer);
 
-    List<Account> getAccountsByOpeningDate(LocalDate date);
+
 }
