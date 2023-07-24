@@ -21,20 +21,13 @@ JOIN BankAccountType bat ON bat.bankID = ba.bankID AND bat.accountTypeID = ba.ac
 JOIN AccountType at ON at.accountTypeID = bat.accountTypeID
 WHERE at.accountTypeID = 5;
 
--- GET ACCOUNTS BY TRANSACTION : FROM SAME ACCOUNT
-SELECT a.* FROM Account a
-JOIN AccountTransaction at ON at.accoundID1 = a.accountID AND at.accoundID2 = a.accountID 
-JOIN Transaction t ON t.transactionID = at.transactionID
-WHERE t.transactionID = 1;
-
--- GET ACCOUNTS BY TRANSACTION: FROM SAME ACCOUNT
+-- GET ACCOUNTS BY TRANSACTION: 
 SELECT 
-	a.*, t.transactionID -- , tb.accoundID1 AS FROMAccount, tb.accoundID2 AS TOAccound
+	a.* 
 FROM Account a 
-JOIN AccountTransaction at ON at.accountID1 = a.accountID AND at.accountID2 = a.accountID
-JOIN TransactionBridge tb ON tb.accountID1 = at.accountID1 
-JOIN Transaction t ON t.transactionID = tb.transactionID
-WHERE t.transactionID = 1;
+JOIN AccountTransaction at ON at.accountID1 = a.accountID 
+JOIN Transaction t ON t.transactionID = at.transactionID
+WHERE t.transactionID = 3;
 
 -- ------------------------------------------------------------------------------------------------------
 -- Bank
@@ -100,8 +93,10 @@ JOIN AccountBridge ba ON ba.accountTypeID = bat.accountTypeID AND ba.bankID = ba
 JOIN Account a ON a.accountID = ba.accountID
 WHERE a.accountID = 3;
 
-
-
 -- ------------------------------------------------------------------------------------------------------
 -- Transaction
-
+-- GET TRANSACTIONS BY ACCOUNT 
+SELECT t.* FROM Transaction t
+JOIN AccountTransaction at ON at.transactionID = t.transactionID 
+JOIN Account a ON a.accountID = at.accountID1 OR a.accountID = at.accountID2
+WHERE a.accountID = 1;
