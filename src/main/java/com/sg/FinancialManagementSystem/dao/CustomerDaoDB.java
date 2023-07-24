@@ -66,7 +66,7 @@ public class CustomerDaoDB implements CustomerDao {
         final String GET_CUSTOMERS_BY_BANK = "SELECT  c.* " +
                 "FROM Customer c " +
                 "JOIN Account a ON a.customerID = c.customerID " +
-                "JOIN BankAccount ba ON ba.accountID = a.accountID " +
+                "JOIN AccountBridge ba ON ba.accountID = a.accountID " +
                 "JOIN BankAccountType bat ON bat.bankID = ba.bankID AND bat.accountTypeID = ba.accountTypeID " +
                 "JOIN Bank b ON b.bankID = bat.bankID " +
                 "WHERE b.bankID = ?;";
@@ -80,7 +80,7 @@ public class CustomerDaoDB implements CustomerDao {
     public List<Customer> getCustomersByAccountType(AccountType accountType) {
         final String GET_CUSTOMERS_BY_ACCOUNT_TYPE = "SELECT c.* FROM Customer c " +
                 "JOIN Account a ON a.customerID = c.customerID " +
-                "JOIN BankAccount ba ON ba.accountID = a.accountID " +
+                "JOIN AccountBridge ba ON ba.accountID = a.accountID " +
                 "JOIN BankAccountType bat ON bat.bankID = ba.bankID AND bat.accountTypeID = ba.accountTypeID " +
                 "JOIN AccountType at ON at.accountTypeID = bat.accountTypeID " +
                 "WHERE at.accountTypeID = ?";

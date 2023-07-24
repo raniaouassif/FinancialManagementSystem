@@ -75,7 +75,7 @@ public class AccountTypeDB implements AccountTypeDao {
     public void deleteAccountTypeByID(int accountTypeID) {
         // Get all accounts of this type
         final String GET_ACCOUNT_BY_ACCOUNT_TYPE = "SELECT a.* FROM Account a " +
-                "JOIN BankAccount ba ON ba.accountID = a.accountID " +
+                "JOIN AccountBridge ba ON ba.accountID = a.accountID " +
                 "JOIN BankAccountType bat ON bat.bankID = ba.bankID AND bat.accountTypeID = ba.accountTypeID " +
                 "JOIN AccountType at ON at.accountTypeID = bat.accountTypeID " +
                 "WHERE at.accountTypeID = ?";
@@ -103,7 +103,7 @@ public class AccountTypeDB implements AccountTypeDao {
         }
 
         // Delete from the bankAccount bridge table
-        String DELETE_BANK_ACCOUNT_BY_ACCOUNT_TYPE_ID = "DELETE FROM BankAccount WHERE accountTypeID = ?";
+        String DELETE_BANK_ACCOUNT_BY_ACCOUNT_TYPE_ID = "DELETE FROM AccountBridge WHERE accountTypeID = ?";
         jdbcTemplate.update(DELETE_BANK_ACCOUNT_BY_ACCOUNT_TYPE_ID, accountTypeID);
 
         //Delete from the bankAccountType bridge table
@@ -131,7 +131,7 @@ public class AccountTypeDB implements AccountTypeDao {
     public List<AccountType> getAccountTypesByCustomer(Customer customer) {
         final String GET_ACCOUNT_TYPES_BY_CUSTOMER = "SELECT at.* FROM AccountType at " +
                 "JOIN BankAccountType bat ON bat.accountTypeID = at.accountTypeID " +
-                "JOIN BankAccount ba ON ba.accountTypeID = bat.accountTypeID AND ba.bankID = bat.bankID " +
+                "JOIN AccountBridge ba ON ba.accountTypeID = bat.accountTypeID AND ba.bankID = bat.bankID " +
                 "JOIN Account a ON a.accountID = ba.accountID " +
                 "JOIN Customer c ON c.customerID = a.customerID " +
                 "WHERE c.customerID = ?";
@@ -145,7 +145,7 @@ public class AccountTypeDB implements AccountTypeDao {
         try {
             final String GET_ACCOUNT_TYPE_BY_ACCOUNT ="SELECT at.* FROM AccountType at " +
                     "JOIN BankAccountType bat ON bat.accountTypeID = at.accountTypeID " +
-                    "JOIN BankAccount ba ON ba.accountTypeID = bat.accountTypeID AND ba.bankID = bat.bankID " +
+                    "JOIN AccountBridge ba ON ba.accountTypeID = bat.accountTypeID AND ba.bankID = bat.bankID " +
                     "JOIN Account a ON a.accountID = ba.accountID " +
                     "WHERE a.accountID = ?";
 

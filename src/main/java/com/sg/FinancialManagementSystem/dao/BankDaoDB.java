@@ -107,7 +107,7 @@ public class BankDaoDB implements BankDao {
         }
 
         // Delete from the bankAccount bridge table
-        String DELETE_BANK_ACCOUNT_BY_BANK_ID = "DELETE FROM BankAccount WHERE bankID = ?";
+        String DELETE_BANK_ACCOUNT_BY_BANK_ID = "DELETE FROM AccountBridge WHERE bankID = ?";
         jdbcTemplate.update(DELETE_BANK_ACCOUNT_BY_BANK_ID, bankID);
 
         //Delete from the bankAccountType bridge table
@@ -123,7 +123,7 @@ public class BankDaoDB implements BankDao {
     public List<Bank> getBanksByCustomer(Customer customer) {
         final String SELECT_BANKS_BY_CUSTOMER = "SELECT b.* FROM Bank b " +
                 "JOIN BankAccountType bat ON bat.bankID = b.bankID " +
-                "JOIN BankAccount ba ON ba.bankID = bat.bankID AND ba.accountTypeID = bat.accountTypeID " +
+                "JOIN AccountBridge ba ON ba.bankID = bat.bankID AND ba.accountTypeID = bat.accountTypeID " +
                 "JOIN Account a ON a.accountID = ba.accountID " +
                 "JOIN Customer c ON c.customerID = a.customerID " +
                 "WHERE c.customerID = ?";
@@ -144,7 +144,7 @@ public class BankDaoDB implements BankDao {
         try {
             final String GET_BANK_BY_ACCOUNT = "SELECT b.* FROM Bank b "
                     + "JOIN BankAccountType bat ON bat.bankID = b.bankID "
-                    + "JOIN BankAccount ba ON ba.bankID = bat.bankID AND ba.accountTypeID = bat.accountTypeID "
+                    + "JOIN AccountBridge ba ON ba.bankID = bat.bankID AND ba.accountTypeID = bat.accountTypeID "
                     + "JOIN Account a ON a.accountID = ba.accountID "
                     + "WHERE a.accountID = ?";
             Bank retrievedBank = jdbcTemplate.queryForObject(
@@ -205,7 +205,7 @@ public class BankDaoDB implements BankDao {
     private List<Account> getAccountsByBankID(int bankID) {
         final String GET_ACCOUNTS_BY_BANK_ID = "SELECT a.* " +
                 "FROM Account a " +
-                "JOIN BankAccount ba ON ba.accountID = a.accountID " +
+                "JOIN AccountBridge ba ON ba.accountID = a.accountID " +
                 "JOIN BankAccountType bat on bat.bankID = ba.bankID AND bat.accountTypeID = ba.accountTypeID " +
                 "JOIN Bank b ON b.bankID = bat.bankID " +
                 "WHERE b.bankID = ?;";
