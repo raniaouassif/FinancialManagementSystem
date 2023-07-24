@@ -69,36 +69,34 @@ INSERT INTO AccountType (type, minimumStartDeposit, interestRate, compoundRate) 
     ('LOW_INTEREST_QUARTERLY', 25.00, 0.75, 'Quarterly');
 
 
-INSERT INTO Account (openingDate, depositBalance, customerID, accountTypeID) VALUES 
-	('2022-01-01', 200.00, 1, 1),
-	('2022-01-01', 40.00, 2, 1),
-	('2023-11-28', 100.00, 2, 1),
-	('2020-05-05', 1000.00, 3, 1),
-	('2018-10-12', 500.00, 4, 1),
-	('2019-12-12', 20.00, 5, 2),
-	('2018-07-19', 55.00, 6, 3);
+INSERT INTO Account (openingDate, depositBalance, status, customerID) VALUES 
+	('2022-01-01', 200.00, 'OPEN', 1),
+	('2022-01-01', 40.00, 'OPEN', 1),
+	('2023-11-28', 100.00, 'OPEN', 1),
+	('2020-05-05', 1000.00, 'OPEN', 3),
+	('2018-10-12', 500.00,' OPEN', 4),
+	('2019-12-12', 20.00, 'OPEN',5),
+	('2018-07-19', 55.00, 'OPEN',6);
 			
-INSERT INTO BankAccountType (bankID, accountTypeID) VALUES 
+INSERT INTO BankAccountType (bankID, accountTypeID ) VALUES 
 	(1,1),
     (1,2),
+    (1,3),
     (2,2),
-    (2,3),
-    (2,4),
-    (3,1),
-    (3,3),
-    (4,1),
-    (4,2),
+	(2,3),
     (4,5),
-    (5,9),
-    (6,1),
+    (4,4),
     (6,8),
-    (7,9),
-    (8,7),
-	(9,1),
-    (9,2),
-    (9,3),
-    (10,8),
-    (10,3);
+    (8,7);
+
+INSERT INTO BankAccount (bankID, accountTypeID, accountID) VALUES 
+	(1,1,1),
+    (2,2,2),
+    (4,5,3),
+    (4,5,4),
+    (1,2,5),
+    (6,8,6),
+    (8,7,7);
 
 
 INSERT INTO StockExchangeOrganization (exchangeOrganizationID, stockID) VALUES 
@@ -132,7 +130,16 @@ INSERT INTO StockPortfolio(portfolioID, stockID, numberOfShares, sharesValue) VA
     (5, 6, 30, 7044.00);  -- Portfolio 5: V (Visa Inc.)
 
 
-    
+INSERT INTO AccountTransaction(dateTime, transactionType, amount, accountID) VALUES 
+	("2022-09-01 10:00:00", "DEPOSIT", 100.00, 1),
+	("2023-01-01 11:00:00", "DEPOSIT", 200.00, 1),
+	("2022-02-12 13:00:00", "DEPOSIT", 50.00, 1),
+	("2012-05-16 01:00:00", "DEPOSIT", 150.00, 2),
+	("2020-09-19 13:00:00", "DEPOSIT", 2000.00, 2),
+	("2021-11-07 13:00:00", "DEPOSIT", 10000.00, 2),
+	("2021-12-27 13:00:00", "DEPOSIT", 125.00, 2),
+	("2022-12-21 10:30:00", "WITHDRAW", 1000.00, 6 ),
+	("2022-11-30 04:00:00", "WITHDRAW", 25.00, 7);
 
 
     

@@ -53,10 +53,11 @@ CREATE TABLE Account (
 	depositBalance DECIMAL(10,2) NOT NULL,
     interestBalance DECIMAL(10,2),
     totalBalance DECIMAL(10,2),
+    status VARCHAR(10) NOT NULL,
+    closingDate DATE,
+    closingReason VARCHAR(255),
     customerID INT NOT NULL, 
-    accountTypeID INT NOT NULL, 
-    FOREIGN KEY (customerID) REFERENCES Customer(customerID),
-    FOREIGN KEY (accountTypeID) REFERENCES AccountType(accountTypeID)
+    FOREIGN KEY (customerID) REFERENCES Customer(customerID)
 );
 
 CREATE TABLE AccountTransaction (
@@ -68,7 +69,7 @@ CREATE TABLE AccountTransaction (
     FOREIGN KEY (accountID) REFERENCES Account(accountID)
 );
 
--- BRIDGE TABLE BETWEEN BANK AND ACCOUNTTYPE
+-- BRIDGE BETWEEN Bank AND AccountType
 CREATE TABLE BankAccountType (
 	bankID INT, 
     accountTypeID INT, 
@@ -80,6 +81,21 @@ CREATE TABLE BankAccountType (
 	CONSTRAINT fk_pk_BankAccountType_AccountType
 		FOREIGN KEY (accountTypeID)
         REFERENCES AccountType(accountTypeID)
+);
+
+-- BRIDGE BETWEEN Account AND BankAccountType
+CREATE TABLE BankAccount (
+	accountID INT, 
+    bankID INT, 
+    accountTypeID INT, 
+    CONSTRAINT pk_BankAccount
+		PRIMARY KEY(accountID, bankID, accountTypeID),
+	CONSTRAINT fk_pk_BankAccount_Account
+		FOREIGN KEY (accountID)
+        REFERENCES Account(accountID),
+	CONSTRAINT fk_pk_BankAccount_BankAccountType
+		FOREIGN KEY (bankID, accountTypeID)
+        REFERENCES BankAccountType(bankID, accountTypeID)
 );
 
 
