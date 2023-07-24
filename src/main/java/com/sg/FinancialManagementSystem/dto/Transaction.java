@@ -12,8 +12,8 @@ public class Transaction {
     private LocalDateTime dateTime;
     private TransactionType transactionType;
     private BigDecimal amount;
-    private List<Account> accounts;
-
+    private Account from;
+    private Account to;
     public int getTransactionID() {
         return transactionID;
     }
@@ -45,12 +45,20 @@ public class Transaction {
         this.amount = amount;
     }
 
-
-    public List<Account> getAccounts() {
-        return accounts;
+    public Account getFrom() {
+        return from;
     }
 
-    public void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
+    public void setFrom(Account from) {
+        this.from = from;
     }
+
+    public Account getTo() {
+        return to;
+    }
+
+    public void setTo(Account to) {
+        this.to = to;
+    }
+
 }

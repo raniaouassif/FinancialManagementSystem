@@ -29,7 +29,7 @@ public class TransactionDaoDB implements TransactionDao {
             Transaction transaction = jdbcTemplate.queryForObject(GET_TRANSACTION_BY_ID, new TransactionMapper(), transactionID);
 
             // Set the account(s) of the transaction
-            transaction.setAccounts(getAccountsByTransaction(transaction));
+            setAccountFromAndToForTransaction(transaction);
 
             return transaction;
         } catch (DataAccessException e) {
@@ -98,36 +98,56 @@ public class TransactionDaoDB implements TransactionDao {
         return accounts.size() == 0 ? new ArrayList<>() : accounts;
     }
 
-    private void setAccountsForTransactionsList(List<Transaction> transactionsList) {
-        for(Transaction transaction : transactionsList) {
-            transaction.setAccounts(getAccountsByTransaction(transaction));
+    //Get the accounts per transaction
+    //Returns 1 if the transaction is through the same account
+    //Returns 2 if the transaction is from an account to another
+    private int accountsPerTransaction(Transaction transaction) {
+        return getAccountsByTransaction(transaction).size();
+    }
+
+    //Set the accounts From and To for a specific transaction
+    private void setAccountFromAndToForTransaction(Transaction transaction) {
+        int accountsPerTransaction = accountsPerTransaction(transaction);
+        if(accountsPerTransaction == 2 ) {
+            transaction.setFrom(getAccountsByTransaction(transaction).get(0));
+            transaction.setTo(getAccountsByTransaction(transaction).get(1));
+        } else if(accountsPerTransaction == 1 ) {
+            transaction.setFrom(getAccountsByTransaction(transaction).get(0));
+            transaction.setTo(getAccountsByTransaction(transaction).get(0));
         }
     }
 
+    //Set the accounts From and To for a list of transactions
+    private void setAccountsForTransactionsList(List<Transaction> transactionsList) {
+        for(Transaction transaction : transactionsList) {
+            setAccountFromAndToForTransaction(transaction);
+        }
+    }
+
+    // Insert a new transaction using From and To
     private void insertAccountTransaction(Transaction transaction) {
-        if(transaction.getAccounts() != null ) {
+        if(transaction.getFrom() != null && transaction.getTo() != null ) {
             final String INSERT_ACCOUNT_TRANSACTION = "INSERT INTO "
                     + "AccountTransaction (transactionID, accoundID1, accoundID2) "
                     + "VALUES (?,?,?) ";
 
-            if(transaction.getAccounts().size() == 2) { // TRANSFER FROM AN ACCOUNT TO ANOTHER
-                int accountFromID = transaction.getAccounts().get(0).getAccountID();
-                int accountToID = transaction.getAccounts().get(1).getAccountID();
+            if(transaction.getFrom().getAccountID() != transaction.getTo().getAccountID()) { // TRANSFER FROM AN ACCOUNT TO ANOTHER
+                int accountFromID = transaction.getFrom().getAccountID();
+                int accountToID = transaction.getTo().getAccountID();
 
                 jdbcTemplate.update(INSERT_ACCOUNT_TRANSACTION,
                         transaction.getTransactionID(),
                         accountFromID,
                         accountToID);
 
-            } else if(transaction.getAccounts().size() == 1) { //DEPOSIT - WITHDRAW FROM SAME ACCOUNT
-                int accountID = transaction.getAccounts().get(0).getAccountID();
+            } else if(transaction.getFrom().getAccountID() == transaction.getTo().getAccountID()) { //DEPOSIT - WITHDRAW FROM SAME ACCOUNT
+                int accountID = transaction.getFrom().getAccountID();
 
                 jdbcTemplate.update(INSERT_ACCOUNT_TRANSACTION,
                         transaction.getTransactionID(),
                         accountID,
                         accountID);
             }
-
         }
     }
 }

@@ -93,10 +93,11 @@ JOIN AccountBridge ba ON ba.accountTypeID = bat.accountTypeID AND ba.bankID = ba
 JOIN Account a ON a.accountID = ba.accountID
 WHERE a.accountID = 3;
 
+
 -- ------------------------------------------------------------------------------------------------------
 -- Transaction
 -- GET TRANSACTIONS BY ACCOUNT 
 SELECT t.* FROM Transaction t
 JOIN AccountTransaction at ON at.transactionID = t.transactionID 
 JOIN Account a ON a.accountID = at.accountID1 OR a.accountID = at.accountID2
-WHERE a.accountID = 1;
+WHERE a.accountID = 2;
