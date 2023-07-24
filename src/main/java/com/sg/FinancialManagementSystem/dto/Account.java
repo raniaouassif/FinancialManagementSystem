@@ -14,6 +14,9 @@ public class Account {
     private BigDecimal depositBalance;
     private BigDecimal interestBalance;
     private BigDecimal totalBalance;
+    private AccountStatus status;
+    private LocalDate closingDate;
+    private String closingReason;
     private AccountType accountType;
     private Customer customer;
     private List<AccountTransaction> accountTransactions;
@@ -81,5 +84,29 @@ public class Account {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public AccountStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccountStatus status) {
+        this.status = status;
+    }
+
+    public LocalDate getClosingDate() {
+        return closingDate;
+    }
+
+    public void setClosingDate(LocalDate closingDate) {
+        this.closingDate = closingDate;
+    }
+
+    public String getClosingReason() {
+        return closingReason;
+    }
+
+    public void setClosingReason(String closingReason) {
+        this.closingReason = closingReason;
     }
 }

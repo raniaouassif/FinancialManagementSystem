@@ -1,5 +1,6 @@
 package com.sg.FinancialManagementSystem.dao;
 
+import com.sg.FinancialManagementSystem.dto.Account;
 import com.sg.FinancialManagementSystem.dto.Bank;
 import com.sg.FinancialManagementSystem.dto.Customer;
 
@@ -21,5 +22,7 @@ public interface BankDao {
     void deleteBankByID(int bankID);
 
     List<Bank> getBanksByCustomer(Customer customer);
+
+    Bank getBankByAccount(Account account);
 
 }

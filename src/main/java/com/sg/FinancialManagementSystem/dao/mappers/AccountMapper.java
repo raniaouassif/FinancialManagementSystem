@@ -1,9 +1,6 @@
 package com.sg.FinancialManagementSystem.dao.mappers;
 
-import com.sg.FinancialManagementSystem.dto.Account;
-import com.sg.FinancialManagementSystem.dto.AccountTransaction;
-import com.sg.FinancialManagementSystem.dto.AccountType;
-import com.sg.FinancialManagementSystem.dto.Customer;
+import com.sg.FinancialManagementSystem.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,6 +29,9 @@ public class AccountMapper implements RowMapper<Account> {
         account.setDepositBalance(rs.getBigDecimal("depositBalance"));
         account.setInterestBalance(rs.getBigDecimal("interestBalance"));
         account.setTotalBalance(rs.getBigDecimal("totalBalance"));
+        account.setStatus(AccountStatus.valueOf(rs.getString("status")));
+        account.setClosingDate(rs.getDate("closingDate").toLocalDate());
+        account.setClosingReason(rs.getString("closingReason"));
         account.setCustomer(getCustomerByAccount(account));
         account.setAccountType(getAccountTypeByAccount(account));
         account.setAccountTransactions(getAccountTransactionsByAccount(account));
