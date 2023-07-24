@@ -60,14 +60,6 @@ CREATE TABLE Account (
     FOREIGN KEY (customerID) REFERENCES Customer(customerID)
 );
 
-CREATE TABLE AccountTransaction (
-	accountTransactionID INT AUTO_INCREMENT PRIMARY KEY, 
-    dateTime DATETIME NOT NULL, 
-    transactionType VARCHAR(20) NOT NULL, -- deposit or withdrawal
-    amount DECIMAL(10,2) NOT NULL, 
-    accountID INT NOT NULL, 
-    FOREIGN KEY (accountID) REFERENCES Account(accountID)
-);
 
 -- BRIDGE BETWEEN Bank AND AccountType
 CREATE TABLE BankAccountType (
@@ -111,6 +103,27 @@ CREATE TABLE StockExchangeOrganization (
 	CONSTRAINT fk_pk_StockExchangeOrganization_ExchangeOrganization
 		FOREIGN KEY (exchangeOrganizationID)
         REFERENCES ExchangeOrganization(exchangeOrganizationID)
+);
+
+CREATE TABLE Transaction (
+	transactionID INT AUTO_INCREMENT PRIMARY KEY,
+	dateTime DATETIME NOT NULL, 
+    transactionType VARCHAR(20) NOT NULL, -- deposit or withdrawal
+    amount DECIMAL(10,2) NOT NULL
+);
+
+-- BRIDGE BETWEEN ACCOUNT AND TRANSACTION
+CREATE TABLE AccountTransaction (
+	accountID INT, 
+    transactionID INT,
+    CONSTRAINT pk_AccountTransaction
+		PRIMARY KEY (accountID, transactionID),
+	CONSTRAINT fk_pk_AccountTransaction_Account
+		FOREIGN KEY (accountID)
+        REFERENCES Account(accountID),
+	CONSTRAINT fk_pk_AccountTransaction_Transaction
+		FOREIGN KEY (transactionID)
+        REFERENCES Transaction(transactionID)
 );
 
 CREATE TABLE Portfolio (
