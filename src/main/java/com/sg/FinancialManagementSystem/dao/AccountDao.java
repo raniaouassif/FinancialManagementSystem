@@ -16,7 +16,7 @@ public interface AccountDao {
 
     Account addAccount(Account account);
 
-    void updateAccount();
+    void updateAccount(Account account);
 
     void deleteAccountByID(int accountID);
 
