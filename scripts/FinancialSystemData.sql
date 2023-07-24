@@ -141,18 +141,11 @@ INSERT INTO Transaction(dateTime, transactionType, amount) VALUES
 	("2022-12-21 10:30:00", "WITHDRAW", 1000.00),
 	("2022-11-30 04:00:00", "WITHDRAW", 25.00);
 
-INSERT INTO AccountTransaction (accountID1, accountID2) VALUES 
-	(1,2),
-    (1,3),
-    (2,1),
-    (4,4),
-    (4,3),
-    (3,1);
-    
-INSERT INTO TransactionBridge (transactionID, accountID1, accountID2) VALUES 
+INSERT INTO AccountTransaction (transactionID, accountID1, accountID2) VALUES
+	(9,1,1),
+    (8,6,6),
 	(1,1,2),
     (2,1,3),
     (1,2,1),
     (4,4,4),
     (5,3,1);
-

@@ -21,11 +21,21 @@ JOIN BankAccountType bat ON bat.bankID = ba.bankID AND bat.accountTypeID = ba.ac
 JOIN AccountType at ON at.accountTypeID = bat.accountTypeID
 WHERE at.accountTypeID = 5;
 
--- GET ACCOUNTS BY TRANSACTION
--- SELECT a.* FROM Account a
--- JOIN AccountTransaction at ON at.accountID = a.accountID
--- JOIN Transaction t ON t.transactionID = at.transactionID
--- WHERE t.transactionID = 
+-- GET ACCOUNTS BY TRANSACTION : FROM SAME ACCOUNT
+SELECT a.* FROM Account a
+JOIN AccountTransaction at ON at.accoundID1 = a.accountID AND at.accoundID2 = a.accountID 
+JOIN Transaction t ON t.transactionID = at.transactionID
+WHERE t.transactionID = 1;
+
+-- GET ACCOUNTS BY TRANSACTION: FROM SAME ACCOUNT
+SELECT 
+	a.*, t.transactionID -- , tb.accoundID1 AS FROMAccount, tb.accoundID2 AS TOAccound
+FROM Account a 
+JOIN AccountTransaction at ON at.accountID1 = a.accountID AND at.accountID2 = a.accountID
+JOIN TransactionBridge tb ON tb.accountID1 = at.accountID1 
+JOIN Transaction t ON t.transactionID = tb.transactionID
+WHERE t.transactionID = 1;
+
 -- ------------------------------------------------------------------------------------------------------
 -- Bank
 -- GET BANKS BY CUSTOMER

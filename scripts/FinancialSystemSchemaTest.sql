@@ -89,7 +89,6 @@ CREATE TABLE AccountBridge (
 		FOREIGN KEY (bankID, accountTypeID)
         REFERENCES BankAccountType(bankID, accountTypeID)
 );
-
 -- BRIDGE TABLE BETWEEN STOCK & EXCHANGE ORGANIZATION
 CREATE TABLE StockExchangeOrganization ( 
 	stockID INT, 
@@ -112,31 +111,20 @@ CREATE TABLE Transaction (
 );
 
 CREATE TABLE AccountTransaction (
+    transactionID INT NOT NULL,
     accountID1 INT NOT NULL,
     accountID2 INT NOT NULL,
     CONSTRAINT pk_AccountTransaction
-        PRIMARY KEY (accountID1, accountID2),
+        PRIMARY KEY (transactionID, accountID1, accountID2),
+	CONSTRAINT fk_AccountTransaction_Transaction
+		FOREIGN KEY (transactionID)
+        REFERENCES Transaction(transactionID),
     CONSTRAINT fk_AccountTransaction_Account1
         FOREIGN KEY (accountID1)
         REFERENCES Account(accountID),
     CONSTRAINT fk_AccountTransaction_Account2
         FOREIGN KEY (accountID2)
         REFERENCES Account(accountID)
-);
-
--- BRIDGE BETWEEN ACCOUNT AND TRANSACTION
-CREATE TABLE TransactionBridge (
-    transactionID INT NOT NULL,
-    accountID1 INT NOT NULL, 
-    accountID2 INT NOT NULL, 
-    CONSTRAINT pk_AccountTransaction
-        PRIMARY KEY (transactionID, accountID1, accountID2),
-    CONSTRAINT fk_pk_TransactionBridge_Transaction
-        FOREIGN KEY (transactionID)
-        REFERENCES Transaction(transactionID),
-    CONSTRAINT fk_pk_TransactionBridge_AccountTransaction
-        FOREIGN KEY (accountID1, accountID2)
-        REFERENCES AccountTransaction(accountID1, accountID2)
 );
 
 CREATE TABLE Portfolio (
