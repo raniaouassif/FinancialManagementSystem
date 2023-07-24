@@ -29,6 +29,11 @@ JOIN AccountTransaction at ON at.accountID1 = a.accountID
 JOIN Transaction t ON t.transactionID = at.transactionID
 WHERE t.transactionID = 3;
 
+-- UPDATE ACCOUNT TO CLOSE 
+UPDATE Account SET depositBalance = 0.00, interestBalance = 0.00, totalBalance = 0.00, status = 'CLOSED', closingDate = '2023-01-01', closingReason = 'Switched to another bank'
+WHERE accountID = 5;
+
+
 -- ------------------------------------------------------------------------------------------------------
 -- Bank
 -- GET BANKS BY CUSTOMER
@@ -39,14 +44,14 @@ JOIN Account a ON a.accountID = ba.accountID
 JOIN Customer c ON c.customerID = a.customerID 
 WHERE c.customerID = 1;
 
--- GET BANK BY BANK ACCOUNT 
+-- GET BANK BY ACCOUNT 
 SELECT
-	b.*, a.accountID
+	b.*
 FROM Bank b
 JOIN BankAccountType bat ON bat.bankID = b.bankID 
 JOIN AccountBridge ba ON ba.bankID = bat.bankID AND ba.accountTypeID = bat.accountTypeID
 JOIN Account a ON a.accountID = ba.accountID
-WHERE a.accountID = 3;
+WHERE a.accountID = 1;
 
 -- ------------------------------------------------------------------------------------------------------
 -- Customer 
@@ -70,6 +75,10 @@ JOIN BankAccountType bat ON bat.bankID = ba.bankID AND bat.accountTypeID = ba.ac
 JOIN AccountType at ON at.accountTypeID = bat.accountTypeID
 WHERE at.accountTypeID = 2;
 
+-- GET CUSTOMER BY ACCOUNT 
+SELECT c.* FROM Customer c 
+JOIN Account a ON a.customerID = c.customerID 
+WHERE a.accountID = 4;
 -- ------------------------------------------------------------------------------------------------------
 -- AccountType 
 -- GET ACCOUNT TYPES BY BANK 
@@ -100,4 +109,4 @@ WHERE a.accountID = 3;
 SELECT t.* FROM Transaction t
 JOIN AccountTransaction at ON at.transactionID = t.transactionID 
 JOIN Account a ON a.accountID = at.accountID1 OR a.accountID = at.accountID2
-WHERE a.accountID = 2;
+WHERE a.accountID = 1;

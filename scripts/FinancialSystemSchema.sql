@@ -50,13 +50,14 @@ CREATE TABLE AccountType (
 CREATE TABLE Account (
 	accountID INT AUTO_INCREMENT PRIMARY KEY, 
     openingDate DATE NOT NULL,
+
 	depositBalance DECIMAL(10,2) NOT NULL,
     interestBalance DECIMAL(10,2),
     totalBalance DECIMAL(10,2),
     status VARCHAR(10) NOT NULL,
     closingDate DATE,
     closingReason VARCHAR(255),
-    customerID INT NOT NULL, 
+    customerID INT, 
     FOREIGN KEY (customerID) REFERENCES Customer(customerID)
 );
 
