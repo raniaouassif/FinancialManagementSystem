@@ -19,14 +19,19 @@ import java.util.List;
  * @author raniaouassif on 2023-07-24
  */
 @Repository
-public class AccountTypeDB implements AccountTypeDao {
+public class AccountTypeDaoDB implements AccountTypeDao {
     @Autowired
     JdbcTemplate jdbcTemplate;
     @Override
     public AccountType getAccountTypeByID(int accountTypeID) {
-        final String GET_ACCOUNT_TYPE_BY_ID = "SELECT * FROM AccountType WHERE accountTypeID = ?";
+        try{
+            final String GET_ACCOUNT_TYPE_BY_ID = "SELECT * FROM AccountType WHERE accountTypeID = ?";
 
-        return jdbcTemplate.queryForObject(GET_ACCOUNT_TYPE_BY_ID, new AccountTypeMapper(), accountTypeID) ;
+            return jdbcTemplate.queryForObject(GET_ACCOUNT_TYPE_BY_ID, new AccountTypeMapper(), accountTypeID) ;
+        } catch (DataAccessException e){
+            System.out.println("AccountTypeDaoDB :getAccountTypeByID() failed");
+            return null;
+        }
     }
 
     @Override
@@ -46,11 +51,11 @@ public class AccountTypeDB implements AccountTypeDao {
                 ADD_ACCOUNT_TYPE,
                 accountType.getType().toString(),
                 accountType.getMinimumStartDeposit(),
-                accountType.getInterestRate(),
-                accountType.getCompoundRate()
+                accountType.getCompoundRate() == null ? null : accountType.getInterestRate(),
+                accountType.getCompoundRate() == null ? null : accountType.getCompoundRate().toString()
         );
 
-        int newID = jdbcTemplate.update("SELECT LAST_INSERT_ID()", Integer.class);
+        int newID = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         accountType.setAccountTypeID(newID);
 
         return accountType;
@@ -67,7 +72,8 @@ public class AccountTypeDB implements AccountTypeDao {
                 accountType.getType().toString(),
                 accountType.getMinimumStartDeposit(),
                 accountType.getInterestRate(),
-                accountType.getCompoundRate()
+                accountType.getCompoundRate().toString(),
+                accountType.getAccountTypeID()
         );
     }
 
@@ -78,15 +84,15 @@ public class AccountTypeDB implements AccountTypeDao {
                 "JOIN AccountBridge ba ON ba.accountID = a.accountID " +
                 "JOIN BankAccountType bat ON bat.bankID = ba.bankID AND bat.accountTypeID = ba.accountTypeID " +
                 "JOIN AccountType at ON at.accountTypeID = bat.accountTypeID " +
-                "WHERE at.accountTypeID = ?";
+                "WHERE at.accountTypeID = ?;";
 
-        List<Account> accounts = jdbcTemplate.query(GET_ACCOUNT_BY_ACCOUNT_TYPE, new AccountMapper());
+        List<Account> accounts = jdbcTemplate.query(GET_ACCOUNT_BY_ACCOUNT_TYPE, new AccountMapper(), accountTypeID);
 
         // For all the accounts, set the status to closed
         final String UPDATE_ACCOUNTS_TO_CLOSED = "UPDATE Account SET "
-                + "depositBalance = 0, "
-                + "interestBalance = 0, "
-                + "totalBalance = 0, "
+                + "depositBalance = 0.00, "
+                + "interestBalance = 0.00, "
+                + "totalBalance = 0.00, "
                 + "closingDate = ?, "
                 + "status = 'CLOSED', "
                 + "closingReason = ? "
@@ -151,7 +157,7 @@ public class AccountTypeDB implements AccountTypeDao {
 
             return jdbcTemplate.queryForObject(GET_ACCOUNT_TYPE_BY_ACCOUNT, new AccountTypeMapper(), account.getAccountID());
         } catch (DataAccessException e) {
-            System.out.println("AccountTypeDB: getAccountTypeByAccount() failed.");
+            System.out.println("AccountTypeDaoDB: getAccountTypeByAccount() failed.");
             return null;
 
         }

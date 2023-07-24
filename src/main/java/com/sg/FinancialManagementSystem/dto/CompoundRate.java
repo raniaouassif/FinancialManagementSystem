@@ -7,5 +7,6 @@ public enum CompoundRate {
     ANNUALLY,
     SEMI_ANNUALLY,
     MONTHLY,
-    QUARTERLY
+    QUARTERLY,
+    NA
 }
