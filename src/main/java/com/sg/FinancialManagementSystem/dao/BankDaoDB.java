@@ -53,8 +53,6 @@ public class BankDaoDB implements BankDao {
         return bank;
     }
 
-
-
     @Override
     public void updateBank(Bank bank) {
         final String UPDATE_BANK = "UPDATE Bank SET name = ?, location = ? WHERE bankID = ?";
@@ -74,6 +72,7 @@ public class BankDaoDB implements BankDao {
     @Override
     public void deleteBankByID(int bankID) {
         String bankName = getBankByID(bankID).getName();
+
         //First retrieve the Account Transactions linked to the bank
         List<Account> accounts = getAccountsByBankID(bankID);
 
@@ -133,7 +132,7 @@ public class BankDaoDB implements BankDao {
                     + "JOIN BankAccountType bat ON bat.bankID = b.bankID "
                     + "JOIN BankAccount ba ON ba.bankID = bat.bankID AND ba.accountTypeID = bat.accountTypeID "
                     + "JOIN Account a ON a.accountID = ba.accountID "
-                    + "WHERE Account a.accountID = ?";
+                    + "WHERE a.accountID = ?";
             Bank retrievedBank = jdbcTemplate.queryForObject(
                     GET_BANK_BY_ACCOUNT,
                     new BankMapper(),
