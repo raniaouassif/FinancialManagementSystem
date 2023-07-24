@@ -1,12 +1,9 @@
 package com.sg.FinancialManagementSystem.dao;
 
-import com.sg.FinancialManagementSystem.dao.TransactionDao;
 import com.sg.FinancialManagementSystem.dao.mappers.AccountMapper;
 import com.sg.FinancialManagementSystem.dao.mappers.TransactionMapper;
 import com.sg.FinancialManagementSystem.dto.Account;
-import com.sg.FinancialManagementSystem.dto.Customer;
 import com.sg.FinancialManagementSystem.dto.Transaction;
-import com.sg.FinancialManagementSystem.dto.TransactionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -121,6 +118,7 @@ public class TransactionDaoDB implements TransactionDao {
                         transaction.getTransactionID(),
                         accountFromID,
                         accountToID);
+
             } else if(transaction.getAccounts().size() == 1) { //DEPOSIT - WITHDRAW FROM SAME ACCOUNT
                 int accountID = transaction.getAccounts().get(0).getAccountID();
 
