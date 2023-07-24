@@ -89,7 +89,7 @@ INSERT INTO BankAccountType (bankID, accountTypeID ) VALUES
     (6,8),
     (8,7);
 
-INSERT INTO BankAccount (bankID, accountTypeID, accountID) VALUES 
+INSERT INTO AccountBridge (bankID, accountTypeID, accountID) VALUES 
 	(1,1,1),
     (2,2,2),
     (4,5,3),

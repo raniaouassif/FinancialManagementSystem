@@ -76,21 +76,19 @@ CREATE TABLE BankAccountType (
 );
 
 -- BRIDGE BETWEEN Account AND BankAccountType
-CREATE TABLE BankAccount (
+CREATE TABLE AccountBridge (
 	accountID INT, 
     bankID INT, 
     accountTypeID INT, 
-    CONSTRAINT pk_BankAccount
+    CONSTRAINT pk_AccountBridge
 		PRIMARY KEY(accountID, bankID, accountTypeID),
-	CONSTRAINT fk_pk_BankAccount_Account
+	CONSTRAINT fk_pk_AccountBridge_Account
 		FOREIGN KEY (accountID)
         REFERENCES Account(accountID),
-	CONSTRAINT fk_pk_BankAccount_BankAccountType
+	CONSTRAINT fk_pk_AccountBridge_BankAccountType
 		FOREIGN KEY (bankID, accountTypeID)
         REFERENCES BankAccountType(bankID, accountTypeID)
 );
-
-
 -- BRIDGE TABLE BETWEEN STOCK & EXCHANGE ORGANIZATION
 CREATE TABLE StockExchangeOrganization ( 
 	stockID INT, 
