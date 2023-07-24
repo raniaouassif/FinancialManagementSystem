@@ -44,7 +44,7 @@ public class AccountTypeDB implements AccountTypeDao {
 
         jdbcTemplate.update(
                 ADD_ACCOUNT_TYPE,
-                accountType.getType(),
+                accountType.getType().toString(),
                 accountType.getMinimumStartDeposit(),
                 accountType.getInterestRate(),
                 accountType.getCompoundRate()
@@ -64,7 +64,7 @@ public class AccountTypeDB implements AccountTypeDao {
 
         jdbcTemplate.update(
                 UPDATE_ACCOUNT_TYPE,
-                accountType.getType(),
+                accountType.getType().toString(),
                 accountType.getMinimumStartDeposit(),
                 accountType.getInterestRate(),
                 accountType.getCompoundRate()

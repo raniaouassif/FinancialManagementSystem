@@ -33,7 +33,7 @@ public class AccountDaoDB implements AccountDao{
             // Set the account Type
             // Set the bank
             // Set the list of transactions
-
+            return null;
         }catch (DataAccessException e){
             System.out.println("AccountDaoDB: getAccountByID() failed.");
             return null;
