@@ -2,7 +2,6 @@ package com.sg.FinancialManagementSystem.dao;
 
 import com.sg.FinancialManagementSystem.dao.mappers.AccountMapper;
 import com.sg.FinancialManagementSystem.dao.mappers.AccountTypeMapper;
-import com.sg.FinancialManagementSystem.dao.mappers.BankMapper;
 import com.sg.FinancialManagementSystem.dto.Account;
 import com.sg.FinancialManagementSystem.dto.AccountType;
 import com.sg.FinancialManagementSystem.dto.Bank;
@@ -12,7 +11,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.net.Proxy;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

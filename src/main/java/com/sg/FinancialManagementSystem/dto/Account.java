@@ -2,7 +2,6 @@ package com.sg.FinancialManagementSystem.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,9 +16,10 @@ public class Account {
     private AccountStatus status;
     private LocalDate closingDate;
     private String closingReason;
+    private  Bank bank;
     private AccountType accountType;
     private Customer customer;
-    private List<AccountTransaction> accountTransactions;
+    private List<Transaction> transactions;
 
     public int getAccountID() {
         return accountID;
@@ -69,12 +69,12 @@ public class Account {
         this.accountType = accountType;
     }
 
-    public List<AccountTransaction> getAccountTransactions() {
-        return accountTransactions;
+    public List<Transaction> getAccountTransactions() {
+        return transactions;
     }
 
-    public void setAccountTransactions(List<AccountTransaction> accountTransactions) {
-        this.accountTransactions = accountTransactions;
+    public void setAccountTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
 
 
@@ -108,5 +108,13 @@ public class Account {
 
     public void setClosingReason(String closingReason) {
         this.closingReason = closingReason;
+    }
+
+    public Bank getBank() {
+        return bank;
+    }
+
+    public void setBank(Bank bank) {
+        this.bank = bank;
     }
 }

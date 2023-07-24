@@ -2,26 +2,25 @@ package com.sg.FinancialManagementSystem.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author raniaouassif on 2023-07-23
  */
-public class AccountTransaction {
-    private int accountTransactionID;
+public class Transaction {
+    private int transactionID;
     private LocalDateTime dateTime;
-    private AccountTransactionType transactionType;
+    private TransactionType transactionType;
     private BigDecimal amount;
+    private List<Account> accounts;
 
-    private Account account;
-
-    public int getAccountTransactionID() {
-        return accountTransactionID;
+    public int getTransactionID() {
+        return transactionID;
     }
 
-    public void setAccountTransactionID(int accountTransactionID) {
-        this.accountTransactionID = accountTransactionID;
+    public void setTransactionID(int transactionID) {
+        this.transactionID = transactionID;
     }
-
     public LocalDateTime getDateTime() {
         return dateTime;
     }
@@ -30,11 +29,11 @@ public class AccountTransaction {
         this.dateTime = dateTime;
     }
 
-    public AccountTransactionType getTransactionType() {
+    public TransactionType getTransactionType() {
         return transactionType;
     }
 
-    public void setTransactionType(AccountTransactionType transactionType) {
+    public void setTransactionType(TransactionType transactionType) {
         this.transactionType = transactionType;
     }
 
@@ -46,11 +45,12 @@ public class AccountTransaction {
         this.amount = amount;
     }
 
-    public Account getAccount() {
-        return account;
+
+    public List<Account> getAccounts() {
+        return accounts;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
     }
 }
