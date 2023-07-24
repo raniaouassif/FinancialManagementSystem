@@ -1,6 +1,7 @@
 package com.sg.FinancialManagementSystem.dto;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author raniaouassif on 2023-07-23
@@ -59,5 +60,18 @@ public class Customer {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Customer)) return false;
+        Customer customer = (Customer) o;
+        return getCustomerID() == customer.getCustomerID() && Objects.equals(getFirstName(), customer.getFirstName()) && Objects.equals(getLastName(), customer.getLastName()) && Objects.equals(getPhoneNumber(), customer.getPhoneNumber()) && Objects.equals(getAccounts(), customer.getAccounts()) && Objects.equals(getPortfolio(), customer.getPortfolio());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCustomerID(), getFirstName(), getLastName(), getPhoneNumber(), getAccounts(), getPortfolio());
     }
 }

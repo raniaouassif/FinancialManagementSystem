@@ -43,9 +43,6 @@ SELECT a.* FROM Account a
 JOIN Customer c ON c.customerID = a.customerID 
 WHERE a.status = 'OPEN' AND c.customerID = 1;
 
-
-
-
 -- ------------------------------------------------------------------------------------------------------
 -- Bank
 -- GET BANKS BY CUSTOMER
