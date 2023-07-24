@@ -1,6 +1,7 @@
 package com.sg.FinancialManagementSystem.dao;
 
 import com.sg.FinancialManagementSystem.dto.Account;
+import com.sg.FinancialManagementSystem.dto.Customer;
 import com.sg.FinancialManagementSystem.dto.Transaction;
 
 import java.util.List;
@@ -15,10 +16,9 @@ public interface TransactionDao {
 
     Transaction addTransaction(Transaction transaction);
 
-    void updateTransaction(Transaction transaction);
-
-    void deleteTransactionByID(int transactionID);
+    // NO UPDATE OR DELETE METHODS
 
     List<Transaction> getTransactionsByAccount(Account account);
+
 
 }

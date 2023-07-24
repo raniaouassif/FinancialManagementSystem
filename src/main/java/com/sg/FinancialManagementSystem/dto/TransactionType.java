@@ -5,5 +5,6 @@ package com.sg.FinancialManagementSystem.dto;
  */
 public enum TransactionType {
     DEPOSIT,
-    WITHDRAW
+    WITHDRAW,
+    TRANSFER
 }
