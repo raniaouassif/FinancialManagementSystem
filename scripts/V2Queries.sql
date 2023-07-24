@@ -25,4 +25,30 @@ JOIN Bank b ON b.bankID = bat.bankID
 WHERE b.bankID = 1;
 
 -- GET BANK BY BANK ACCOUNT 
-SELECT b.* FROM Bank b 
+SELECT
+	b.*, a.accountID
+FROM Bank b
+JOIN BankAccountType bat ON bat.bankID = b.bankID 
+JOIN BankAccount ba ON ba.bankID = bat.bankID AND ba.accountTypeID = bat.accountTypeID 
+JOIN Account a ON a.accountID = ba.accountID
+WHERE a.accountID = 3;
+
+-- GET CUSTOMERS BY BANK 
+SELECT 
+	c.*
+FROM Customer c
+JOIN Account a ON a.customerID = c.customerID
+JOIN BankAccount ba ON ba.accountID = a.accountID
+JOIN BankAccountType bat ON bat.bankID = ba.bankID AND bat.accountTypeID = ba.accountTypeID
+JOIN Bank b ON b.bankID = bat.bankID
+WHERE b.bankID = 4;
+
+-- GET CUSTOMERS BY ACCOUNT TYPE
+SELECT 
+	c.*
+FROM Customer c
+JOIN Account a ON a.customerID = c.customerID
+JOIN BankAccount ba ON ba.accountID = a.accountID
+JOIN BankAccountType bat ON bat.bankID = ba.bankID AND bat.accountTypeID = ba.accountTypeID
+JOIN AccountType at ON at.accountTypeID = bat.accountTypeID
+WHERE at.accountTypeID = 2;
