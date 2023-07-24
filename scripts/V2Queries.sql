@@ -76,3 +76,10 @@ JOIN BankAccount ba ON ba.accountTypeID = bat.accountTypeID AND ba.bankID = bat.
 JOIN Account a ON a.accountID = ba.accountID
 JOIN Customer c ON c.customerID = a.customerID
 WHERE c.customerID = 1;
+
+-- GET ACCOUNT TYPE BY ACCOUNT
+SELECT at.* FROM AccountType at 
+JOIN BankAccountType bat ON bat.accountTypeID = at.accountTypeID 
+JOIN BankAccount ba ON ba.accountTypeID = bat.accountTypeID AND ba.bankID = bat.bankID 
+JOIN Account a ON a.accountID = ba.accountID
+WHERE a.accountID = 3;

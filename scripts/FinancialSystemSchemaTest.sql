@@ -114,15 +114,16 @@ CREATE TABLE Transaction (
 
 -- BRIDGE BETWEEN ACCOUNT AND TRANSACTION
 CREATE TABLE AccountTransaction (
-	accountID INT, 
-    transactionID INT,
+    accountTransactionID INT AUTO_INCREMENT,
+    accountID INT NOT NULL, 
+    transactionID INT NOT NULL,
     CONSTRAINT pk_AccountTransaction
-		PRIMARY KEY (accountID, transactionID),
-	CONSTRAINT fk_pk_AccountTransaction_Account
-		FOREIGN KEY (accountID)
+        PRIMARY KEY (accountTransactionID, accountID, transactionID),
+    CONSTRAINT fk_pk_AccountTransaction_Account
+        FOREIGN KEY (accountID)
         REFERENCES Account(accountID),
-	CONSTRAINT fk_pk_AccountTransaction_Transaction
-		FOREIGN KEY (transactionID)
+    CONSTRAINT fk_pk_AccountTransaction_Transaction
+        FOREIGN KEY (transactionID)
         REFERENCES Transaction(transactionID)
 );
 
