@@ -7,8 +7,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,6 @@ public class AccountDaoDB implements AccountDao{
 
             return account;
         }catch (DataAccessException e){
-            System.out.println("AccountDaoDB: getAccountByID() failed.");
             return null;
         }
     }
@@ -56,11 +56,19 @@ public class AccountDaoDB implements AccountDao{
 
         jdbcTemplate.update(ADD_ACCOUNT,
                 account.getOpeningDate(),
-                account.getDepositBalance(),
+                new BigDecimal(0).setScale(2, RoundingMode.HALF_UP), // the starting deposit balance is $0.00
                 AccountStatus.OPEN.toString(), // SET THE STATUS TO OPEN
                 account.getCustomer().getCustomerID());
 
-        int newID = jdbcTemplate.update("SELECT LAST_INSERT_ID()", Integer.class);
+        //Set the account ID
+        int newID = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
+        account.setAccountID(newID);
+        //Some fields are auto-generated
+        account.setStatus(AccountStatus.OPEN);
+        account.setDepositBalance(new BigDecimal(0).setScale(2, RoundingMode.HALF_UP));
+
+        //Insert into the Account bridge table
+        insertAccountBridge(account);
 
         return account;
     }
@@ -77,7 +85,8 @@ public class AccountDaoDB implements AccountDao{
                 account.getTotalBalance(),
                 account.getStatus().toString(),
                 LocalDate.now(),
-                account.getClosingReason()
+                account.getClosingReason(),
+                account.getAccountID()
                 );
 
     }
@@ -151,7 +160,6 @@ public class AccountDaoDB implements AccountDao{
 
             return retrievedCustomer;
         } catch (DataAccessException e) {
-            System.out.println("AccountDaoDB : getCustomerByAccount() failed");
             return null;
         }
     }
@@ -168,7 +176,6 @@ public class AccountDaoDB implements AccountDao{
 
             return jdbcTemplate.queryForObject(GET_BANK_BY_ACCOUNT, new BankMapper(), account.getAccountID());
         } catch (DataAccessException e) {
-            System.out.println("AccountDaoDB: getBankByAccount() failed.");
             return null;
         }
     }
@@ -190,7 +197,6 @@ public class AccountDaoDB implements AccountDao{
             // TODO : ANYTHING TO SET ?
             return retrievedAccountType;
         } catch (DataAccessException e) {
-            System.out.println("AccountDaoDB : getAccountTypeByAccount() failed");
             return null;
         }
     }
@@ -215,14 +221,10 @@ public class AccountDaoDB implements AccountDao{
 
     //Set customer, account type, bank and list of transactions for a given account
     private void setCustomerTypeAndBankAndTransactionsForAccount(Account account) {
-        // Set the customer
-        account.setCustomer(getCustomerByAccount(account));
-        // Set the account Type
-        account.setAccountType(getAccountTypeByAccount(account));
-        // Set the bank
-        account.setBank(getBankByAccount(account));
-        // Set the list of transactions
-        account.setAccountTransactions(getAccountTransactionsByAccount(account));
+        account.setCustomer(getCustomerByAccount(account)); // Set the customer
+        account.setAccountType(getAccountTypeByAccount(account)); // Set the account Type
+        account.setBank(getBankByAccount(account));  // Set the bank
+        account.setAccountTransactions(getAccountTransactionsByAccount(account)); // Set the list of transactions
     }
 
     //Set  customer, account type, bank and list of transactions for a list of accounts
@@ -231,6 +233,15 @@ public class AccountDaoDB implements AccountDao{
             setCustomerTypeAndBankAndTransactionsForAccount(account);
         }
     }
+
+    //Insert into the Account bridge
+    private void insertAccountBridge(Account account) {
+        final String INSERT_ACCOUNT_BRIDGE = "INSERT INTO AccountBridge (accountID, bankID, accountTypeID) VALUES (?,?,?)";
+        jdbcTemplate.update(INSERT_ACCOUNT_BRIDGE, account.getAccountID(), account.getBank().getBankID(), account.getAccountType().getAccountTypeID());
+    }
+    
+    
+    
 
 
 
