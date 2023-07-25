@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +33,11 @@ class AccountDaoDBTest {
     @Autowired
     CustomerDao customerDao;
 
+    @Autowired
+    TransactionDao transactionDao;
+
+    LocalDateTime transactionDateTime = LocalDateTime.now().withNano(0);
+
     @BeforeEach
     void setUp() {
         // Delete all account types
@@ -42,6 +49,12 @@ class AccountDaoDBTest {
         List<Bank> banks = bankDao.getAllBanks();
         for(Bank bank : banks) {
             bankDao.deleteBankByID(bank.getBankID());
+        }
+
+        //Delete all transactions
+        List<Transaction>  transactions = transactionDao.getAllTransactions();
+        for(Transaction transaction : transactions) {
+            transactionDao.deleteTransactionByID(transaction.getTransactionID());
         }
 
         // Delete all accounts
@@ -97,6 +110,23 @@ class AccountDaoDBTest {
         //Call the add method from DAO
         account = accountDao.addAccount(account);
 
+        //Create a few transactions
+        Transaction transaction = new Transaction();
+        transaction.setTo(account);
+        transaction.setFrom(account);
+        transaction.setTransactionType(TransactionType.DEPOSIT);
+        transaction.setAmount(new BigDecimal(5000.00).setScale(2, RoundingMode.HALF_UP));
+        transaction.setDateTime(transactionDateTime);
+        transaction = transactionDao.addTransaction(transaction);
+
+        Transaction transaction2 = new Transaction();
+        transaction2.setTo(account);
+        transaction2.setFrom(account);
+        transaction2.setTransactionType(TransactionType.WITHDRAW);
+        transaction2.setAmount(new BigDecimal(100.00).setScale(2, RoundingMode.HALF_UP));
+        transaction2.setDateTime(transactionDateTime.minusMonths(1));
+        transaction2 = transactionDao.addTransaction(transaction2);
+
         //Call the get method from DAO
         Account accountFromDao = accountDao.getAccountByID(account.getAccountID());
 
@@ -110,6 +140,8 @@ class AccountDaoDBTest {
         assertEquals(account.getCustomer().getCustomerID(), accountFromDao.getCustomer().getCustomerID()); //customerID
         assertEquals(account.getBank().getBankID(), accountFromDao.getBank().getBankID()); //bankID
         assertEquals(account.getAccountType().getAccountTypeID(),  accountFromDao.getAccountType().getAccountTypeID()); //accountTypeID
+        assertEquals(2, accountFromDao.getAccountTransactions().size()); //accountTransactions
+
     }
 
     @Test
