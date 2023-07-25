@@ -128,6 +128,9 @@ SELECT * FROM Portfolio WHERE customerID = 2;
 -- GET STOCK BY COMPANY
 SELECT * FROM Stock WHERE companyID = 1;
 
+-- GET STOCKS BY EXCHANGE ORGANIZATION 
+SELECT s.* FROM Stock s
+JOIN StockExchangeOrganization;
 -- ------------------------------------------------------------------------------------------------------
 -- Transaction
 -- GET TRANSACTIONS BY ACCOUNT 

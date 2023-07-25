@@ -13,17 +13,17 @@ INSERT INTO Bank (name, location) VALUES
 	('Wells Fargo & Co.', 'United States');
 
 
-INSERT INTO Company (name, industry, status) VALUES 
-	('Amazon', 'Multinational Technology Company', 'PUBLIC'), 
-	('Apple Inc.', 'Technology', 'PUBLIC'),
-    ('Microsoft Corporation', 'Technology', 'PUBLIC'),
-    ('Saudi Aramco', 'Energy', 'PUBLIC'),
-    ('Alphabet Inc. (Google)', 'Technology', 'PUBLIC'),
-    ('Visa Inc.', 'Financial Services', 'PUBLIC'),
-	('Nike', 'Apparel and Footwear', 'PUBLIC'),
-    ('Deloitte', 'Professional Services', 'PRIVATE'),
-	('Cargill', 'Agriculture', 'PRIVATE'),
-	('Mars, Incorporated', 'Food and Beverage', 'PRIVATE');
+INSERT INTO Company (name, industry, status, revenue, profit, grossMargin, cashFlow ) VALUES 
+	('Amazon', 'Multinational Technology Company', 'PUBLIC', 514.22, 225.152, 41.8, 25.18), 
+	('Apple Inc.', 'Technology', 'PUBLIC', 365.98, 74.46, 39.7, 81.43),
+    ('Microsoft Corporation', 'Technology', 'PUBLIC', 168.09, 45.03, 67.0, 60.67),
+    ('Saudi Aramco', 'Energy', 'PUBLIC', 229.67, 49.89, 65.0, 47.53),
+    ('Alphabet Inc. (Google)', 'Technology', 'PUBLIC', 182.53, 40.27, 56.7, 52.11),
+    ('Visa Inc.', 'Financial Services', 'PUBLIC', 23.02, 12.08, 67.0, 14.75),
+	('Nike', 'Apparel and Footwear', 'PUBLIC', 44.54, 2.54, 43.8, 4.86),
+    ('Deloitte', 'Professional Services', 'PRIVATE', 47.6, 2.03, 28.4, 3.95),
+	('Cargill', 'Agriculture', 'PRIVATE', 114.7, 3.1, 11.4, 3.57),
+	('Mars, Incorporated', 'Food and Beverage', 'PRIVATE', 94.0, 2.6, 40.8, 1.02);
 
 INSERT INTO ExchangeOrganization (tickerCode, name) VALUES 
     ('NYSE', 'New York Stock Exchange'),
@@ -99,18 +99,18 @@ INSERT INTO AccountBridge (bankID, accountTypeID, accountID) VALUES
     (8,7,7);
 
 
-INSERT INTO StockExchangeOrganization (exchangeOrganizationID, stockID) VALUES 
+INSERT INTO StockExchangeOrganization (stockID, exchangeOrganizationID) VALUES 
     (1, 1),
-    (1, 7),
+    (1, 5),
     (2, 2),
-    (2, 6),
+	(2, 4),
     (2, 5),
-    (2, 4),
-    (3, 3),
+    (2, 6),
     (3, 1),
+    (3, 5),
     (4, 4),
     (5, 5),
-    (6, 6),
+    (6, 7),
     (7, 7);
 
 INSERT INTO Portfolio (customerID, balance) VALUES 
@@ -120,16 +120,33 @@ INSERT INTO Portfolio (customerID, balance) VALUES
     (4, 400000.00),
     (5, 10000.50);
     
-INSERT INTO StockPortfolio(portfolioID, stockID, numberOfShares, sharesValue) VALUES 
-    (1, 2, 5, 736.85),    -- Portfolio 1: AAPL (Apple Inc.)
-    (1, 4, 10, 184.50),   -- Portfolio 1: ARAMCO (Saudi Aramco)
-    (2, 3, 15, 4345.65),  -- Portfolio 2: MSFT (Microsoft Corporation)
-    (2, 7, 20, 3118.00),  -- Portfolio 2: NKE (Nike Inc.)
-    (3, 1, 8, 27760.96),  -- Portfolio 3: AMZN (Amazon.com Inc.)
-    (4, 5, 12, 33723.00), -- Portfolio 4: GOOGL (Alphabet Inc.)
-    (5, 6, 30, 7044.00);  -- Portfolio 5: V (Visa Inc.)
+INSERT INTO StockTransaction (dateTime, transactionType, numberOfShares, transactionCost) VALUES 
+	("2022-09-01 10:00:00", "BUY", 4, 200.00),
+	("2023-01-01 11:00:00", "BUY", 4,500.00),
+	("2022-02-12 13:00:00", "BUY", 4,50.00),
+	("2012-05-16 01:00:00", "BUY", 4,150.00),
+	("2020-09-19 13:00:00", "SELL",4, 2000.00),
+	("2021-11-07 13:00:00", "SELL", 4,10000.00),
+	("2021-12-27 13:00:00", "SELL", 4,125.00),
+	("2022-12-21 10:30:00", "SELL", 2,1000.00),
+	("2022-11-30 04:00:00", "SELL", 4,25.00);
+    
+INSERT INTO PortfolioBridge (portfolioID, stockID, exchangeOrganizationID, stockTransactionID) VALUES 
+	(1,1, 1,1),
+    (1,2, 2,2),
+    (1,6, 7,2),
+    (2,2, 2,3),
+    (2,5, 5,4),
+    (2,7, 7,5),
+    (3,3, 1,6),
+    (3,2, 6,7),
+    (4,5, 5,8),
+    (4,1, 1,9),
+    (5,6, 7,1);
 
 
+    
+    
 INSERT INTO Transaction(dateTime, transactionType, amount) VALUES 
 	("2022-09-01 10:00:00", "DEPOSIT", 100.00),
 	("2023-01-01 11:00:00", "DEPOSIT", 200.00),

@@ -12,7 +12,11 @@ CREATE TABLE Company (
 	companyID INT AUTO_INCREMENT PRIMARY KEY, 
     name VARCHAR(50) NOT NULL,
     industry VARCHAR(50) NOT NULL,
-    status VARCHAR(50) NOT NULL -- public or private 
+    status VARCHAR(50) NOT NULL, -- public or private 
+    revenue DECIMAL(10, 2) NOT NULL,
+	profit DECIMAL(10, 2) NOT NULL,
+	grossMargin DECIMAL(10, 2) NOT NULL,
+    cashFlow DECIMAL(10, 2) NOT NULL
 );
 
 CREATE TABLE ExchangeOrganization (
@@ -135,29 +139,31 @@ CREATE TABLE Portfolio (
     FOREIGN KEY (customerID) REFERENCES Customer(customerID)
 );
 
--- BRIDGE TABLE BETWEEN PORTFOLIO AND STOCK 
-CREATE TABLE StockPortfolio (
-	portfolioID INT, 
-    stockID INT,
-	numberOfShares BIGINT NOT NULL,
-	sharesValue DECIMAL(10,2) NOT NULL, 
-    CONSTRAINT pk_StockPortfolio
-		PRIMARY KEY (portfolioID, stockID),
-	CONSTRAINT fk_pk_StockPortfolio_Portfolio
-		FOREIGN KEY (portfolioID)
-        REFERENCES Portfolio(portfolioID),
-	CONSTRAINT fk_pk_StockPortfolio_Stock
-		FOREIGN KEY (stockID)
-        REFERENCES Stock(stockID)
-);
-
-CREATE TABLE StockPortfolioTransaction (
-	stockPortfolioTransactionID INT AUTO_INCREMENT PRIMARY KEY, 
+CREATE TABLE StockTransaction (
+	stockTransactionID INT AUTO_INCREMENT PRIMARY KEY, 
 	dateTime DATETIME NOT NULL, 
     transactionType VARCHAR(20) NOT NULL, -- buy or sell
 	numberOfShares INT NOT NULL,
-    transactionCost DECIMAL(10,2) NOT NULL,
-	portfolioID INT NOT NULL,
-    stockID INT NOT NULL, 
-	FOREIGN KEY (portfolioID, stockID) REFERENCES StockPortfolio (portfolioID, stockID)
+    transactionCost DECIMAL(10,2) NOT NULL
 );
+
+-- BRIDGE TABLE BETWEEN PORTFOLIO AND STOCk EXCHANGE ORGANIZATION 
+CREATE TABLE PortfolioBridge (
+	portfolioID INT, 
+    stockID INT,
+    exchangeOrganizationID INT,
+    stockTransactionID INT, 
+    CONSTRAINT pk_StockPortfolio
+		PRIMARY KEY (portfolioID, stockID, exchangeOrganizationID, stockTransactionID),
+	CONSTRAINT fk_pk_StockPortfolio_Portfolio
+		FOREIGN KEY (portfolioID)
+        REFERENCES Portfolio(portfolioID),
+	CONSTRAINT fk_pk_StockPortfolio_StockExchangeOrganization
+		FOREIGN KEY (stockID, exchangeOrganizationID)
+        REFERENCES StockExchangeOrganization(stockID, exchangeOrganizationID),
+	CONSTRAINT fk_pk_StockPortfolio_StockTransaction
+		FOREIGN KEY (stockTransactionID)
+        REFERENCES StockTransaction(stockTransactionID)
+);
+
+
