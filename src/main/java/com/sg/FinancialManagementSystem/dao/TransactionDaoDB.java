@@ -9,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,18 +56,29 @@ public class TransactionDaoDB implements TransactionDao {
         final String ADD_TRANSACTION = "INSERT INTO Transaction (dateTime, transactionType, amount) VALUES (?,?,?)";
 
         jdbcTemplate.update(ADD_TRANSACTION,
-                LocalDateTime.now().withNano(0),
+                Timestamp.valueOf(transaction.getDateTime()),
                 transaction.getTransactionType().toString(),
                 transaction.getAmount());
 
         //Retrieve the generated transactionID and sets it in the transaction object
-        int newID = jdbcTemplate.update("SELECT LAST_INSERT_ID()", Integer.class);
+        int newID = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         transaction.setTransactionID(newID);
 
         //Insert the account transaction into the AccountTransaction bridge table
         insertAccountTransaction(transaction);
 
         return transaction;
+    }
+
+    @Override
+    public void deleteTransactionByID(int transactionID) {
+        //First delete from AccountTransaction bridge table
+        final String DELETE_ACCOUNT_TRANSACTION_BY_TRANSACTION_ID = "DELETE FROM AccountTransaction WHERE transactionID = ?";
+        jdbcTemplate.update(DELETE_ACCOUNT_TRANSACTION_BY_TRANSACTION_ID, transactionID);
+
+        //Then delete the transaction
+        final String DELETE_TRANSACTION_BY_ID = "DELETE FROM Transaction WHERE transactionID = ?";
+        jdbcTemplate.update(DELETE_TRANSACTION_BY_ID, transactionID);
     }
 
     @Override
@@ -128,7 +140,7 @@ public class TransactionDaoDB implements TransactionDao {
     private void insertAccountTransaction(Transaction transaction) {
         if(transaction.getFrom() != null && transaction.getTo() != null ) {
             final String INSERT_ACCOUNT_TRANSACTION = "INSERT INTO "
-                    + "AccountTransaction (transactionID, accoundID1, accoundID2) "
+                    + "AccountTransaction (transactionID, accountID1, accountID2) "
                     + "VALUES (?,?,?) ";
 
             if(transaction.getFrom().getAccountID() != transaction.getTo().getAccountID()) { // TRANSFER FROM AN ACCOUNT TO ANOTHER

@@ -23,6 +23,6 @@ public class TransactionMapper implements RowMapper<Transaction> {
         transaction.setDateTime(rs.getTimestamp("dateTime").toLocalDateTime());
         transaction.setTransactionType(TransactionType.valueOf(rs.getString("transactionType")));
         transaction.setAmount(rs.getBigDecimal("amount"));
-        return null;
+        return transaction;
     }
 }

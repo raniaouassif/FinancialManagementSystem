@@ -16,8 +16,7 @@ public interface TransactionDao {
 
     Transaction addTransaction(Transaction transaction);
 
-    // NO UPDATE OR DELETE METHODS
-
+    void deleteTransactionByID(int transactionID);
     List<Transaction> getTransactionsByAccount(Account account);
 
 
