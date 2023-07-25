@@ -1,6 +1,7 @@
 package com.sg.FinancialManagementSystem.dao;
 
 import com.sg.FinancialManagementSystem.dto.Company;
+import com.sg.FinancialManagementSystem.dto.CompanyStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,11 +27,11 @@ class CompanyDaoDBTest {
 
     @Test
     @DisplayName("Add And Get Company")
-    void getCompanyByID() {
+    void testGetAndAddCompanyByID() {
         Company company = new Company();
         company.setName("Amazon");
         company.setIndustry("Multinational Technology Company");
-        // Company should be set to private at first
+        company.setStatus(CompanyStatus.PUBLIC);
         company.setRevenue(new BigDecimal(514.22).setScale(3, RoundingMode.HALF_UP));
         company.setProfit(new BigDecimal(225.152).setScale(3, RoundingMode.HALF_UP));
         company.setGrossMargin(new BigDecimal(41.8).setScale(3, RoundingMode.HALF_UP));
@@ -40,8 +41,6 @@ class CompanyDaoDBTest {
         Company companyFromDao = companyDao.getCompanyByID(company.getCompanyID());
 
         assertEquals(company, companyFromDao);
-
-
     }
 
     @Test

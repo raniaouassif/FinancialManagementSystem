@@ -22,7 +22,7 @@ public class ExchangeOrganizationMapper implements RowMapper<ExchangeOrganizatio
         ExchangeOrganization eo = new ExchangeOrganization();
         eo.setExchangeOrganizationID(rs.getInt("exchangeOrganizationID"));
         eo.setName(rs.getString("name"));
-        eo.setTickerCode("tickerCode");
+        eo.setTickerCode(rs.getString("tickerCode"));
         return eo;
     }
 }

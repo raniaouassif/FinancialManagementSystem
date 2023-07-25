@@ -46,7 +46,7 @@ public class CompanyDaoDB implements CompanyDao {
         jdbcTemplate.update(ADD_COMPANY,
                 company.getName(),
                 company.getIndustry(),
-                CompanyStatus.PRIVATE.toString(), // A company starts as private
+                company.getStatus().toString(), // A company starts as private
                 company.getRevenue(),
                 company.getProfit(),
                 company.getGrossMargin(),
@@ -55,7 +55,6 @@ public class CompanyDaoDB implements CompanyDao {
 
         int newID = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         company.setCompanyID(newID);
-        company.setStatus(CompanyStatus.PRIVATE); // set the company to private
 
         return company;
     }
@@ -65,13 +64,12 @@ public class CompanyDaoDB implements CompanyDao {
         final String UPDATE_COMPANY = "UPDATE Company SET " +
                 "name = ?, industry = ?, status = ?, " +
                 "revenue = ?, profit = ?, grossMargin = ?, cashFlow = ? " +
-
                 "WHERE companyID = ?";
 
         jdbcTemplate.update(UPDATE_COMPANY,
                 company.getName(),
                 company.getIndustry(),
-                company.getStatus(),
+                company.getStatus().toString(),
                 company.getRevenue(),
                 company.getProfit(),
                 company.getGrossMargin(),
