@@ -13,10 +13,10 @@ CREATE TABLE Company (
     name VARCHAR(50) NOT NULL,
     industry VARCHAR(50) NOT NULL,
     status VARCHAR(50) NOT NULL, -- public or private 
-    revenue DECIMAL(10, 2) NOT NULL,
-	profit DECIMAL(10, 2) NOT NULL,
-	grossMargin DECIMAL(10, 2) NOT NULL,
-    cashFlow DECIMAL(10, 2) NOT NULL
+    revenue DECIMAL(10, 3) NOT NULL,
+	profit DECIMAL(10, 3) NOT NULL,
+	grossMargin DECIMAL(10, 3) NOT NULL,
+    cashFlow DECIMAL(10, 3) NOT NULL
 );
 
 CREATE TABLE ExchangeOrganization (
@@ -165,5 +165,3 @@ CREATE TABLE PortfolioBridge (
 		FOREIGN KEY (stockTransactionID)
         REFERENCES StockTransaction(stockTransactionID)
 );
-
-
