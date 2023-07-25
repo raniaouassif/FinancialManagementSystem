@@ -44,6 +44,29 @@ JOIN Customer c ON c.customerID = a.customerID
 WHERE a.status = 'OPEN' AND c.customerID = 1;
 
 -- ------------------------------------------------------------------------------------------------------
+-- AccountType 
+-- GET ACCOUNT TYPES BY BANK 
+SELECT at.* FROM AccountType at 
+JOIN BankAccountType bat ON bat.accountTypeID = at.accountTypeID 
+JOIN Bank b ON b.bankID = bat.bankID
+WHERE b.bankID = 1;
+
+-- GET ACCOUNT TYPES BY CUSTOMER 
+SELECT at.* FROM AccountType at 
+JOIN BankAccountType bat ON bat.accountTypeID = at.accountTypeID 
+JOIN AccountBridge ba ON ba.accountTypeID = bat.accountTypeID AND ba.bankID = bat.bankID
+JOIN Account a ON a.accountID = ba.accountID
+JOIN Customer c ON c.customerID = a.customerID
+WHERE c.customerID = 1;
+
+-- GET ACCOUNT TYPE BY ACCOUNT
+SELECT at.* FROM AccountType at 
+JOIN BankAccountType bat ON bat.accountTypeID = at.accountTypeID 
+JOIN AccountBridge ba ON ba.accountTypeID = bat.accountTypeID AND ba.bankID = bat.bankID
+JOIN Account a ON a.accountID = ba.accountID
+WHERE a.accountID = 3;
+
+-- ------------------------------------------------------------------------------------------------------
 -- Bank
 -- GET BANKS BY CUSTOMER
 SELECT b.* FROM Bank b 
@@ -61,7 +84,13 @@ JOIN BankAccountType bat ON bat.bankID = b.bankID
 JOIN AccountBridge ba ON ba.bankID = bat.bankID AND ba.accountTypeID = bat.accountTypeID
 JOIN Account a ON a.accountID = ba.accountID
 WHERE a.accountID = 1;
+-- ------------------------------------------------------------------------------------------------------
+-- Company 
+-- GET PUBLIC COMPANIES
+SELECT * FROM Company WHERE status='PUBLIC';
 
+-- GET PRIVATE COMPANIES
+SELECT * FROM Company WHERE status='PRIVATE';
 -- ------------------------------------------------------------------------------------------------------
 -- Customer 
 -- GET CUSTOMERS BY BANK 
@@ -88,29 +117,16 @@ WHERE at.accountTypeID = 2;
 SELECT c.* FROM Customer c 
 JOIN Account a ON a.customerID = c.customerID 
 WHERE a.accountID = 4;
+
 -- ------------------------------------------------------------------------------------------------------
--- AccountType 
--- GET ACCOUNT TYPES BY BANK 
-SELECT at.* FROM AccountType at 
-JOIN BankAccountType bat ON bat.accountTypeID = at.accountTypeID 
-JOIN Bank b ON b.bankID = bat.bankID
-WHERE b.bankID = 1;
+-- Portfolio
+-- GET PORTFOLIO BY CUSTOMER
+SELECT * FROM Portfolio WHERE customerID = 2;
 
--- GET ACCOUNT TYPES BY CUSTOMER 
-SELECT at.* FROM AccountType at 
-JOIN BankAccountType bat ON bat.accountTypeID = at.accountTypeID 
-JOIN AccountBridge ba ON ba.accountTypeID = bat.accountTypeID AND ba.bankID = bat.bankID
-JOIN Account a ON a.accountID = ba.accountID
-JOIN Customer c ON c.customerID = a.customerID
-WHERE c.customerID = 1;
-
--- GET ACCOUNT TYPE BY ACCOUNT
-SELECT at.* FROM AccountType at 
-JOIN BankAccountType bat ON bat.accountTypeID = at.accountTypeID 
-JOIN AccountBridge ba ON ba.accountTypeID = bat.accountTypeID AND ba.bankID = bat.bankID
-JOIN Account a ON a.accountID = ba.accountID
-WHERE a.accountID = 3;
-
+-- ------------------------------------------------------------------------------------------------------
+-- Stock
+-- GET STOCK BY COMPANY
+SELECT * FROM Stock WHERE companyID = 1;
 
 -- ------------------------------------------------------------------------------------------------------
 -- Transaction
@@ -119,3 +135,5 @@ SELECT t.* FROM Transaction t
 JOIN AccountTransaction at ON at.transactionID = t.transactionID 
 JOIN Account a ON a.accountID = at.accountID1 OR a.accountID = at.accountID2
 WHERE a.accountID = 1;
+
+

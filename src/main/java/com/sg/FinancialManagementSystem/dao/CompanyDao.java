@@ -18,4 +18,9 @@ public interface CompanyDao {
 
     void deleteCompanyByID(int companyID);
 
+    List<Company> getPublicCompanies();
+
+    List<Company> getPrivateCompanies();
+
+
 }

@@ -1,8 +1,10 @@
 package com.sg.FinancialManagementSystem.dao;
 
 import com.sg.FinancialManagementSystem.dao.mappers.CompanyMapper;
+import com.sg.FinancialManagementSystem.dao.mappers.StockMapper;
 import com.sg.FinancialManagementSystem.dto.Company;
 import com.sg.FinancialManagementSystem.dto.CompanyStatus;
+import com.sg.FinancialManagementSystem.dto.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,10 +23,10 @@ public class CompanyDaoDB implements CompanyDao {
     public Company getCompanyByID(int companyID) {
         try {
             final String GET_COMPANY_BY_ID = "SELECT * FROM Company WHERE companyID = ?";
-
-            return jdbcTemplate.queryForObject(GET_COMPANY_BY_ID, new CompanyMapper(), companyID);
+            Company company =  jdbcTemplate.queryForObject(GET_COMPANY_BY_ID, new CompanyMapper(), companyID);
+            company.setStock(getStockByCompany(companyID));
+            return company;
         } catch (DataAccessException e) {
-            System.out.println("CompanyDaoDB: getCompanyByID() failed.");
             return null;
         }
     }
@@ -32,7 +34,9 @@ public class CompanyDaoDB implements CompanyDao {
     @Override
     public List<Company> getAllCompanies() {
         final String GET_ALL_COMPANIES = "SELECT * FROM Company;";
-        return jdbcTemplate.query(GET_ALL_COMPANIES, new CompanyMapper());
+        List<Company> companyList =  jdbcTemplate.query(GET_ALL_COMPANIES, new CompanyMapper());
+        setStockByCompanyList(companyList);
+        return companyList;
     }
 
     @Override
@@ -42,10 +46,11 @@ public class CompanyDaoDB implements CompanyDao {
         jdbcTemplate.update(ADD_COMPANY,
                 company.getName(),
                 company.getIndustry(),
-                CompanyStatus.PRIVATE);
+                CompanyStatus.PRIVATE.toString()); // A company starts as private
 
         int newID = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         company.setCompanyID(newID);
+
         return company;
     }
 
@@ -62,5 +67,34 @@ public class CompanyDaoDB implements CompanyDao {
     @Override
     public void deleteCompanyByID(int companyID) {
         //todo
+    }
+
+    @Override
+    public List<Company> getPublicCompanies() {
+        final String GET_PUBLIC_COMPANIES = "SELECT * FROM Company WHERE status='PUBLIC';";
+        List<Company> companyList =  jdbcTemplate.query(GET_PUBLIC_COMPANIES, new CompanyMapper());
+        setStockByCompanyList(companyList);
+        return companyList;
+    }
+
+    @Override
+    public List<Company> getPrivateCompanies() {
+        final String GET_PRIVATE_COMPANIES = "SELECT * FROM Company WHERE status='PRIVATE';";
+        List<Company> companyList =  jdbcTemplate.query(GET_PRIVATE_COMPANIES, new CompanyMapper());
+        setStockByCompanyList(companyList);
+        return companyList;
+    }
+
+    //PRIVATE HELPER FUNCTIONS
+    private Stock getStockByCompany(int companyID) {
+        final String GET_STOCK_BY_COMPANY = "SELECT * FROM Stock WHERE companyID = ?";
+        //todo set ?
+        return jdbcTemplate.queryForObject(GET_STOCK_BY_COMPANY, new StockMapper(), companyID);
+    }
+
+    private void setStockByCompanyList(List<Company> companyList) {
+        for(Company company : companyList) {
+            company.setStock(getStockByCompany(company.getCompanyID()));
+        }
     }
 }
