@@ -20,6 +20,11 @@ public class CompanyMapper implements RowMapper<Company> {
         company.setName(rs.getString("name"));
         company.setIndustry(rs.getString("industry"));
         company.setStatus(CompanyStatus.valueOf(rs.getString("status")));
+        company.setRevenue(rs.getBigDecimal("revenue"));
+        company.setProfit(rs.getBigDecimal("profit"));
+        company.setGrossMargin(rs.getBigDecimal("grossMargin"));
+        company.setCashFlow(rs.getBigDecimal("cashFlow"));
+
         return company;
     }
 }

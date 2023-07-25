@@ -41,12 +41,19 @@ public class CompanyDaoDB implements CompanyDao {
 
     @Override
     public Company addCompany(Company company) {
-        final String ADD_COMPANY = "INSERT INTO Company (name, industry, status) VALUES (?,?,?);";
+        final String ADD_COMPANY = "INSERT INTO Company " +
+                "(name, industry, status, revenue, profit, grossMargin, cashFlow) " +
+                "VALUES (?,?,?,?,?,?,?);";
 
         jdbcTemplate.update(ADD_COMPANY,
                 company.getName(),
                 company.getIndustry(),
-                CompanyStatus.PRIVATE.toString()); // A company starts as private
+                CompanyStatus.PRIVATE.toString(), // A company starts as private
+                company.getRevenue(),
+                company.getProfit(),
+                company.getGrossMargin(),
+                company.getCashFlow()
+        );
 
         int newID = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         company.setCompanyID(newID);
@@ -56,12 +63,20 @@ public class CompanyDaoDB implements CompanyDao {
 
     @Override
     public void updateCompany(Company company) {
-        final String UPDATE_COMPANY = "UPDATE Company SET name = ?, industry = ?, status = ? WHERE companyID = ?";
+        final String UPDATE_COMPANY = "UPDATE Company SET " +
+                "name = ?, industry = ?, status = ?, " +
+                "revenue = ?, profit = ?, grossMargin = ?, cashFlow = ? " +
+
+                "WHERE companyID = ?";
 
         jdbcTemplate.update(UPDATE_COMPANY,
                 company.getName(),
                 company.getIndustry(),
-                company.getStatus());
+                company.getStatus(),
+                company.getRevenue(),
+                company.getProfit(),
+                company.getGrossMargin(),
+                company.getCashFlow());
     }
 
     @Override
