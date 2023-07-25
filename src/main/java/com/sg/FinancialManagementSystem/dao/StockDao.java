@@ -1,5 +1,6 @@
 package com.sg.FinancialManagementSystem.dao;
 
+import com.sg.FinancialManagementSystem.dto.Company;
 import com.sg.FinancialManagementSystem.dto.ExchangeOrganization;
 import com.sg.FinancialManagementSystem.dto.Portfolio;
 import com.sg.FinancialManagementSystem.dto.Stock;
@@ -20,7 +21,8 @@ public interface StockDao {
 
     void deleteStockByID(int stockID);
 
-    List<Stock> getStocksByExchangeOrganization(ExchangeOrganization exchangeOrganization);
+    Stock getStockByCompany(Company company);
+    List<Stock> getStocksByEo(ExchangeOrganization eo);
     List<Stock> getStocksByPortfolio(Portfolio portfolio);
 
 }

@@ -29,15 +29,16 @@ CREATE TABLE Customer (
 	customerID INT AUTO_INCREMENT PRIMARY KEY,
     firstName VARCHAR(50) NOT NULL, 
     lastName VARCHAR(50) NOT NULL,
-    phoneNumber CHAR(12) NOT NULL
+    phoneNumber CHAR(20) NOT NULL
 );
 
 CREATE TABLE Stock (
 	stockID INT AUTO_INCREMENT PRIMARY KEY, 
-    tickerCode VARCHAR(10) NOT NULL, 
+    tickerCode VARCHAR(20) NOT NULL, 
     sharePrice DECIMAL(10,2) NOT NULL,
     numberOfOutstandingShares BIGINT NOT NULL,
     marketCap DECIMAL(18, 2) NOT NULL,
+    status VARCHAR(20) NOT NULL, 
     dailyVolume INT, 
     companyID INT NOT NULL,
     FOREIGN KEY (companyID) REFERENCES Company(companyID)
@@ -54,7 +55,6 @@ CREATE TABLE AccountType (
 CREATE TABLE Account (
 	accountID INT AUTO_INCREMENT PRIMARY KEY, 
     openingDate DATE NOT NULL,
-
 	depositBalance DECIMAL(10,2) NOT NULL,
     interestBalance DECIMAL(10,2),
     totalBalance DECIMAL(10,2),
@@ -165,3 +165,5 @@ CREATE TABLE PortfolioBridge (
 		FOREIGN KEY (stockTransactionID)
         REFERENCES StockTransaction(stockTransactionID)
 );
+
+

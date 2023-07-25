@@ -91,6 +91,13 @@ SELECT * FROM Company WHERE status='PUBLIC';
 
 -- GET PRIVATE COMPANIES
 SELECT * FROM Company WHERE status='PRIVATE';
+
+-- GET COMPANY BY STOCK 
+SELECT * FROM Company where companyID = 1;
+
+SELECT  c.* FROM Company c 
+JOIN Stock s on s.companyID = c.companyID 
+WHERE s.stockID = 2;
 -- ------------------------------------------------------------------------------------------------------
 -- Customer 
 -- GET CUSTOMERS BY BANK 
@@ -133,7 +140,7 @@ SELECT * FROM Portfolio WHERE customerID = 2;
 -- ------------------------------------------------------------------------------------------------------
 -- Stock
 -- GET STOCK BY COMPANY
-SELECT * FROM Stock WHERE companyID = 1;
+SELECT * FROM Stock WHERE companyID = 2;
 
 -- GET STOCKS BY EXCHANGE ORGANIZATION 
 SELECT s.* FROM Stock s

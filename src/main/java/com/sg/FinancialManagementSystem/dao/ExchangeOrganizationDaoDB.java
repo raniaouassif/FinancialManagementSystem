@@ -73,7 +73,7 @@ public class ExchangeOrganizationDaoDB implements ExchangeOrganizationDao{
         final String DELETE_FROM_SEO_BY_EO = "DELETE FROM StockExchangeOrganization WHERE exchangeOrganizationID = ?";
         jdbcTemplate.update(DELETE_FROM_SEO_BY_EO, eoID);
 
-        //Then delete the stock
+        //Then delete the exchange organization
         final String DELETE_EO = "DELETE FROM ExchangeOrganization WHERE exchangeOrganizationID = ?";
         jdbcTemplate.update(DELETE_EO, eoID);
     }
