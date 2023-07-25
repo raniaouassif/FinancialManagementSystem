@@ -93,17 +93,6 @@ public class AccountDaoDB implements AccountDao{
 
     @Override
     public void deleteAccountByID(int accountID) {
-//        //Can't delete an account -> set to closed
-//        final String CLOSE_ACCOUNT = "UPDATE Account SET " +
-//                "depositBalance = 0.00, interestBalance = 0.00, totalBalance = 0.00, status = ?, closingDate = ?, closingReason = ? " +
-//                "WHERE accountID = ?";
-//
-//        jdbcTemplate.update(CLOSE_ACCOUNT,
-//                AccountStatus.CLOSED.toString(),
-//                LocalDate.now(),
-//                "Account deleted.",
-//                accountID);
-//
         // First delete from the AccountBridge table
         final String DELETE_ACCOUNT_BRIDGE_BY_ACCOUNT = "DELETE FROM AccountBridge WHERE accountID = ?";
         jdbcTemplate.update(DELETE_ACCOUNT_BRIDGE_BY_ACCOUNT, accountID);
@@ -239,10 +228,4 @@ public class AccountDaoDB implements AccountDao{
         final String INSERT_ACCOUNT_BRIDGE = "INSERT INTO AccountBridge (accountID, bankID, accountTypeID) VALUES (?,?,?)";
         jdbcTemplate.update(INSERT_ACCOUNT_BRIDGE, account.getAccountID(), account.getBank().getBankID(), account.getAccountType().getAccountTypeID());
     }
-    
-    
-    
-
-
-
 }
