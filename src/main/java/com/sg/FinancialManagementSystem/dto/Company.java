@@ -1,6 +1,7 @@
 package com.sg.FinancialManagementSystem.dto;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * @author raniaouassif on 2023-07-23
@@ -48,14 +49,6 @@ public class Company {
         this.status = status;
     }
 
-    public Stock getStock() {
-        return stock;
-    }
-
-    public void setStock(Stock stock) {
-        this.stock = stock;
-    }
-
     public BigDecimal getRevenue() {
         return revenue;
     }
@@ -86,5 +79,26 @@ public class Company {
 
     public void setCashFlow(BigDecimal cashFlow) {
         this.cashFlow = cashFlow;
+    }
+
+    public Stock getStock() {
+        return stock;
+    }
+
+    public void setStock(Stock stock) {
+        this.stock = stock;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Company)) return false;
+        Company company = (Company) o;
+        return getCompanyID() == company.getCompanyID() && Objects.equals(getName(), company.getName()) && Objects.equals(getIndustry(), company.getIndustry()) && getStatus() == company.getStatus() && Objects.equals(getRevenue(), company.getRevenue()) && Objects.equals(getProfit(), company.getProfit()) && Objects.equals(getGrossMargin(), company.getGrossMargin()) && Objects.equals(getCashFlow(), company.getCashFlow()) && Objects.equals(getStock(), company.getStock());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCompanyID(), getName(), getIndustry(), getStatus(), getRevenue(), getProfit(), getGrossMargin(), getCashFlow(), getStock());
     }
 }
