@@ -20,9 +20,6 @@ import java.util.List;
  */
 @Component
 public class StockMapper implements RowMapper<Stock> {
-
-    @Autowired
-    JdbcTemplate jdbcTemplate;
     @Override
     public Stock mapRow(ResultSet rs, int index) throws SQLException {
         Stock stock = new Stock();
@@ -31,27 +28,7 @@ public class StockMapper implements RowMapper<Stock> {
         stock.setSharePrice(rs.getBigDecimal("sharePrice"));
         stock.setNumberOfOutstandingShares(rs.getLong("numberOfOutstandingShares"));
         stock.setDailyVolume(rs.getLong("dailyVolume"));
-        stock.setCompany(getCompanyByStock(stock));
+//        stock.setCompany(getCompanyByStock(stock));
         return stock;
     }
-
-    private Company getCompanyByStock(Stock stock) {
-        try {
-            final String GET_COMPANY_BY_STOCK = "SELECT c.* FROM Company c "
-                    + "JOIN Stock s ON s.companyID = c.companyID "
-                    + "WHERE s.stockID = ?";
-
-            Company retrievedCompany = jdbcTemplate.queryForObject(
-                    GET_COMPANY_BY_STOCK,
-                    new CompanyMapper(),
-                    stock.getStockID()
-            );
-            return retrievedCompany;
-        } catch (DataAccessException e) {
-            return null;
-        }
-
-
-    }
-
 }
