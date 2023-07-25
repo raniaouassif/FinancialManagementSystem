@@ -117,6 +117,13 @@ WHERE at.accountTypeID = 2;
 SELECT c.* FROM Customer c 
 JOIN Account a ON a.customerID = c.customerID 
 WHERE a.accountID = 4;
+-- ------------------------------------------------------------------------------------------------------
+-- Exchange Organization
+-- GET EXCHANGE ORGANIZATIONS BY STOCK
+SELECT eo.* FROM ExchangeOrganization eo
+JOIN StockExchangeOrganization seo ON seo.exchangeOrganizationID = eo.exchangeOrganizationID
+JOIN Stock s ON s.stockID = seo.stockID
+WHERE s.stockID = 1;
 
 -- ------------------------------------------------------------------------------------------------------
 -- Portfolio
@@ -130,7 +137,9 @@ SELECT * FROM Stock WHERE companyID = 1;
 
 -- GET STOCKS BY EXCHANGE ORGANIZATION 
 SELECT s.* FROM Stock s
-JOIN StockExchangeOrganization;
+JOIN StockExchangeOrganization seo ON seo.stockID = s.stockID
+JOIN ExchangeOrganization eo ON eo.exchangeOrganizationID = seo.exchangeOrganizationID
+WHERE eo.exchangeOrganizationID = 1;
 -- ------------------------------------------------------------------------------------------------------
 -- Transaction
 -- GET TRANSACTIONS BY ACCOUNT 
