@@ -21,14 +21,12 @@ public class CompanyDaoDB implements CompanyDao {
     JdbcTemplate jdbcTemplate;
     @Override
     public Company getCompanyByID(int companyID) {
-        try {
+
             final String GET_COMPANY_BY_ID = "SELECT * FROM Company WHERE companyID = ?";
             Company company =  jdbcTemplate.queryForObject(GET_COMPANY_BY_ID, new CompanyMapper(), companyID);
             company.setStock(getStockByCompany(companyID));
             return company;
-        } catch (DataAccessException e) {
-            return null;
-        }
+
     }
 
     @Override
@@ -57,6 +55,7 @@ public class CompanyDaoDB implements CompanyDao {
 
         int newID = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         company.setCompanyID(newID);
+        company.setStatus(CompanyStatus.PRIVATE); // set the company to private
 
         return company;
     }
@@ -102,9 +101,13 @@ public class CompanyDaoDB implements CompanyDao {
 
     //PRIVATE HELPER FUNCTIONS
     private Stock getStockByCompany(int companyID) {
-        final String GET_STOCK_BY_COMPANY = "SELECT * FROM Stock WHERE companyID = ?";
-        //todo set ?
-        return jdbcTemplate.queryForObject(GET_STOCK_BY_COMPANY, new StockMapper(), companyID);
+        try {
+            final String GET_STOCK_BY_COMPANY = "SELECT * FROM Stock WHERE companyID = ?";
+            //todo set ?
+            return jdbcTemplate.queryForObject(GET_STOCK_BY_COMPANY, new StockMapper(), companyID);
+        } catch (DataAccessException e) {
+            return null;
+        }
     }
 
     private void setStockByCompanyList(List<Company> companyList) {
