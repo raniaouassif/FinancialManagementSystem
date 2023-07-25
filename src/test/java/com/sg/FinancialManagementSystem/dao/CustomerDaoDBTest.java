@@ -1,6 +1,7 @@
 package com.sg.FinancialManagementSystem.dao;
 
 import com.sg.FinancialManagementSystem.dto.Customer;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +27,8 @@ class CustomerDaoDBTest {
 
 
     @Test
-    void getCustomerByID() {
+    @DisplayName("Get And Add Customer")
+    void testGetAndAddCustomerByID() {
         Customer customer = new Customer();
         customer.setFirstName("Rania");
         customer.setLastName("Ouassif");
