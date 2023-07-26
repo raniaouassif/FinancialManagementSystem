@@ -1,10 +1,13 @@
 package com.sg.FinancialManagementSystem.dao;
 
+import com.sg.FinancialManagementSystem.dao.mappers.CompanyMapper;
 import com.sg.FinancialManagementSystem.dao.mappers.ExchangeOrganizationMapper;
 import com.sg.FinancialManagementSystem.dao.mappers.StockMapper;
+import com.sg.FinancialManagementSystem.dto.Company;
 import com.sg.FinancialManagementSystem.dto.ExchangeOrganization;
 import com.sg.FinancialManagementSystem.dto.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -20,13 +23,18 @@ public class ExchangeOrganizationDaoDB implements ExchangeOrganizationDao{
     JdbcTemplate jdbcTemplate;
     @Override
     public ExchangeOrganization getExchangeOrganizationByID(int exchangeOrganizationID) {
-        final String GET_EO_BY_ID = "SELECT * FROM ExchangeOrganization WHERE exchangeOrganizationID = ?;";
+        try {
+            final String GET_EO_BY_ID = "SELECT * FROM ExchangeOrganization WHERE exchangeOrganizationID = ?;";
 
-        ExchangeOrganization eo = jdbcTemplate.queryForObject(GET_EO_BY_ID, new ExchangeOrganizationMapper(), exchangeOrganizationID);
+            ExchangeOrganization eo = jdbcTemplate.queryForObject(GET_EO_BY_ID, new ExchangeOrganizationMapper(), exchangeOrganizationID);
 
-        eo.setStocks(getStocksByExchangeOrganization(eo));
+            eo.setStocks(getStocksByExchangeOrganization(eo));
 
-        return eo;
+            return eo;
+        } catch (DataAccessException e) {
+            return null;
+        }
+
     }
     @Override
     public List<ExchangeOrganization> getAllExchangeOrganizations() {
@@ -85,9 +93,8 @@ public class ExchangeOrganizationDaoDB implements ExchangeOrganizationDao{
                 "JOIN Stock s ON s.stockID = seo.stockID " +
                 "WHERE s.stockID = ?";
 
-        //TODO set anything for stocks ?
         List<ExchangeOrganization> eoList = jdbcTemplate.query(GET_EO_BY_STOCK, new ExchangeOrganizationMapper(), stock.getStockID());
-        return eoList;
+        return eoList.size() == 0 ? new ArrayList<>() : eoList;
     }
 
     //PRIVATE HELPER FUNCTIONS
@@ -98,6 +105,10 @@ public class ExchangeOrganizationDaoDB implements ExchangeOrganizationDao{
                 "WHERE eo.exchangeOrganizationID = ?";
 
         List<Stock> stocks = jdbcTemplate.query(GET_STOCKS_BY_EO, new StockMapper(), eo.getExchangeOrganizationID());
+        for(Stock stock : stocks ){
+            //Set the company and eos
+            setCompanyAndEOsForStock(stock);
+        }
         return stocks.size() == 0 ? new ArrayList<>() : stocks;
     };
 
@@ -118,5 +129,22 @@ public class ExchangeOrganizationDaoDB implements ExchangeOrganizationDao{
             }
         }
     }
+
+
+    // FROM STOCK HELPER
+    private void setCompanyAndEOsForStock(Stock stock) {
+        stock.setCompany(getCompanyByStock(stock));
+        stock.setExchangeOrganizations(getExchangeOrganizationsByStock(stock));
+    }
+
+    private Company getCompanyByStock(Stock stock) {
+        final String GET_COMPANY_BY_STOCK = "SELECT  c.* FROM Company c " +
+                "JOIN Stock s on s.companyID = c.companyID " +
+                "WHERE s.stockID = ?";
+
+        Company company = jdbcTemplate.queryForObject(GET_COMPANY_BY_STOCK, new CompanyMapper(), stock.getStockID());
+        return company;
+    }
+
 
 }

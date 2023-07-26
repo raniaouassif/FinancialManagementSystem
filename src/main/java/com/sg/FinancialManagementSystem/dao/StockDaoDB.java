@@ -62,6 +62,9 @@ public class StockDaoDB implements StockDao {
 
         int newID = jdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);
         stock.setStockID(newID);
+
+        // insertStockExchangeOrganization
+        insertStockExchangeOrganization(stock);
         return stock;
     }
 
@@ -80,7 +83,7 @@ public class StockDaoDB implements StockDao {
                 stock.getDailyVolume(),
                 stock.getCompany()); // Should not be able to modify company ID
 
-
+        //SHOULD NOT BE ABLE TO MODIFY EOs
     }
 
     @Override
@@ -121,8 +124,16 @@ public class StockDaoDB implements StockDao {
 
     @Override
     public List<Stock> getStocksByPortfolio(Portfolio portfolio) {
-        //TODO
-        return null;
+        final String GET_STOCKS_BY_PORTFOLIO = "SELECT DISTINCT s.* FROM Stock s " +
+                "JOIN StockExchangeOrganization seo ON seo.stockID = s.stockID " +
+                "JOIN PortfolioBridge pb ON pb.stockID = seo.stockID " +
+                "JOIN Portfolio p ON p.portfolioID = pb.portfolioID " +
+                "WHERE p.portfolioID = ?";
+
+        List<Stock> stocks = jdbcTemplate.query(GET_STOCKS_BY_PORTFOLIO, new StockMapper(), portfolio.getPortfolioID());
+        //Set the companies & eos for each stock
+        setCompanyAndEOsForStockList(stocks);
+        return stocks;
     }
 
 
@@ -157,6 +168,18 @@ public class StockDaoDB implements StockDao {
         Company company = jdbcTemplate.queryForObject(GET_COMPANY_BY_STOCK, new CompanyMapper(), stock.getStockID());
 
         return company;
+    }
+
+    private void insertStockExchangeOrganization(Stock stock) {
+        if(stock.getExchangeOrganizations() != null) {
+            final String INSERT_EO_STOCKS = "INSERT INTO "
+                    + "StockExchangeOrganization (exchangeOrganizationID, stockID) VALUES (?,?);";
+            int stockID = stock.getStockID();
+            for(ExchangeOrganization eo : stock.getExchangeOrganizations()) { // Insert for each organization exchange stock.
+                int eoID = eo.getExchangeOrganizationID();
+                jdbcTemplate.update(INSERT_EO_STOCKS, stockID,eoID);
+            }
+        }
     }
 
 }

@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @SpringBootTest
 class CustomerDaoDBTest {
-
+    //TODO : ADD PORTFOLIO ONCE DONE
     @Autowired
     CustomerDao customerDao;
 
