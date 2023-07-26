@@ -21,13 +21,19 @@ import static org.junit.jupiter.api.Assertions.*;
 class ExchangeOrganizationDaoDBTest {
     @Autowired
     CompanyDao companyDao;
-
     @Autowired
     StockDao stockDao;
     @Autowired
     ExchangeOrganizationDao eoDao;
+
+    @Autowired
+    AccountTypeDao accountTypeDao;
     @BeforeEach
     void setUp() {
+        List<AccountType> accountTypes = accountTypeDao.getAllAccountTypes();
+        for(AccountType accountType : accountTypes) {
+            accountTypeDao.deleteAccountTypeByID(accountType.getAccountTypeID());
+        }
         //Delete all exchange organizations
         List<ExchangeOrganization> exchangeOrganizationList = eoDao.getAllExchangeOrganizations();
         for(ExchangeOrganization eo : exchangeOrganizationList) {
@@ -80,7 +86,6 @@ class ExchangeOrganizationDaoDBTest {
         assertTrue(eoListFromDao.contains(eo));
         assertTrue(eoListFromDao.contains(eo2));
         assertTrue(eoListFromDao.contains(eo3));
-
 
     }
 
