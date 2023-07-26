@@ -138,6 +138,11 @@ JOIN StockExchangeOrganization seo ON seo.exchangeOrganizationID = eo.exchangeOr
 JOIN Stock s ON s.stockID = seo.stockID
 WHERE s.stockID = 1;
 
+-- GET EXCHANGE ORGANIZATION BY STOCK TRANSACTION
+SELECT eo.* FROM ExchangeOrganization eo 
+JOIN PortfolioBridge pb ON pb.exchangeOrganizationID = eo.exchangeOrganizationID 
+JOIN StockTransaction st ON st.stockTransactionID = pb.stockTransactionID
+WHERE st.stockTransactionID = 1;
 -- ------------------------------------------------------------------------------------------------------
 -- Portfolio
 -- GET PORTFOLIO BY CUSTOMER
@@ -148,6 +153,11 @@ SELECT p.* FROM Portfolio p
 JOIN PortfolioStock ps ON ps.portfolioID = p.portfolioID 
 WHERE ps.portfolioStockID = 1;
 
+-- GET PORTFOLIO BY STOCK TRANSACTION
+SELECT p.* FROM Portfolio p 
+JOIN PortfolioBridge pb ON pb.portfolioID = p.portfolioID 
+JOIN StockTransaction st ON st.stockTransactionID = pb.stockTransactionID
+WHERE st.stockTransactionID = 1;
 
 -- ------------------------------------------------------------------------------------------------------
 -- PORTFOLIO STOCK
@@ -176,6 +186,12 @@ SELECT s.* FROM Stock s
 JOIN PortfolioStock ps ON ps.stockID = s.stockID 
 WHERE ps.portfolioStockID = 2;
 
+-- GET STOCK BY STOCK TRANSACTION
+SELECT s.* FROM Stock s
+JOIN PortfolioBridge pb ON pb.stockID = s.stockID
+JOIN StockTransaction st ON st.stockTransactionID = pb.stockTransactionID
+WHERE st.stockTransactionID = 1;
+
 -- ------------------------------------------------------------------------------------------------------
 -- StockTransaction
 -- GET STOCK TRANSACTIONS BY PORTFOLIO
@@ -184,6 +200,30 @@ FROM StockTransaction st
 JOIN PortfolioBridge pb ON pb.stockTransactionID = st.stockTransactionID 
 JOIN Portfolio p ON p.portfolioID = pb.portfolioID
 WHERE p.portfolioID = 1;
+
+
+-- GET STOCK TRANSACTIONS BY PORTFOLIOSTOCK 
+SELECT st.* FROM stocktransaction st 
+JOIN PortfolioBridge pb ON st.stockTransactionID = pb.stockTransactionID
+JOIN PortfolioStock ps ON pb.portfolioID = ps.portfolioID AND pb.stockID = ps.stockID
+WHERE ps.portfoliostockID = 1 ; 
+
+SELECT * FROM financialmanagementsystem.portfoliobridge
+ORDER BY portfolioID DESC ; 
+SELECT * FROM financialmanagementsystem.stocktransaction; 
+  
+
+-- GET STOCK TRANSACTIONS BY STOCK 
+
+SELECT 
+    st.*, 
+    s.stockID
+FROM stocktransaction st 
+LEFT JOIN PortfolioBridge pb 
+ON st.stockTransactionID = pb.stockTransactionID
+LEFT JOIN Stock s
+ON pb.StockID = s.StockID
+WHERE s.stockID = 1 
 -- ------------------------------------------------------------------------------------------------------
 -- Transaction
 -- GET TRANSACTIONS BY ACCOUNT 
