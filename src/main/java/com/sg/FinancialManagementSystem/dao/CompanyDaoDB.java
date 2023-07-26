@@ -78,7 +78,28 @@ public class CompanyDaoDB implements CompanyDao {
 
     @Override
     public void deleteCompanyByID(int companyID) {
-        //todo
+        //First delete from the Portfolio Bridge
+        final String DELETE_PORTFOLIO_BRIDGE = "DELETE pb FROM PortfolioBridge pb " +
+                "JOIN StockExchangeOrganization seo ON seo.stockID = pb.stockID AND seo.exchangeOrganizationID = pb.exchangeOrganizationID " +
+                "JOIN Stock s ON seo.stockID = s.stockID " +
+                "JOIN Company c ON c.companyID = s.companyID " +
+                "WHERE c.companyID = ?";
+        jdbcTemplate.update(DELETE_PORTFOLIO_BRIDGE, companyID);
+
+        //Then delete from the PortfolioStock bridge
+        final String DELETE_PORTFOLIO_STOCK = "DELETE ps FROM PortfolioStock ps " +
+                "JOIN Stock s ON s.stockID = ps.stockID " +
+                "JOIN Company c ON c.companyID = s.companyID " +
+                "WHERE c.companyID = ?";
+        jdbcTemplate.update(DELETE_PORTFOLIO_STOCK, companyID);
+
+        //Then delete the Stock
+        final String DELETE_COMPANY_STOCK = "DELETE FROM Stock WHERE companyID = ?";
+        jdbcTemplate.update(DELETE_COMPANY_STOCK, companyID);
+
+        //Finally delete the company
+        final String DELETE_COMPANY = "DELETE FROM Company WHERE companyID = ?";
+        jdbcTemplate.update(DELETE_COMPANY, companyID);
     }
 
     @Override

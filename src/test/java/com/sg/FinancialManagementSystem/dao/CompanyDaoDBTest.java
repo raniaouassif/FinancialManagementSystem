@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,6 +24,10 @@ class CompanyDaoDBTest {
     @BeforeEach
     void setUp() {
         //Delete Companies
+        List<Company> companyList = companyDao.getAllCompanies();
+        for(Company company : companyList) {
+            companyDao.deleteCompanyByID(company.getCompanyID());
+        }
     }
 
     @Test
