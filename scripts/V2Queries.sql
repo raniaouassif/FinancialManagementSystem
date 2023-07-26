@@ -143,6 +143,16 @@ WHERE s.stockID = 1;
 -- GET PORTFOLIO BY CUSTOMER
 SELECT * FROM Portfolio WHERE customerID = 2;
 
+-- GET PORTFOLIO BY PORTFOLIOSTOCK
+SELECT p.* FROM Portfolio p 
+JOIN PortfolioStock ps ON ps.portfolioID = p.portfolioID 
+WHERE ps.portfolioStockID = 1;
+
+
+-- ------------------------------------------------------------------------------------------------------
+-- PORTFOLIO STOCK
+-- GET PORTFOLIO STOCKS BY PORTFOLIO 
+SELECT * FROM PortfolioStock WHERE portfolioID = 1;
 -- ------------------------------------------------------------------------------------------------------
 -- Stock
 -- GET STOCK BY COMPANY
@@ -153,6 +163,27 @@ SELECT s.* FROM Stock s
 JOIN StockExchangeOrganization seo ON seo.stockID = s.stockID
 JOIN ExchangeOrganization eo ON eo.exchangeOrganizationID = seo.exchangeOrganizationID
 WHERE eo.exchangeOrganizationID = 1;
+
+-- GET STOCKS BY PORTFOLIO
+SELECT DISTINCT s.* FROM Stock s 
+JOIN StockExchangeOrganization seo ON seo.stockID = s.stockID 
+JOIN PortfolioBridge pb ON pb.stockID = seo.stockID 
+JOIN Portfolio p ON p.portfolioID = pb.portfolioID 
+WHERE p.portfolioID = 1;
+
+-- GET STOCK BY PORTFOLIO STOCK 
+SELECT s.* FROM Stock s
+JOIN PortfolioStock ps ON ps.stockID = s.stockID 
+WHERE ps.portfolioStockID = 2;
+
+-- ------------------------------------------------------------------------------------------------------
+-- StockTransaction
+-- GET STOCK TRANSACTIONS BY PORTFOLIO
+SELECT st.*, pb.stockID AS Stock, pb.exchangeOrganizationID AS EO 
+FROM StockTransaction st 
+JOIN PortfolioBridge pb ON pb.stockTransactionID = st.stockTransactionID 
+JOIN Portfolio p ON p.portfolioID = pb.portfolioID
+WHERE p.portfolioID = 1;
 -- ------------------------------------------------------------------------------------------------------
 -- Transaction
 -- GET TRANSACTIONS BY ACCOUNT 

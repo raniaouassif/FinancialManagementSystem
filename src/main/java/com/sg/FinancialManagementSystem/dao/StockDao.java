@@ -12,15 +12,10 @@ import java.util.List;
  */
 public interface StockDao {
     Stock getStockByID(int stockID);
-
     List<Stock> getAllStocks();
-
     Stock addStock(Stock stock);
-
     void updateStock(Stock stock);
-
     void deleteStockByID(int stockID);
-
     Stock getStockByCompany(Company company);
     List<Stock> getStocksByEo(ExchangeOrganization eo);
     List<Stock> getStocksByPortfolio(Portfolio portfolio);

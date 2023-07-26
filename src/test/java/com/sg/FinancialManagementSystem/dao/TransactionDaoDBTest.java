@@ -27,13 +27,10 @@ class TransactionDaoDBTest {
     TransactionDao transactionDao;
     @Autowired
     AccountDao accountDao;
-
     @Autowired
     BankDao bankDao;
-
     @Autowired
     AccountTypeDao accountTypeDao;
-
     @Autowired
     CustomerDao customerDao;
 

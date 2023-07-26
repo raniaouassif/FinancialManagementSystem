@@ -1,13 +1,8 @@
 package com.sg.FinancialManagementSystem.dao.mappers;
 
-import com.sg.FinancialManagementSystem.dto.Account;
 import com.sg.FinancialManagementSystem.dto.Transaction;
 import com.sg.FinancialManagementSystem.dto.TransactionType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -158,9 +158,6 @@ INSERT INTO PortfolioBridge (portfolioID, stockID, exchangeOrganizationID, stock
     (4,5, 5,8),
     (4,1, 1,9),
     (5,6, 7,1);
-
-
-    
     
 INSERT INTO Transaction(dateTime, transactionType, amount) VALUES 
 	("2022-09-01 10:00:00", "DEPOSIT", 100.00),

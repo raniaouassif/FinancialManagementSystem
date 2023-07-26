@@ -186,5 +186,3 @@ CREATE TABLE PortfolioStock(
     FOREIGN KEY (stockID) REFERENCES Stock(stockID), 
     FOREIGN KEY (portfolioID) REFERENCES Portfolio(portfolioID)
 );
-
-
