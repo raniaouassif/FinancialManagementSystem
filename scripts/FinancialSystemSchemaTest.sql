@@ -65,7 +65,6 @@ CREATE TABLE Account (
     FOREIGN KEY (customerID) REFERENCES Customer(customerID)
 );
 
-
 -- BRIDGE BETWEEN Bank AND AccountType
 CREATE TABLE BankAccountType (
 	bankID INT, 
@@ -143,7 +142,6 @@ CREATE TABLE Portfolio (
     FOREIGN KEY (customerID) REFERENCES Customer(customerID)
 );
 
-
 CREATE TABLE StockTransaction (
 	stockTransactionID INT AUTO_INCREMENT PRIMARY KEY, 
 	dateTime DATETIME NOT NULL, 
@@ -170,7 +168,6 @@ CREATE TABLE PortfolioBridge (
 		FOREIGN KEY (stockTransactionID)
         REFERENCES StockTransaction(stockTransactionID)
 );
-
 
 -- BRIDGE STOCK AND PORTFOLIO
 CREATE TABLE PortfolioStock(

@@ -206,24 +206,14 @@ WHERE p.portfolioID = 1;
 SELECT st.* FROM stocktransaction st 
 JOIN PortfolioBridge pb ON st.stockTransactionID = pb.stockTransactionID
 JOIN PortfolioStock ps ON pb.portfolioID = ps.portfolioID AND pb.stockID = ps.stockID
-WHERE ps.portfoliostockID = 1 ; 
-
-SELECT * FROM financialmanagementsystem.portfoliobridge
-ORDER BY portfolioID DESC ; 
-SELECT * FROM financialmanagementsystem.stocktransaction; 
-  
+WHERE ps.portfoliostockID = 1 ;   
 
 -- GET STOCK TRANSACTIONS BY STOCK 
 
-SELECT 
-    st.*, 
-    s.stockID
-FROM stocktransaction st 
-LEFT JOIN PortfolioBridge pb 
-ON st.stockTransactionID = pb.stockTransactionID
-LEFT JOIN Stock s
-ON pb.StockID = s.StockID
-WHERE s.stockID = 1 
+SELECT st.* FROM stocktransaction st 
+JOIN PortfolioBridge pb ON st.stockTransactionID = pb.stockTransactionID
+JOIN Stock s ON pb.StockID = s.StockID
+WHERE s.stockID = 1 ;
 -- ------------------------------------------------------------------------------------------------------
 -- Transaction
 -- GET TRANSACTIONS BY ACCOUNT 
