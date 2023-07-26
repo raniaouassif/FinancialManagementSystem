@@ -120,6 +120,21 @@ INSERT INTO Portfolio (customerID, balance) VALUES
     (4, 400000.00),
     (5, 10000.50);
     
+INSERT INTO PortfolioStock (numberOfShares, marketValue, bookValue, averagePrice, totalReturn, percentageReturn, portfolioID, stockID) VALUES
+    -- Customer 1 Portfolio
+    (10, 34701.20, 34701.20, 3470.12, 0.00, 0.00, 1, 1),    -- 10 shares of AMZN
+    (50, 7368.50, 7368.50, 147.37, 0.00, 0.00, 1, 2),      -- 50 shares of AAPL
+    -- Customer 2 Portfolio
+    (20, 5794.20, 5794.20, 289.71, 0.00, 0.00, 2, 3),      -- 20 shares of MSFT
+    -- Customer 3 Portfolio
+    (2000, 36900.00, 36900.00, 18.45, 0.00, 0.00, 3, 4),   -- 2000 shares of ARAMCO
+    (5, 14051.25, 14051.25, 2810.25, 0.00, 0.00, 3, 5),    -- 5 shares of GOOGL
+    -- Customer 4 Portfolio
+    (1700, 398660.00, 398660.00, 234.80, 0.00, 0.00, 4, 6),-- 1700 shares of V
+    -- Customer 5 Portfolio
+    (60, 9354.00, 9354.00, 155.90, 0.00, 0.00, 5, 7);      -- 60 shares of NKE
+
+    
 INSERT INTO StockTransaction (dateTime, transactionType, numberOfShares, transactionCost) VALUES 
 	("2022-09-01 10:00:00", "BUY", 4, 200.00),
 	("2023-01-01 11:00:00", "BUY", 4,500.00),

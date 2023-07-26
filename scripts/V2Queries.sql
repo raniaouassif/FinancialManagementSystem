@@ -124,6 +124,12 @@ WHERE at.accountTypeID = 2;
 SELECT c.* FROM Customer c 
 JOIN Account a ON a.customerID = c.customerID 
 WHERE a.accountID = 4;
+
+-- GET CUSTOMER BY PORTFOLIO 
+SELECT c.* FROM Customer c 
+JOIN Portfolio p ON p.customerID = c.customerID 
+WHERE c.customerID = 2;
+
 -- ------------------------------------------------------------------------------------------------------
 -- Exchange Organization
 -- GET EXCHANGE ORGANIZATIONS BY STOCK

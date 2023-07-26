@@ -135,9 +135,14 @@ CREATE TABLE AccountTransaction (
 CREATE TABLE Portfolio (
 	portfolioID INT AUTO_INCREMENT PRIMARY KEY, 
     balance DECIMAL(10,2),
+    bookValue DECIMAL(10,2),
+    marketValue DECIMAL(10,2),
+	totalReturn DECIMAL(18,2),
+    percentageReturn DECIMAL(6,2),
     customerID INT NOT NULL, 
     FOREIGN KEY (customerID) REFERENCES Customer(customerID)
 );
+
 
 CREATE TABLE StockTransaction (
 	stockTransactionID INT AUTO_INCREMENT PRIMARY KEY, 
@@ -167,3 +172,17 @@ CREATE TABLE PortfolioBridge (
 );
 
 
+-- BRIDGE STOCK AND PORTFOLIO
+CREATE TABLE PortfolioStock(
+	portfolioStockID INT AUTO_INCREMENT PRIMARY KEY, 
+    numberOfShares DECIMAL(10,2) NOT NULL,
+    marketValue DECIMAL (18,2) NOT NULL, 
+    bookValue DECIMAL(18,2) NOT NULL,
+    averagePrice DECIMAL(18,2) NOT NULL,
+	totalReturn DECIMAL(18,2),
+	percentageReturn DECIMAL(6,2),
+    portfolioID INT NOT NULL, 
+    stockID INT NOT NULL,
+    FOREIGN KEY (stockID) REFERENCES Stock(stockID), 
+    FOREIGN KEY (portfolioID) REFERENCES Portfolio(portfolioID)
+);
