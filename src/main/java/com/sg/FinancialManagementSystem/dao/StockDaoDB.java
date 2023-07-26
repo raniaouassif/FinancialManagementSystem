@@ -81,7 +81,9 @@ public class StockDaoDB implements StockDao {
                 stock.getNumberOfOutstandingShares(),
                 stock.getMarketCap(),
                 stock.getDailyVolume(),
-                stock.getCompany()); // Should not be able to modify company ID
+                stock.getCompany().getCompanyID(),  // Should not be able to modify company ID
+                stock.getStockID()
+        );
 
         //SHOULD NOT BE ABLE TO MODIFY EOs
     }
@@ -97,7 +99,7 @@ public class StockDaoDB implements StockDao {
         jdbcTemplate.update(DELETE_FROM_SEO_BY_STOCK, stockID);
 
         //Then delete the stock
-        final String DELETE_STOCK = "DELETE FROM ExchangeOrganization WHERE stockID = ?";
+        final String DELETE_STOCK = "DELETE FROM Stock WHERE stockID = ?";
         jdbcTemplate.update(DELETE_STOCK, stockID);
     }
 
@@ -177,7 +179,7 @@ public class StockDaoDB implements StockDao {
             int stockID = stock.getStockID();
             for(ExchangeOrganization eo : stock.getExchangeOrganizations()) { // Insert for each organization exchange stock.
                 int eoID = eo.getExchangeOrganizationID();
-                jdbcTemplate.update(INSERT_EO_STOCKS, stockID,eoID);
+                jdbcTemplate.update(INSERT_EO_STOCKS, eoID, stockID);
             }
         }
     }
