@@ -2,6 +2,7 @@ package com.sg.FinancialManagementSystem.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author raniaouassif on 2023-07-23
@@ -14,7 +15,6 @@ public class Portfolio {
     private BigDecimal totalReturn;
     private BigDecimal percentageReturn;
     private Customer customer;
-    private List<Stock> stocks;
     private List<StockTransaction> stockTransactions;
     private List<PortfolioStock> portfolioStocks;
 
@@ -74,14 +74,6 @@ public class Portfolio {
         this.customer = customer;
     }
 
-    public List<Stock> getStocks() {
-        return stocks;
-    }
-
-    public void setStocks(List<Stock> stocks) {
-        this.stocks = stocks;
-    }
-
     public List<StockTransaction> getStockTransactions() {
         return stockTransactions;
     }
@@ -96,5 +88,18 @@ public class Portfolio {
 
     public void setPortfolioStocks(List<PortfolioStock> portfolioStocks) {
         this.portfolioStocks = portfolioStocks;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Portfolio)) return false;
+        Portfolio portfolio = (Portfolio) o;
+        return getPortfolioID() == portfolio.getPortfolioID() && Objects.equals(getBalance(), portfolio.getBalance()) && Objects.equals(getBookValue(), portfolio.getBookValue()) && Objects.equals(getMarketValue(), portfolio.getMarketValue()) && Objects.equals(getTotalReturn(), portfolio.getTotalReturn()) && Objects.equals(getPercentageReturn(), portfolio.getPercentageReturn()) && Objects.equals(getCustomer(), portfolio.getCustomer()) && Objects.equals(getStockTransactions(), portfolio.getStockTransactions()) && Objects.equals(getPortfolioStocks(), portfolio.getPortfolioStocks());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPortfolioID(), getBalance(), getBookValue(), getMarketValue(), getTotalReturn(), getPercentageReturn(), getCustomer(), getStockTransactions(), getPortfolioStocks());
     }
 }

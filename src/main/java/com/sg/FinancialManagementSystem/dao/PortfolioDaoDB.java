@@ -1,13 +1,7 @@
 package com.sg.FinancialManagementSystem.dao;
 
-import com.sg.FinancialManagementSystem.dao.mappers.CustomerMapper;
-import com.sg.FinancialManagementSystem.dao.mappers.PortfolioMapper;
-import com.sg.FinancialManagementSystem.dao.mappers.StockMapper;
-import com.sg.FinancialManagementSystem.dao.mappers.StockTransactionMapper;
-import com.sg.FinancialManagementSystem.dto.Customer;
-import com.sg.FinancialManagementSystem.dto.Portfolio;
-import com.sg.FinancialManagementSystem.dto.Stock;
-import com.sg.FinancialManagementSystem.dto.StockTransaction;
+import com.sg.FinancialManagementSystem.dao.mappers.*;
+import com.sg.FinancialManagementSystem.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,8 +24,8 @@ public class PortfolioDaoDB implements PortfolioDao{
             final String GET_PORTFOLIO_BY_ID = "SELECT * FROM Portfolio WHERE portfolioID = ?";
             Portfolio portfolio = jdbcTemplate.queryForObject(GET_PORTFOLIO_BY_ID, new PortfolioMapper(), portfolioID);
 
-            //Set the portfolio Customer, stocks, transactions
-            setCustomerStocksTransactionsByPortfolio(portfolio);
+            //Set the portfolio Customer, transactions, portfoliostocks
+            set_Customer_Transactions_Stocks_By_Portfolio(portfolio);
 
             return portfolio;
         } catch (DataAccessException e) {
@@ -44,7 +38,7 @@ public class PortfolioDaoDB implements PortfolioDao{
         final String GET_ALL_PORTFOLIOS = "SELECT * FROM Portfolio";
         List<Portfolio> portfolios = jdbcTemplate.query(GET_ALL_PORTFOLIOS, new PortfolioMapper());
         //Set the portfolio Customer, stocks, transactions
-        setCustomerStocksTransactionsByPortfoliosList(portfolios);
+        set_Customer_Transactions_Stocks_By_PortfoliosList(portfolios);
         return portfolios;
     }
 
@@ -109,16 +103,21 @@ public class PortfolioDaoDB implements PortfolioDao{
     }
 
     //PRIVATE HELPER FUNCTIONS
-    private void setCustomerStocksTransactionsByPortfoliosList(List<Portfolio> portfoliosList) {
+    private void set_Customer_Transactions_Stocks_By_PortfoliosList(List<Portfolio> portfoliosList) {
         for (Portfolio portfolio : portfoliosList) {
-            setCustomerStocksTransactionsByPortfolio(portfolio);
+            set_Customer_Transactions_Stocks_By_Portfolio(portfolio);
         }
     }
-    private void setCustomerStocksTransactionsByPortfolio(Portfolio portfolio) {
+    private void set_Customer_Transactions_Stocks_By_Portfolio(Portfolio portfolio) {
         int portfolioID = portfolio.getPortfolioID();
+        //Set the customer
         portfolio.setCustomer(getCustomerByPortfolio(portfolioID));
-        portfolio.setStocks(getStocksByPortfolio(portfolioID));
+
+        //Set the stock transactions
         portfolio.setStockTransactions(getStockTransactionsByPortfolio(portfolioID));
+
+        //Set the portfolio stocks
+        portfolio.setPortfolioStocks(getPortfolioStocksByPortfolio(portfolioID));
     }
 
     private List<StockTransaction> getStockTransactionsByPortfolio(int portfolioID) {
@@ -129,26 +128,22 @@ public class PortfolioDaoDB implements PortfolioDao{
 
         List<StockTransaction> transactions = jdbcTemplate.query(GET_TRANSACTIONS_BY_PORTFOLIO, new StockTransactionMapper(), portfolioID);
 
-        return transactions.size() == 0 ? new ArrayList<>() : transactions;
+        return transactions;
     }
 
-    private List<Stock> getStocksByPortfolio(int portfolioID) {
-        final String GET_STOCKS_BY_PORTFOLIO = "SELECT DISTINCT s.* FROM Stock s " +
-                "JOIN StockExchangeOrganization seo ON seo.stockID = s.stockID " +
-                "JOIN PortfolioBridge pb ON pb.stockID = seo.stockID " +
-                "JOIN Portfolio p ON p.portfolioID = pb.portfolioID " +
-                "WHERE p.portfolioID = ?";
+    private List<PortfolioStock> getPortfolioStocksByPortfolio(int portfolioID) {
+        final String GET_PORTFOLIO_STOCKS_BY_PORTFOLIO = "SELECT * FROM PortfolioStock WHERE portfolioID = ?";
 
-        List<Stock> stocks = jdbcTemplate.query(GET_STOCKS_BY_PORTFOLIO, new StockMapper(), portfolioID);
+        List<PortfolioStock> portfolioStocks = jdbcTemplate.query(GET_PORTFOLIO_STOCKS_BY_PORTFOLIO, new PortfolioStockMapper(), portfolioID);
 
-        return stocks.size() == 0 ? new ArrayList<>() : stocks;
+        return portfolioStocks;
     }
 
     private Customer getCustomerByPortfolio(int portfolioID) {
         try{
             final String GET_CUSTOMER_BY_PORTFOLIO = "SELECT c.* FROM Customer c " +
                     "JOIN Portfolio p ON p.customerID = c.customerID " +
-                    "WHERE c.customerID = ?";
+                    "WHERE p.portfolioID = ?";
 
             return jdbcTemplate.queryForObject(GET_CUSTOMER_BY_PORTFOLIO, new CustomerMapper(), portfolioID);
         } catch (DataAccessException e) {

@@ -128,7 +128,7 @@ WHERE a.accountID = 4;
 -- GET CUSTOMER BY PORTFOLIO 
 SELECT c.* FROM Customer c 
 JOIN Portfolio p ON p.customerID = c.customerID 
-WHERE c.customerID = 2;
+WHERE p.portfolioID = 2;
 
 -- GET CUSTOMER BY STOCK 
 SELECT c.* FROM Customer c
