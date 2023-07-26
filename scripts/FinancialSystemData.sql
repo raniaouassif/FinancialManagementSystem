@@ -125,6 +125,7 @@ INSERT INTO PortfolioStock (numberOfShares, marketValue, bookValue, averagePrice
     (10, 34701.20, 34701.20, 3470.12, 0.00, 0.00, 1, 1),    -- 10 shares of AMZN
     (50, 7368.50, 7368.50, 147.37, 0.00, 0.00, 1, 2),      -- 50 shares of AAPL
     -- Customer 2 Portfolio
+	(10, 34701.20, 34701.20, 3470.12, 0.00, 0.00, 2, 1),    -- 10 shares of AMZN
     (20, 5794.20, 5794.20, 289.71, 0.00, 0.00, 2, 3),      -- 20 shares of MSFT
     -- Customer 3 Portfolio
     (2000, 36900.00, 36900.00, 18.45, 0.00, 0.00, 3, 4),   -- 2000 shares of ARAMCO

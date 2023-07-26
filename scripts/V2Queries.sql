@@ -130,6 +130,13 @@ SELECT c.* FROM Customer c
 JOIN Portfolio p ON p.customerID = c.customerID 
 WHERE c.customerID = 2;
 
+-- GET CUSTOMER BY STOCK 
+SELECT c.* FROM Customer c
+JOIN Portfolio p ON p.customerID = c.customerID 
+JOIN PortfolioStock ps ON ps.portfolioID = p.portfolioID
+JOIN Stock s ON s.stockID = ps.stockID 
+WHERE s.stockID = 1;
+
 -- ------------------------------------------------------------------------------------------------------
 -- Exchange Organization
 -- GET EXCHANGE ORGANIZATIONS BY STOCK
@@ -158,11 +165,37 @@ SELECT p.* FROM Portfolio p
 JOIN PortfolioBridge pb ON pb.portfolioID = p.portfolioID 
 JOIN StockTransaction st ON st.stockTransactionID = pb.stockTransactionID
 WHERE st.stockTransactionID = 1;
+-- ------------------------------------------------------------------------------------------------------
+-- Portfolio Bridge
+-- GET PORTFOLIO BRIDGE BY COMPANY
+SELECT pb.* FROM PortfolioBridge pb
+JOIN StockExchangeOrganization seo ON seo.stockID = pb.stockID AND seo.exchangeOrganizationID = pb.exchangeOrganizationID
+JOIN Stock s ON seo.stockID = s.stockID
+JOIN Company c ON c.companyID = s.companyID 
+WHERE c.companyID = 1;
+
+-- DELETE pb FROM PortfolioBridge pb
+-- JOIN StockExchangeOrganization seo ON seo.stockID = pb.stockID AND seo.exchangeOrganizationID = pb.exchangeOrganizationID
+-- JOIN Stock s ON seo.stockID = s.stockID
+-- JOIN Company c ON c.companyID = s.companyID 
+-- WHERE c.companyID = 1;
 
 -- ------------------------------------------------------------------------------------------------------
--- PORTFOLIO STOCK
+-- Portfolio Stock
 -- GET PORTFOLIO STOCKS BY PORTFOLIO 
 SELECT * FROM PortfolioStock WHERE portfolioID = 1;
+
+-- GET PORTFOLIO STOCKS BY COMPANY
+SELECT ps.* FROM PortfolioStock ps 
+JOIN Stock s ON s.stockID = ps.stockID
+JOIN Company c ON c.companyID = s.companyID 
+WHERE c.companyID = 2;
+
+-- DELETE PORTFOLIO STOCKS BY COMPANY
+-- DELETE ps FROM PortfolioStock ps 
+-- JOIN Stock s ON s.stockID = ps.stockID
+-- JOIN Company c ON c.companyID = s.companyID 
+-- WHERE c.companyID = 2;
 -- ------------------------------------------------------------------------------------------------------
 -- Stock
 -- GET STOCK BY COMPANY

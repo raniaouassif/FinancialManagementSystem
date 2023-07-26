@@ -57,7 +57,7 @@ public class CustomerDaoDB implements CustomerDao {
     @Override
     public void updateCustomer(Customer customer) {
         final String UPDATE_CUSTOMER = "UPDATE Customer SET firstName = ?, lastName = ?, phoneNumber = ? WHERE customerID = ?";
-        jdbcTemplate.update(UPDATE_CUSTOMER, customer.getFirstName(), customer.getLastName(), customer.getPhoneNumber());
+        jdbcTemplate.update(UPDATE_CUSTOMER, customer.getFirstName(), customer.getLastName(), customer.getPhoneNumber(), customer.getCustomerID());
     }
 
     @Override
@@ -121,8 +121,15 @@ public class CustomerDaoDB implements CustomerDao {
 
     @Override
     public List<Customer> getCustomersByStock(Stock stock) {
-        //TODO
-        return null;
+        final String GET_CUSTOMERS_BY_STOCK = "SELECT c.* FROM Customer c " +
+                "JOIN Portfolio p ON p.customerID = c.customerID " +
+                "JOIN PortfolioStock ps ON ps.portfolioID = p.portfolioID " +
+                "JOIN Stock s ON s.stockID = ps.stockID " +
+                "WHERE s.stockID = ?";
+
+        List<Customer> customers = jdbcTemplate.query(GET_CUSTOMERS_BY_STOCK, new CustomerMapper(), stock.getStockID());
+        setPortfolioAndAccountsByCustomersList(customers);
+        return customers;
     }
 
     //PRIVATE HELPER FUNCTIONS
