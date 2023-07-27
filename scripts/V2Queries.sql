@@ -236,6 +236,14 @@ WHERE c.customerID = 2;
 -- JOIN Customer c ON c.customerID = p.customerID
 -- WHERE c.customerID = 2;
 
+SELECT * FROM FinancialManagementSystem.PortfolioBridge;
+-- GET PORTFOLIO STOCK BY PORTFOLIO STOCK AND EO
+SELECT ps.* FROM PortfolioStock ps 
+JOIN Portfolio p ON p.portfolioID = ps.portfolioID
+JOIN PortfolioBridge pb ON pb.portfolioID = p.portfolioID 
+WHERE pb.stockID = 2 AND pb.exchangeOrganizationID = 2 AND pb.portfolioID = 2;
+
+
 -- ------------------------------------------------------------------------------------------------------
 -- Stock
 -- GET STOCK BY COMPANY

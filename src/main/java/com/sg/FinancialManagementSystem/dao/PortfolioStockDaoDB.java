@@ -4,10 +4,7 @@ import com.sg.FinancialManagementSystem.dao.mappers.PortfolioMapper;
 import com.sg.FinancialManagementSystem.dao.mappers.PortfolioStockMapper;
 import com.sg.FinancialManagementSystem.dao.mappers.StockMapper;
 import com.sg.FinancialManagementSystem.dao.mappers.StockTransactionMapper;
-import com.sg.FinancialManagementSystem.dto.Portfolio;
-import com.sg.FinancialManagementSystem.dto.PortfolioStock;
-import com.sg.FinancialManagementSystem.dto.Stock;
-import com.sg.FinancialManagementSystem.dto.StockTransaction;
+import com.sg.FinancialManagementSystem.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -55,12 +52,12 @@ public class PortfolioStockDaoDB implements PortfolioStockDao {
                 "VALUES (?,?,?,?,?,?,?,?)";
 
         jdbcTemplate.update(ADD_PS,
-                0,
-                new BigDecimal(0.00),
-                new BigDecimal(0.00),
-                new BigDecimal(0.00),
-                new BigDecimal(0.00),
-                new BigDecimal(0.00),
+                portfolioStock.getNumberOfShares(),
+                portfolioStock.getMarketValue(),
+                portfolioStock.getBookValue(),
+                portfolioStock.getAveragePrice(),
+                portfolioStock.getTotalReturn(),
+                portfolioStock.getPercentageReturn(),
                 portfolioStock.getPortfolio().getPortfolioID(),
                 portfolioStock.getStock().getStockID()
                 );
@@ -115,6 +112,27 @@ public class PortfolioStockDaoDB implements PortfolioStockDao {
         setStockAndPortfolioAndTransactionsByPortfolioStockList(portfolioStockList);
 
         return portfolioStockList;
+    }
+
+    @Override
+    public PortfolioStock getPortfolioStockByStockTransaction(StockTransaction st) {
+
+        try {
+            final String GET_PS_BY_ST = "SELECT ps.* FROM PortfolioStock ps " +
+                    "JOIN Portfolio p ON p.portfolioID = ps.portfolioID " +
+                    "JOIN PortfolioBridge pb ON pb.portfolioID = p.portfolioID " +
+                    "WHERE pb.stockID = ? AND pb.exchangeOrganizationID = ? AND pb.portfolioID = ?";
+
+            PortfolioStock ps = jdbcTemplate.queryForObject(GET_PS_BY_ST, new PortfolioStockMapper(),
+                    st.getStock().getStockID(), st.getEo().getExchangeOrganizationID(), st.getPortfolio().getPortfolioID());
+
+            setStockAndPortfolioAndTransactionsByPortfolioStock(ps);
+
+            return ps;
+        } catch (DataAccessException e) {
+            return null;
+        }
+
     }
 
     //PRIVATE HELPER FUNCTIONS

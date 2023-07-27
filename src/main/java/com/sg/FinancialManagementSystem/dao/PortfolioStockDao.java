@@ -1,7 +1,6 @@
 package com.sg.FinancialManagementSystem.dao;
 
-import com.sg.FinancialManagementSystem.dto.Portfolio;
-import com.sg.FinancialManagementSystem.dto.PortfolioStock;
+import com.sg.FinancialManagementSystem.dto.*;
 
 import java.util.List;
 
@@ -15,4 +14,5 @@ public interface PortfolioStockDao {
     void updatePortfolioStock(PortfolioStock portfolioStock);
     void deletePortfolioStockByID(int portfolioStockID);
     List<PortfolioStock> getPortfolioStocksByPortfolio(Portfolio portfolio);
+    PortfolioStock getPortfolioStockByStockTransaction(StockTransaction st);
 }
