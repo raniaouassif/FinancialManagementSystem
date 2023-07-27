@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author raniaouassif on 2023-07-26
  */
-public interface CompanyServiceInterface {
+public interface CompanyService {
     Company getCompanyByID(int companyID);
 
     List<Company> getAllCompanies();

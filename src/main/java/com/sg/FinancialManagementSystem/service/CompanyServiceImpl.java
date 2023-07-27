@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 @Service
-public class CompanyServiceImpl implements CompanyServiceInterface{
+public class CompanyServiceImpl implements CompanyService {
     @Autowired
     CompanyDao companyDao;
     @Override

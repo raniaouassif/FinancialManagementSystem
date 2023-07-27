@@ -11,9 +11,10 @@ import java.util.List;
 /**
  * @author raniaouassif on 2023-07-26
  */
-public interface StockTransactionsServiceInterface {
+public interface StockTransactionService {
     StockTransaction getStockTransactionByID(int stockTransactionID);
     List<StockTransaction> getAllStockTransactions();
+    public List<StockTransaction> getAllStockTransactionsDescDatetime();
     StockTransaction addStockTransaction(StockTransaction st) throws InsufficientFundsException, InsufficientStockSharesException;
     void updateStockTransaction(StockTransaction st);
     void deleteStockTransactionByID(int stockTransactionID);

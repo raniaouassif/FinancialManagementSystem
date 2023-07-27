@@ -32,16 +32,21 @@ public class StockTransactionDaoDB implements StockTransactionDao{
         } catch (DataAccessException e) {
             return null;
         }
-
     }
-
 
     @Override
     public List<StockTransaction> getAllStockTransactions() {
         final String GET_ALL_ST = "SELECT * FROM StockTransaction";
         List<StockTransaction> stList = jdbcTemplate.query(GET_ALL_ST, new StockTransactionMapper());
         setStockEOandPortfolioForStList(stList);
+        return stList;
+    }
 
+    @Override
+    public List<StockTransaction> getAllStockTransactionsDescDatetime() {
+        final String GET_ALL_ST = "SELECT * FROM StockTransaction ORDER BY dateTime DESC";
+        List<StockTransaction> stList = jdbcTemplate.query(GET_ALL_ST, new StockTransactionMapper());
+        setStockEOandPortfolioForStList(stList);
         return stList;
     }
 
@@ -120,17 +125,17 @@ public class StockTransactionDaoDB implements StockTransactionDao{
     }
 
     //PRIVATE HELPER FUNCTIONS
+    private Stock getStockByST(int stockTransactionID) {
+        try {
+            final String GET_STOCK_BY_ST = "SELECT s.* FROM Stock s " +
+                    "JOIN PortfolioBridge pb ON pb.stockID = s.stockID " +
+                    "JOIN StockTransaction st ON st.stockTransactionID = pb.stockTransactionID " +
+                    "WHERE st.stockTransactionID = ?";
 
-    private void setStockEOandPortfolioForStList(List<StockTransaction> stList) {
-        for(StockTransaction st : stList) {
-            setStockEOandPortfolioForSt(st);
+            return jdbcTemplate.queryForObject(GET_STOCK_BY_ST, new StockMapper(), stockTransactionID);
+        } catch (DataAccessException e) {
+            return null;
         }
-    }
-    private void setStockEOandPortfolioForSt(StockTransaction st) {
-        int stockTransactionID = st.getStockTransactionID();
-        st.setStock(getStockByST(stockTransactionID));
-        st.setEo(getEOByST(stockTransactionID));
-        st.setPortfolio(getPortfolioByST(stockTransactionID));
     }
 
     private Portfolio getPortfolioByST(int stockTransactionID) {
@@ -140,10 +145,7 @@ public class StockTransactionDaoDB implements StockTransactionDao{
                     "JOIN StockTransaction st ON st.stockTransactionID = pb.stockTransactionID " +
                     "WHERE st.stockTransactionID = ?";
 
-            Portfolio portfolio = jdbcTemplate.queryForObject(GET_PORTFOLIO_BY_ST, new PortfolioMapper(), stockTransactionID);
-
-            // TODO SET ?
-            return portfolio;
+            return jdbcTemplate.queryForObject(GET_PORTFOLIO_BY_ST, new PortfolioMapper(), stockTransactionID);
         } catch (DataAccessException e) {
             return null;
         }
@@ -156,29 +158,23 @@ public class StockTransactionDaoDB implements StockTransactionDao{
                     "JOIN StockTransaction st ON st.stockTransactionID = pb.stockTransactionID " +
                     "WHERE st.stockTransactionID = ?";
 
-            ExchangeOrganization eo = jdbcTemplate.queryForObject(GET_EO_BY_ST, new ExchangeOrganizationMapper(), stockTransactionID);
-
-            //TODO SET ?
-            return eo;
+            return jdbcTemplate.queryForObject(GET_EO_BY_ST, new ExchangeOrganizationMapper(), stockTransactionID);
         } catch (DataAccessException e) {
             return null;
         }
     }
 
-    private Stock getStockByST(int stockTransactionID) {
-        try {
-            final String GET_STOCK_BY_ST = "SELECT s.* FROM Stock s " +
-                    "JOIN PortfolioBridge pb ON pb.stockID = s.stockID " +
-                    "JOIN StockTransaction st ON st.stockTransactionID = pb.stockTransactionID " +
-                    "WHERE st.stockTransactionID = ?";
+    private void setStockEOandPortfolioForSt(StockTransaction st) {
+        int stockTransactionID = st.getStockTransactionID();
+        st.setStock(getStockByST(stockTransactionID));
+        st.setEo(getEOByST(stockTransactionID));
+        st.setPortfolio(getPortfolioByST(stockTransactionID));
+    }
 
-            Stock stock = jdbcTemplate.queryForObject(GET_STOCK_BY_ST, new StockMapper(), stockTransactionID);
 
-            //TODO set ?
-
-            return stock;
-        } catch (DataAccessException e) {
-            return null;
+    private void setStockEOandPortfolioForStList(List<StockTransaction> stList) {
+        for(StockTransaction st : stList) {
+            setStockEOandPortfolioForSt(st);
         }
     }
 

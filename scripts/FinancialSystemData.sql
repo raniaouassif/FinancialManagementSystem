@@ -49,11 +49,11 @@ INSERT INTO Customer (firstName, lastName, phoneNumber) VALUES
     ('Emma', 'Anderson', '555-9012');
 
 INSERT INTO Stock (tickerCode, sharePrice, status, numberOfOutstandingShares, marketCap, dailyVolume, companyID) VALUES 
-    ('AMZN',  3470.12, 'LISTED', 2000000000, 6940240000000.00, 1000000, 1),
+    ('AMZN',  131.56, 'LISTED', 2000000000, 6940240000000.00, 1000000, 1),
     ('AAPL',  147.37, 'LISTED',5000000000, 7368500000000.00, 1500000, 2),
     ('MSFT',  289.71,'LISTED', 3000000000, 8691300000000.00, 1200000, 3),
     ('ARAMCO',  18.45, 'LISTED',4000000000, 73800000000.00, 800000, 4),
-    ('GOOGL', 2810.25,'LISTED', 1500000000, 4215375000000.00, 900000, 5),
+    ('GOOGL', 131.82,'LISTED', 1500000000, 4215375000000.00, 900000, 5),
     ('V', 234.80, 'LISTED',1000000000, 234800000000.00, 500000, 6),
     ('NKE',  155.90,'LISTED', 800000000, 124720000000.00, 700000, 7);
 
@@ -118,7 +118,12 @@ INSERT INTO Portfolio (customerID, balance) VALUES
     (2, 200.00),
     (3, 10000.00),
     (4, 400000.00),
-    (5, 10000.50);
+    (5, 10000.50),
+    (6, 300.12),
+    (7, 5000.53),
+    (8, 6321.31),
+    (9, 123.32),
+    (10, 4115.78);
     
 INSERT INTO PortfolioStock (numberOfShares, marketValue, bookValue, averagePrice, totalReturn, percentageReturn, portfolioID, stockID) VALUES
     -- Customer 1 Portfolio
@@ -134,23 +139,21 @@ INSERT INTO PortfolioStock (numberOfShares, marketValue, bookValue, averagePrice
     (1700, 398660.00, 398660.00, 234.80, 0.00, 0.00, 4, 6),-- 1700 shares of V
     -- Customer 5 Portfolio
     (60, 9354.00, 9354.00, 155.90, 0.00, 0.00, 5, 7);      -- 60 shares of NKE
-
     
 INSERT INTO StockTransaction (dateTime, transactionType, numberOfShares, transactionCost) VALUES 
 	("2022-09-01 10:00:00", "BUY", 4, 200.00),
-	("2023-01-01 11:00:00", "BUY", 4,500.00),
-	("2022-02-12 13:00:00", "BUY", 4,50.00),
-	("2012-05-16 01:00:00", "BUY", 4,150.00),
+	("2023-01-01 11:00:00", "BUY", 4, 500.00),
+	("2022-02-12 13:00:00", "BUY", 4, 50.00),
+	("2012-05-16 01:00:00", "BUY", 4, 150.00),
 	("2020-09-19 13:00:00", "SELL",4, 2000.00),
-	("2021-11-07 13:00:00", "SELL", 4,10000.00),
-	("2021-12-27 13:00:00", "SELL", 4,125.00),
-	("2022-12-21 10:30:00", "SELL", 2,1000.00),
-	("2022-11-30 04:00:00", "SELL", 4,25.00);
+	("2021-11-07 13:00:00", "SELL", 4, 10000.00),
+	("2021-12-27 13:00:00", "SELL", 4, 125.00),
+	("2022-12-21 10:30:00", "SELL", 2, 1000.00),
+	("2022-11-30 04:00:00", "SELL", 4, 25.00);
     
 INSERT INTO PortfolioBridge (portfolioID, stockID, exchangeOrganizationID, stockTransactionID) VALUES 
 	(1,1, 1,1),
     (1,1, 1,2),
-    (1,2, 2,2),
     (2,2, 2,3),
     (2,5, 5,4),
     (2,7, 7,5),

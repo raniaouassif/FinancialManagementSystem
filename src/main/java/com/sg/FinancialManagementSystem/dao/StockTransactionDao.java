@@ -13,6 +13,7 @@ import java.util.List;
 public interface StockTransactionDao {
     StockTransaction getStockTransactionByID(int stockTransactionID);
     List<StockTransaction> getAllStockTransactions();
+    List<StockTransaction> getAllStockTransactionsDescDatetime();
     StockTransaction addStockTransaction(StockTransaction st);
     void updateStockTransaction(StockTransaction st);
     void deleteStockTransactionByID(int stockTransactionID);

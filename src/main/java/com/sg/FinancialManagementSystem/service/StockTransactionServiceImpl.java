@@ -1,8 +1,6 @@
 package com.sg.FinancialManagementSystem.service;
 
-import com.sg.FinancialManagementSystem.dao.PortfolioDao;
 import com.sg.FinancialManagementSystem.dao.PortfolioStockDao;
-import com.sg.FinancialManagementSystem.dao.StockDao;
 import com.sg.FinancialManagementSystem.dao.StockTransactionDao;
 import com.sg.FinancialManagementSystem.dto.*;
 import com.sg.FinancialManagementSystem.service.Exceptions.InsufficientFundsException;
@@ -19,7 +17,7 @@ import java.util.List;
  * @author raniaouassif on 2023-07-26
  */
 @Service
-public class StockTransactionServiceImpl implements StockTransactionsServiceInterface{
+public class StockTransactionServiceImpl implements StockTransactionService {
     @Autowired
     StockTransactionDao stockTransactionDao;
 
@@ -34,6 +32,11 @@ public class StockTransactionServiceImpl implements StockTransactionsServiceInte
     @Override
     public List<StockTransaction> getAllStockTransactions() {
         return stockTransactionDao.getAllStockTransactions();
+    }
+
+    @Override
+    public List<StockTransaction> getAllStockTransactionsDescDatetime() {
+        return stockTransactionDao.getAllStockTransactionsDescDatetime();
     }
 
     @Override
@@ -145,5 +148,11 @@ public class StockTransactionServiceImpl implements StockTransactionsServiceInte
     @Override
     public List<StockTransaction> getStockTransactionByStock(Stock stock) {
         return stockTransactionDao.getStockTransactionByStock(stock);
+    }
+
+    private void getSharePriceForTransaction(StockTransaction stockTransaction) {
+        //Update the stock price based on the transaction.
+        //Since it might have changed
+        // TODO
     }
 }

@@ -5,12 +5,8 @@ import com.sg.FinancialManagementSystem.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +35,7 @@ public class BankDaoDB implements BankDao {
     @Override
     public List<Bank> getAllBanks() {
         final String GET_ALL_BANKS = "SELECT * FROM Bank";
+
         List<Bank> banks = jdbcTemplate.query(GET_ALL_BANKS, new BankMapper());
 
         setAccountTypesForBankList(banks);
@@ -135,7 +132,6 @@ public class BankDaoDB implements BankDao {
                 new BankMapper(),
                 customer.getCustomerID()
         );
-
         setAccountTypesForBankList(retrievedBanks);
 
         return retrievedBanks.size() == 0 ? new ArrayList<>() : retrievedBanks;
@@ -178,7 +174,6 @@ public class BankDaoDB implements BankDao {
                 new AccountTypeMapper(),
                 bankID
         );
-
         return retrievedAccountTypes.size() == 0 ? new ArrayList<>() : retrievedAccountTypes;
     }
 

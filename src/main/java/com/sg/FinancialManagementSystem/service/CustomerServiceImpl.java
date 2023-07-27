@@ -14,7 +14,7 @@ import java.util.List;
  * @author raniaouassif on 2023-07-26
  */
 @Service
-public class CustomerServiceImpl implements CustomerServiceInterface{
+public class CustomerServiceImpl implements CustomerService {
     @Autowired
     CustomerDao customerDao;
     @Override

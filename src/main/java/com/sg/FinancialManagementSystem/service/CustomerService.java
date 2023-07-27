@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author raniaouassif on 2023-07-26
  */
-public interface CustomerServiceInterface {
+public interface CustomerService {
     Customer getCustomerByID(int customerID);
 
     List<Customer> getAllCustomers();
