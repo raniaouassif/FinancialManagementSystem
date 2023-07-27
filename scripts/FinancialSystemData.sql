@@ -1,14 +1,14 @@
 USE FinancialManagementSystem;
 
 INSERT INTO Bank (name, location) VALUES
-	('Industrial and Commercial Bank of China (ICBC)', 'China'),
-	('China Construction Bank', 'China'),
-	('Agricultural Bank of China', 'China'),
-	('Bank of China', 'China'),
-	('Mitsubishi UFJ Financial Group (MUFG)', 'Japan'),
+    ('Toronto-Dominion Bank', 'Canada'), 
+    ('Scotiabank', 'Canada'), 
+    ('Bank of Montreal', 'Canada'), 
+    ('Royal Bank Of Canada', 'Canada'), 
+    ('Citigroup Inc.', 'United States'), 
 	('JPMorgan Chase & Co.', 'United States'),
 	('HSBC Holdings plc', 'United Kingdom'),
-	('BNP Paribas', 'France'),
+    ('Goldman Sachs Group Inc.', 'United States'),
 	('Bank of America', 'United States'),
 	('Wells Fargo & Co.', 'United States');
 
@@ -58,15 +58,15 @@ INSERT INTO Stock (tickerCode, sharePrice, status, numberOfOutstandingShares, ma
     ('NKE',  155.90,'LISTED', 800000000, 124720000000.00, 700000, 7);
 
 INSERT INTO AccountType (type, minimumStartDeposit, interestRate, compoundRate) VALUES
-    ('CHECKING', 100.00, NULL, NULL),
-	('CHECKING', 20.00, NULL, NULL),
-	('CHECKING', 50.00, NULL, NULL),
-    ('HIGH_INTEREST_SAVINGS', 100.00, 1.5, 'Monthly'),
-    ('HIGH_INTEREST_ANNUAL', 1000.00, 5.0, 'Annually'),
-    ('HIGH_INTEREST_MONTHLY', 25.00, 1.75, 'Monthly'),
-    ('LOW_INTEREST_SAVINGS', 50.00, 1.25, 'Semi-Annually'),
-    ('LOW_INTEREST_QUARTERLY', 50.00, 1.0, 'Quarterly'),
-    ('LOW_INTEREST_QUARTERLY', 25.00, 0.75, 'Quarterly');
+    ('CHECKING', 100.00, 0.00, 'NA'),
+	('CHECKING', 20.00, 0.00, 'NA'),
+	('CHECKING', 50.00, 0.00, 'NA'),
+    ('HIGH_INTEREST_SAVINGS', 100.00, 1.5, 'MONTHLY'),
+    ('HIGH_INTEREST_SAVINGS', 1000.00, 5.0, 'ANNUALLY'),
+    ('HIGH_INTEREST_SAVINGS', 25.00, 1.75, 'MONTHLY'),
+    ('LOW_INTEREST_SAVINGS', 50.00, 1.25, 'SEMI_ANNUALLY'),
+    ('LOW_INTEREST_SAVINGS', 50.00, 1.0, 'QUARTERLY'),
+    ('LOW_INTEREST_SAVINGS', 25.00, 0.75, 'QUARTERLY');
 
 
 INSERT INTO Account (openingDate, depositBalance, status, customerID) VALUES 

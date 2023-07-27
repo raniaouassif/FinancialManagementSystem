@@ -28,7 +28,7 @@ public class AccountTypeMapper implements RowMapper<AccountType> {
         accountType.setType(BankAccountType.valueOf(rs.getString("type")));
         accountType.setMinimumStartDeposit(rs.getBigDecimal("minimumStartDeposit"));
         accountType.setInterestRate(rs.getBigDecimal("interestRate"));
-        accountType.setCompoundRate(CompoundRate.valueOf(rs.getString("compoundRate")));
+        accountType.setCompoundRate(CompoundRate.valueOf(rs.getString("compoundRate").toUpperCase()));
         return accountType;
     }
 

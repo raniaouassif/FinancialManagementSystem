@@ -1,9 +1,6 @@
 package com.sg.FinancialManagementSystem.controller;
 
-import com.sg.FinancialManagementSystem.dto.Company;
-import com.sg.FinancialManagementSystem.dto.ExchangeOrganization;
-import com.sg.FinancialManagementSystem.dto.Stock;
-import com.sg.FinancialManagementSystem.dto.StockTransaction;
+import com.sg.FinancialManagementSystem.dto.*;
 import com.sg.FinancialManagementSystem.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,18 +17,20 @@ import java.util.List;
 public class ApplicationController {
     @Autowired
     CompanyService companyService;
+    @Autowired
+    CustomerService customerService;
 
     @Autowired
     ExchangeOrganizationService exchangeOrganizationService;
     @Autowired
     StockService stockService;
+
+    @Autowired
+    BankService bankService;
     @Autowired
     StockTransactionService stockTransactionService;
     @GetMapping("/")
     public String displayHomeView(Model model) {
-        List<StockTransaction> stockTransactions = stockTransactionService.getAllStockTransactionsDescDatetime();
-
-        model.addAttribute("stockTransactions",stockTransactions);
         return "redirect:/latest-trades";
     }
 
@@ -64,5 +63,20 @@ public class ApplicationController {
         model.addAttribute("stocks", stocks);
         model.addAttribute("exchangeOrganizations", exchangeOrganizations);
         return "stock-exchanges";
+    }
+
+    @GetMapping("/banks")
+    public String displayBanks(Model model) {
+        List<Bank> banks = bankService.getAllBanks();
+        model.addAttribute("banks", banks);
+
+        return "banks";
+    }
+
+    @GetMapping("/customers")
+    public String displayCustomers(Model model) {
+        List<Customer> customers = customerService.getAllCustomers();
+        model.addAttribute("customers", customers);
+        return "customers";
     }
 }
