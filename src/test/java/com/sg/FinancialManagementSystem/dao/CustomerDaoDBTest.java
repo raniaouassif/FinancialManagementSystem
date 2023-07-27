@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @SpringBootTest
 class CustomerDaoDBTest {
-    //TODO : ADD PORTFOLIO ONCE DONE
     @Autowired
     CustomerDao customerDao;
 
@@ -44,6 +43,11 @@ class CustomerDaoDBTest {
         for(Bank bank : banks) {
             bankDao.deleteBankByID(bank.getBankID());
         }
+        // Delete all accounts
+        List<Account> accounts = accountDao.getAllAccounts();
+        for(Account account : accounts) {
+            accountDao.deleteAccountByID(account.getAccountID());
+        }
         List<Customer> customerList = customerDao.getAllCustomers();
         for(Customer customer : customerList) {
             customerDao.deleteCustomerByID(customer.getCustomerID());
@@ -55,7 +59,7 @@ class CustomerDaoDBTest {
     @DisplayName("Get And Add Customer")
     void testGetAndAddCustomerByID() {
         Customer customer = new Customer();
-        customer.setFirstName("Emily");
+        customer.setFirstName("Lina");
         customer.setLastName("Williams");
         customer.setPhoneNumber("12-123-123");
         customer.setAccounts(new ArrayList<>());

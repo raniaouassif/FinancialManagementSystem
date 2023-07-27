@@ -3,9 +3,11 @@ package com.sg.FinancialManagementSystem.dao;
 import com.sg.FinancialManagementSystem.dao.mappers.PortfolioMapper;
 import com.sg.FinancialManagementSystem.dao.mappers.PortfolioStockMapper;
 import com.sg.FinancialManagementSystem.dao.mappers.StockMapper;
+import com.sg.FinancialManagementSystem.dao.mappers.StockTransactionMapper;
 import com.sg.FinancialManagementSystem.dto.Portfolio;
 import com.sg.FinancialManagementSystem.dto.PortfolioStock;
 import com.sg.FinancialManagementSystem.dto.Stock;
+import com.sg.FinancialManagementSystem.dto.StockTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,7 +31,7 @@ public class PortfolioStockDaoDB implements PortfolioStockDao {
             PortfolioStock portfolioStock = jdbcTemplate.queryForObject(GET_PS_BY_ID, new PortfolioStockMapper(), portfolioStockID);
 
             //SET STOCK AND PORTFOLIO
-            setStockAndPortfolioByPortfolioStock(portfolioStock);
+            setStockAndPortfolioAndTransactionsByPortfolioStock(portfolioStock);
 
             return portfolioStock;
         } catch (DataAccessException e) {
@@ -42,7 +44,7 @@ public class PortfolioStockDaoDB implements PortfolioStockDao {
         final String GET_ALL_PS = "SELECT * FROM PortfolioStock ";
         List<PortfolioStock> portfolioStocks = jdbcTemplate.query(GET_ALL_PS, new PortfolioStockMapper());
         //SET STOCK AND PORTFOLIO FOR EACH STOCK
-        setStockAndPortfolioByPortfolioStockList(portfolioStocks);
+        setStockAndPortfolioAndTransactionsByPortfolioStockList(portfolioStocks);
         return portfolioStocks;
     }
 
@@ -110,24 +112,33 @@ public class PortfolioStockDaoDB implements PortfolioStockDao {
         List<PortfolioStock> portfolioStockList =
                 jdbcTemplate.query(GET_PS_BY_PORTFOLIO, new PortfolioStockMapper(), portfolio.getPortfolioID());
         //SET STOCK AND PORTFOLIO FOR EACH STOCK
-        setStockAndPortfolioByPortfolioStockList(portfolioStockList);
+        setStockAndPortfolioAndTransactionsByPortfolioStockList(portfolioStockList);
 
         return portfolioStockList;
     }
 
     //PRIVATE HELPER FUNCTIONS
-    private void setStockAndPortfolioByPortfolioStockList(List<PortfolioStock> portfolioStockList) {
+    private void setStockAndPortfolioAndTransactionsByPortfolioStockList(List<PortfolioStock> portfolioStockList) {
         for(PortfolioStock ps : portfolioStockList) {
-            int portfolioStockID = ps.getPortfolioStockID();
-            ps.setPortfolio(getPortfolioByPorfolioStock(portfolioStockID));
-            ps.setStock(getStockByPortfolioStock(portfolioStockID));
+            setStockAndPortfolioAndTransactionsByPortfolioStock(ps);
         }
     }
 
-    private void setStockAndPortfolioByPortfolioStock(PortfolioStock portfolioStock) {
+    private void setStockAndPortfolioAndTransactionsByPortfolioStock(PortfolioStock portfolioStock) {
         int portfolioStockID = portfolioStock.getPortfolioStockID();
         portfolioStock.setPortfolio(getPortfolioByPorfolioStock(portfolioStockID));
         portfolioStock.setStock(getStockByPortfolioStock(portfolioStockID));
+        portfolioStock.setStockTransactionList(getStockTransactionByPortfolioStock(portfolioStockID));
+    }
+
+    private List<StockTransaction> getStockTransactionByPortfolioStock(int portfolioStockID) {
+        final String GET_STs_BY_PORTFOLIO_STOCK = "SELECT st.* FROM stocktransaction st " +
+                "JOIN PortfolioBridge pb ON st.stockTransactionID = pb.stockTransactionID " +
+                "JOIN PortfolioStock ps ON pb.portfolioID = ps.portfolioID AND pb.stockID = ps.stockID " +
+                "WHERE ps.portfoliostockID = ?";
+
+        List<StockTransaction> stockTransactionList = jdbcTemplate.query(GET_STs_BY_PORTFOLIO_STOCK, new StockTransactionMapper(),portfolioStockID);
+        return stockTransactionList;
     }
 
     private Stock getStockByPortfolioStock(int portfolioStockID) {

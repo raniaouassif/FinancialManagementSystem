@@ -2,6 +2,7 @@ package com.sg.FinancialManagementSystem.dto;
 
 import javax.sound.sampled.Port;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author raniaouassif on 2023-07-25
@@ -16,6 +17,7 @@ public class PortfolioStock {
     private BigDecimal percentageReturn;
     private Portfolio portfolio;
     private Stock stock;
+    private List<StockTransaction> stockTransactionList;
 
     public int getPortfolioStockID() {
         return portfolioStockID;
@@ -87,5 +89,13 @@ public class PortfolioStock {
 
     public void setStock(Stock stock) {
         this.stock = stock;
+    }
+
+    public List<StockTransaction> getStockTransactionList() {
+        return stockTransactionList;
+    }
+
+    public void setStockTransactionList(List<StockTransaction> stockTransactionList) {
+        this.stockTransactionList = stockTransactionList;
     }
 }

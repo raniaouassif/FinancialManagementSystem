@@ -62,29 +62,43 @@ public class CustomerDaoDB implements CustomerDao {
 
     @Override
     public void deleteCustomerByID(int customerID) {
-        Customer customerToDelete = getCustomerByID(customerID);
-        String customerName = customerToDelete.getFirstName() + " " + customerToDelete.getLastName();
-        // First set all the customer's accounts to closed and set customerID to null
-        List<Account> customerAccounts = getAccountsByCustomer(customerID);
+        // First delete the portfolioBridge
+        final String DELETE_PORTFOLIO_BRIDGE = "DELETE pb FROM PortfolioBridge pb " +
+                "JOIN Portfolio p ON p.portfolioID = pb.portfolioID " +
+                "JOIN Customer c ON c.customerID = p.customerID " +
+                "WHERE c.customerID = ?";
+        jdbcTemplate.update(DELETE_PORTFOLIO_BRIDGE, customerID);
 
-        final String UPDATE_ACCOUNTS_TO_CLOSED = "UPDATE Account SET "
-                + "depositBalance = 0, "
-                + "interestBalance = 0, "
-                + "totalBalance = 0, "
-                + "closingDate = ?, "
-                + "status = 'CLOSED', "
-                + "customerID = null, "
-                + "closingReason = ? "
-                + "WHERE accountID = ?;";
+        //Then delete the portfolio stock
+        final String DELETE_PORTFOLIO_STOCK = "DELETE ps FROM PortfolioStock ps " +
+                "JOIN Portfolio p ON p.portfolioID = ps.portfolioID " +
+                "JOIN Customer c ON c.customerID = p.customerID " +
+                "WHERE c.customerID = ?";
+        jdbcTemplate.update(DELETE_PORTFOLIO_STOCK, customerID);
 
-        String closingReason = "Customer " + customerName + " has been deleted from the system.";
-        LocalDate closingDate = LocalDate.now();
-        for(Account account : customerAccounts) {
-            jdbcTemplate.update(UPDATE_ACCOUNTS_TO_CLOSED,
-                    closingDate,
-                    closingReason,
-                    account.getAccountID());
-        }
+        //Then delete the portfolio
+        final String DELETE_PORTFOLIO = "DELETE FROM Portfolio WHERE customerID = ?";
+        jdbcTemplate.update(DELETE_PORTFOLIO, customerID);
+
+        // DELETE ACCOUNT TRANSACTION
+        final String DELETE_ACCOUNT_TRANSACTION = "DELETE at FROM AccountTransaction at " +
+                "JOIN Account a ON a.accountID = at.accountID1 OR a.accountID = at.accountID2 " +
+                "JOIN Customer c ON c.customerID = a.customerID " +
+                "WHERE c.customerID = ?";
+        jdbcTemplate.update(DELETE_ACCOUNT_TRANSACTION, customerID);
+
+        //DELETE THE ACCOUNT BRIDGE
+        final String DELETE_ACCOUNT_BRIDGE = "DELETE ab FROM AccountBridge ab " +
+                "JOIN Account a ON a.accountID = ab.accountId " +
+                "JOIN Customer c ON c.customerID = a.customerID " +
+                "WHERE c.customerID = ?";
+        jdbcTemplate.update(DELETE_ACCOUNT_BRIDGE, customerID);
+
+        //DELETE THE ACCOUNT
+        final String DELETE_ACCOUNT = "DELETE a FROM Account a " +
+                "JOIN Customer c ON c.customerID = a.customerID " +
+                "WHERE c.customerID = ?";
+        jdbcTemplate.update(DELETE_ACCOUNT, customerID);
 
         //Then delete the customer
         final String DELETE_CUSTOMER_BY_ID = "DELETE FROM Customer WHERE customerID = ?";

@@ -1,6 +1,7 @@
 package com.sg.FinancialManagementSystem.dao;
 
 import com.sg.FinancialManagementSystem.dto.*;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,7 +69,6 @@ class AccountDaoDBTest {
         for(Customer customer : customers) {
             customerDao.deleteCustomerByID(customer.getCustomerID());
         }
-
     }
 
     @Test
@@ -510,6 +510,11 @@ class AccountDaoDBTest {
 
        //Assert that James Bond only has 2 OPEN accounts
         assertEquals(2, accountsFromDao.size());
+
+    }
+
+    @Test
+    void delete() {
 
     }
 }

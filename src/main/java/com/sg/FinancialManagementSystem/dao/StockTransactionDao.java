@@ -19,7 +19,5 @@ public interface StockTransactionDao {
 
     List<StockTransaction> getStockTransactionsByPortfolio(Portfolio portfolio);
 
-    List<StockTransaction> getStockTransactionByPortfolioStock(PortfolioStock portfolioStock);
-
     List<StockTransaction> getStockTransactionByStock(Stock stock);
 }

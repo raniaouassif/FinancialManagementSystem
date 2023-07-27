@@ -2,6 +2,7 @@ package com.sg.FinancialManagementSystem.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * @author raniaouassif on 2023-07-25
@@ -81,5 +82,18 @@ public class StockTransaction {
 
     public void setEo(ExchangeOrganization eo) {
         this.eo = eo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof StockTransaction)) return false;
+        StockTransaction that = (StockTransaction) o;
+        return getStockTransactionID() == that.getStockTransactionID() && getNumberOfShares() == that.getNumberOfShares() && Objects.equals(getDateTime(), that.getDateTime()) && getType() == that.getType() && Objects.equals(getTransactionCost(), that.getTransactionCost()) && Objects.equals(getPortfolio(), that.getPortfolio()) && Objects.equals(getStock(), that.getStock()) && Objects.equals(getEo(), that.getEo());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getStockTransactionID(), getDateTime(), getType(), getNumberOfShares(), getTransactionCost(), getPortfolio(), getStock(), getEo());
     }
 }

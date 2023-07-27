@@ -84,6 +84,7 @@ public class CompanyDaoDB implements CompanyDao {
                 "JOIN Stock s ON seo.stockID = s.stockID " +
                 "JOIN Company c ON c.companyID = s.companyID " +
                 "WHERE c.companyID = ?";
+
         jdbcTemplate.update(DELETE_PORTFOLIO_BRIDGE, companyID);
 
         //Then delete from the PortfolioStock bridge
@@ -92,6 +93,13 @@ public class CompanyDaoDB implements CompanyDao {
                 "JOIN Company c ON c.companyID = s.companyID " +
                 "WHERE c.companyID = ?";
         jdbcTemplate.update(DELETE_PORTFOLIO_STOCK, companyID);
+
+        // Then delete the StockExchangeOrganization
+        final String DELETE_SEO = "DELETE seo FROM StockExchangeOrganization seo "
+                + "JOIN Stock s ON s.stockID = seo.stockID "
+                + "JOIN Company c ON c.companyID = s.companyID "
+                + "WHERE c.companyID = ?";
+        jdbcTemplate.update(DELETE_SEO, companyID);
 
         //Then delete the Stock
         final String DELETE_COMPANY_STOCK = "DELETE FROM Stock WHERE companyID = ?";

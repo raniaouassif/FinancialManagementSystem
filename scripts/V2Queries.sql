@@ -42,7 +42,24 @@ WHERE c.customerID = 1 ;
 SELECT a.* FROM Account a 
 JOIN Customer c ON c.customerID = a.customerID 
 WHERE a.status = 'OPEN' AND c.customerID = 1;
+-- ------------------------------------------------------------------------------------------------------
+-- AccountBridge
 
+-- GET ACCOUNT BRIDGE BY CUSTOMER
+SELECT ab.* FROM AccountBridge ab
+JOIN Account a ON a.accountID = ab.accountId
+JOIN Customer c ON c.customerID = a.customerID 
+WHERE c.customerID = 1;
+
+-- ------------------------------------------------------------------------------------------------------
+-- AccountTransaction
+
+-- GET ACCOUNT TRANSACTIONS BY CUSTOMER
+SELECT at.* FROM AccountTransaction at
+JOIN Account a ON a.accountID = at.accountID1 OR a.accountID = at.accountID2
+JOIN Customer c ON c.customerID = a.customerID
+WHERE c.customerID = 1;
+ 
 -- ------------------------------------------------------------------------------------------------------
 -- AccountType 
 -- GET ACCOUNT TYPES BY BANK 
@@ -180,6 +197,17 @@ WHERE c.companyID = 1;
 -- JOIN Company c ON c.companyID = s.companyID 
 -- WHERE c.companyID = 1;
 
+-- GET PORTFOLIO BRIDGE BY CUSTOMER
+SELECT pb.* FROM PortfolioBridge pb
+JOIN Portfolio p ON p.portfolioID = pb.portfolioID
+JOIN Customer c ON c.customerID = p.customerID
+WHERE c.customerID = 1;
+
+DELETE pb FROM PortfolioBridge pb
+JOIN Portfolio p ON p.portfolioID = pb.portfolioID
+JOIN Customer c ON c.customerID = p.customerID
+WHERE c.customerID = 1;
+
 -- ------------------------------------------------------------------------------------------------------
 -- Portfolio Stock
 -- GET PORTFOLIO STOCKS BY PORTFOLIO 
@@ -196,6 +224,18 @@ WHERE c.companyID = 2;
 -- JOIN Stock s ON s.stockID = ps.stockID
 -- JOIN Company c ON c.companyID = s.companyID 
 -- WHERE c.companyID = 2;
+
+-- GET PORTFOLIO STOCKS BY CUSTOMER 
+SELECT ps.* FROM PortfolioStock ps
+JOIN Portfolio p ON p.portfolioID = ps.portfolioID 
+JOIN Customer c ON c.customerID = p.customerID
+WHERE c.customerID = 2;
+
+-- DELETE ps FROM PortfolioStock ps
+-- JOIN Portfolio p ON p.portfolioID = ps.portfolioID 
+-- JOIN Customer c ON c.customerID = p.customerID
+-- WHERE c.customerID = 2;
+
 -- ------------------------------------------------------------------------------------------------------
 -- Stock
 -- GET STOCK BY COMPANY
@@ -242,7 +282,6 @@ JOIN PortfolioStock ps ON pb.portfolioID = ps.portfolioID AND pb.stockID = ps.st
 WHERE ps.portfoliostockID = 1 ;   
 
 -- GET STOCK TRANSACTIONS BY STOCK 
-
 SELECT st.* FROM stocktransaction st 
 JOIN PortfolioBridge pb ON st.stockTransactionID = pb.stockTransactionID
 JOIN Stock s ON pb.StockID = s.StockID

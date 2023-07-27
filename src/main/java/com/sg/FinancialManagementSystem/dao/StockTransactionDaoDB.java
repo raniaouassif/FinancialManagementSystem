@@ -10,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -50,7 +51,7 @@ public class StockTransactionDaoDB implements StockTransactionDao{
                 "VALUES (?,?,?,?)";
 
         jdbcTemplate.update(ADD_ST,
-                st.getDateTime(),
+                Timestamp.valueOf(st.getDateTime()),
                 st.getType().toString(),
                 st.getNumberOfShares(),
                 st.getTransactionCost());
@@ -71,7 +72,7 @@ public class StockTransactionDaoDB implements StockTransactionDao{
                 "WHERE stockTransactionID = ?";
 
         jdbcTemplate.update(UPDATE_ST,
-                st.getDateTime(),
+                Timestamp.valueOf(st.getDateTime()),
                 st.getType().toString(),
                 st.getNumberOfShares(),
                 st.getTransactionCost(),
@@ -98,20 +99,6 @@ public class StockTransactionDaoDB implements StockTransactionDao{
                 "WHERE p.portfolioID = ?";
 
         List<StockTransaction> stockTransactionList = jdbcTemplate.query(GET_STs_BY_PORTFOLIO_STOCK, new StockTransactionMapper(), portfolio.getPortfolioID());
-
-        setStockEOandPortfolioForStList(stockTransactionList);
-
-        return stockTransactionList;
-    }
-
-    @Override
-    public List<StockTransaction> getStockTransactionByPortfolioStock(PortfolioStock portfolioStock) {
-        final String GET_STs_BY_PORTFOLIO_STOCK = "SELECT st.* FROM stocktransaction st " +
-                "JOIN PortfolioBridge pb ON st.stockTransactionID = pb.stockTransactionID " +
-                "JOIN PortfolioStock ps ON pb.portfolioID = ps.portfolioID AND pb.stockID = ps.stockID " +
-                "WHERE ps.portfoliostockID = ?";
-
-        List<StockTransaction> stockTransactionList = jdbcTemplate.query(GET_STs_BY_PORTFOLIO_STOCK, new StockTransactionMapper(), portfolioStock.getPortfolioStockID());
 
         setStockEOandPortfolioForStList(stockTransactionList);
 

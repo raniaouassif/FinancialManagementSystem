@@ -54,7 +54,6 @@ class PortfolioDaoDBTest {
         portfolio.setCustomer(customer);
         portfolio.setPortfolioStocks(new ArrayList<>());
         portfolio.setStockTransactions(new ArrayList<>());
-        portfolio.setStockTransactions(new ArrayList<>());
         portfolio = portfolioDao.addPortfolio(portfolio);
 
 

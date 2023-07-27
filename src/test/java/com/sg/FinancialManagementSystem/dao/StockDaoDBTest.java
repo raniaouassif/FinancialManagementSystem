@@ -41,11 +41,14 @@ class StockDaoDBTest {
         for(Stock stock : stockList) {
             stockDao.deleteStockByID(stock.getStockID());
         }
+
         //Delete Companies
         List<Company> companyList = companyDao.getAllCompanies();
         for(Company company : companyList) {
             companyDao.deleteCompanyByID(company.getCompanyID());
         }
+
+
     }
 
     @Test

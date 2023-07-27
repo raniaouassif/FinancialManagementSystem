@@ -26,14 +26,19 @@ class ExchangeOrganizationDaoDBTest {
     @Autowired
     ExchangeOrganizationDao eoDao;
 
-    @Autowired
-    AccountTypeDao accountTypeDao;
     @BeforeEach
     void setUp() {
-        List<AccountType> accountTypes = accountTypeDao.getAllAccountTypes();
-        for(AccountType accountType : accountTypes) {
-            accountTypeDao.deleteAccountTypeByID(accountType.getAccountTypeID());
+        //Delete the stock
+        List<Stock> stockList = stockDao.getAllStocks();
+        for(Stock stock : stockList) {
+            stockDao.deleteStockByID(stock.getStockID());
         }
+        //Delete Companies
+        List<Company> companyList = companyDao.getAllCompanies();
+        for(Company company : companyList) {
+            companyDao.deleteCompanyByID(company.getCompanyID());
+        }
+
         //Delete all exchange organizations
         List<ExchangeOrganization> exchangeOrganizationList = eoDao.getAllExchangeOrganizations();
         for(ExchangeOrganization eo : exchangeOrganizationList) {
