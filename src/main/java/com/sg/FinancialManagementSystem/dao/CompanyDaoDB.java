@@ -1,15 +1,18 @@
 package com.sg.FinancialManagementSystem.dao;
 
 import com.sg.FinancialManagementSystem.dao.mappers.CompanyMapper;
+import com.sg.FinancialManagementSystem.dao.mappers.ExchangeOrganizationMapper;
 import com.sg.FinancialManagementSystem.dao.mappers.StockMapper;
 import com.sg.FinancialManagementSystem.dto.Company;
 import com.sg.FinancialManagementSystem.dto.CompanyStatus;
+import com.sg.FinancialManagementSystem.dto.ExchangeOrganization;
 import com.sg.FinancialManagementSystem.dto.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -130,8 +133,11 @@ public class CompanyDaoDB implements CompanyDao {
     private Stock getStockByCompany(int companyID) {
         try {
             final String GET_STOCK_BY_COMPANY = "SELECT * FROM Stock WHERE companyID = ?";
-            //todo set ?
-            return jdbcTemplate.queryForObject(GET_STOCK_BY_COMPANY, new StockMapper(), companyID);
+
+            Stock stock = jdbcTemplate.queryForObject(GET_STOCK_BY_COMPANY, new StockMapper(), companyID);
+            setCompanyAndEOsForStock(stock);
+
+            return stock;
         } catch (DataAccessException e) {
             return null;
         }
@@ -142,4 +148,33 @@ public class CompanyDaoDB implements CompanyDao {
             company.setStock(getStockByCompany(company.getCompanyID()));
         }
     }
+
+    // FROM STOCK
+    private void setCompanyAndEOsForStock(Stock stock) {
+        stock.setCompany(getCompanyByStock(stock));
+        stock.setExchangeOrganizations(getExchangeOrganizationsByStock(stock));
+    }
+
+    private List<ExchangeOrganization> getExchangeOrganizationsByStock(Stock stock) {
+        final String GET_EOs_BY_STOCK = "SELECT eo.* FROM ExchangeOrganization eo " +
+                "JOIN StockExchangeOrganization seo ON seo.exchangeOrganizationID = eo.exchangeOrganizationID " +
+                "JOIN Stock s ON s.stockID = seo.stockID " +
+                "WHERE s.stockID = ?";
+
+        List<ExchangeOrganization> eoList = jdbcTemplate.query(GET_EOs_BY_STOCK, new ExchangeOrganizationMapper(), stock.getStockID());
+
+        return eoList.size() == 0 ? new ArrayList<>() : eoList;
+    }
+
+    private Company getCompanyByStock(Stock stock) {
+        final String GET_COMPANY_BY_STOCK = "SELECT  c.* FROM Company c " +
+                "JOIN Stock s on s.companyID = c.companyID " +
+                "WHERE s.stockID = ?";
+
+        Company company = jdbcTemplate.queryForObject(GET_COMPANY_BY_STOCK, new CompanyMapper(), stock.getStockID());
+
+        return company;
+    }
+
+
 }

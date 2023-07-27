@@ -1,10 +1,10 @@
 package com.sg.FinancialManagementSystem.controller;
 
 import com.sg.FinancialManagementSystem.dto.Company;
+import com.sg.FinancialManagementSystem.dto.ExchangeOrganization;
+import com.sg.FinancialManagementSystem.dto.Stock;
 import com.sg.FinancialManagementSystem.dto.StockTransaction;
-import com.sg.FinancialManagementSystem.service.CompanyService;
-import com.sg.FinancialManagementSystem.service.StockTransactionService;
-import com.sg.FinancialManagementSystem.service.StockTransactionServiceImpl;
+import com.sg.FinancialManagementSystem.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +21,10 @@ public class ApplicationController {
     @Autowired
     CompanyService companyService;
 
+    @Autowired
+    ExchangeOrganizationService exchangeOrganizationService;
+    @Autowired
+    StockService stockService;
     @Autowired
     StockTransactionService stockTransactionService;
     @GetMapping("/")
@@ -41,7 +45,24 @@ public class ApplicationController {
     @GetMapping("/companies")
     public String displayCompanies(Model model) {
         List<Company> companies = companyService.getAllCompanies();
+        List<ExchangeOrganization> exchangeOrganizations = exchangeOrganizationService.getAllExchangeOrganizations();
+        List<Stock> stocks = stockService.getAllStocks();
+
         model.addAttribute("companies", companies);
+        model.addAttribute("stocks", stocks);
+        model.addAttribute("exchangeOrganizations", exchangeOrganizations);
         return "companies";
+    }
+
+    @GetMapping("/stock-exchanges")
+    public String displayStockExchanges(Model model) {
+        List<Company> companies = companyService.getAllCompanies();
+        List<ExchangeOrganization> exchangeOrganizations = exchangeOrganizationService.getAllExchangeOrganizations();
+        List<Stock> stocks = stockService.getAllStocks();
+
+        model.addAttribute("companies", companies);
+        model.addAttribute("stocks", stocks);
+        model.addAttribute("exchangeOrganizations", exchangeOrganizations);
+        return "stock-exchanges";
     }
 }

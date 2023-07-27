@@ -51,10 +51,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/">Latest trades</a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="companies">Companies</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="stock-exchanges">Stock Exchange<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
@@ -70,37 +70,26 @@
 
     <div class="row m-4 text-center">
         <h3>
-            FMS Companies
+            FMS Stock Exchanges
         </h3>
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                 <tr>
+                    <th>Ticker</th>
                     <th>Name</th>
-                    <th>Industry</th>
-                    <th>Stock</th>
-                    <th>Stock Exchanges</th>
-                    <th>Status</th>
+                    <th>Details</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="company : ${companies}">
-                    <td th:text="${company.name}">Name</td>
-                    <td th:text="${company.industry}">Industry</td>
-
-                    <td th:if="${company.stock == null}" th:text="${'-'}">Stock</td>
-                    <td th:if="${company.stock != null}" th:text="${company.stock.getTickerCode()}">Stock</td>
-
-                    <td th:if="${company.stock == null}" th:text="${'-'}">Stock Exchange</td>
-                    <!--                NESTED TABLE OF ROWS OF STOCK EXCHANGE FOR EACH COMPANY STOCK -->
-                    <td th:if="${company.stock != null}">
-                        <table class="mx-auto">
-                            <tr th:each="exchange : ${company.stock.exchangeOrganizations}">
-                                <td th:text="${exchange.tickerCode}">Stock Exchange Ticker Code</td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td th:text="${company.status}">Status</td>
+                <tr th:each="exchangeOrg : ${exchangeOrganizations}">
+                    <td th:text="${exchangeOrg.tickerCode}">Ticker</td>
+                    <td th:text="${exchangeOrg.name}">Name</td>
+                    <td><a href="#" th:href="@{/stock-exchanges/detail(ID=${exchangeOrg.exchangeOrganizationID})}">Details</a></td>
+                    <td><a href="#" th:href="@{/stock-exchanges/edit(ID=${exchangeOrg.exchangeOrganizationID})}">Edit</a></td>
+                    <td><a href="#" th:href="@{/stock-exchanges/delete(ID=${exchangeOrg.exchangeOrganizationID})}">Delete</a></td>
                 </tr>
                 </tbody>
             </table>
