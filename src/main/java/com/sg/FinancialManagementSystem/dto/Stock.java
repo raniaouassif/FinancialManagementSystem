@@ -19,6 +19,10 @@ public class Stock {
     private List<ExchangeOrganization> exchangeOrganizations;
 
 
+    private String formattedMarketCap;
+    private String formattedOutstandingShares;
+    private String formattedDailyVolume;
+
     public int getStockID() {
         return stockID;
     }
@@ -102,6 +106,33 @@ public class Stock {
     @Override
     public int hashCode() {
         return Objects.hash(getStockID(), getTickerCode(), getStatus(), getSharePrice(), getNumberOfOutstandingShares(), getMarketCap(), getDailyVolume(), getCompany(), getExchangeOrganizations());
+    }
+
+
+    //NOT INCLUDED IN THE EQUAL & HASH
+
+    public String getFormattedMarketCap() {
+        return formattedMarketCap;
+    }
+
+    public void setFormattedMarketCap(String formattedMarketCap) {
+        this.formattedMarketCap = formattedMarketCap;
+    }
+
+    public String getFormattedOutstandingShares() {
+        return formattedOutstandingShares;
+    }
+
+    public void setFormattedOutstandingShares(String formattedOutstandingShares) {
+        this.formattedOutstandingShares = formattedOutstandingShares;
+    }
+
+    public String getFormattedDailyVolume() {
+        return formattedDailyVolume;
+    }
+
+    public void setFormattedDailyVolume(String formattedDailyVolume) {
+        this.formattedDailyVolume = formattedDailyVolume;
     }
 }
 

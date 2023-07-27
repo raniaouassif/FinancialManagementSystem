@@ -74,7 +74,7 @@ INSERT INTO Account (openingDate, depositBalance, status, customerID) VALUES
 	('2022-01-01', 40.00, 'OPEN', 1),
 	('2023-11-28', 100.00, 'OPEN', 1),
 	('2020-05-05', 1000.00, 'OPEN', 3),
-	('2018-10-12', 500.00,' OPEN', 4),
+	('2018-10-12', 500.00, 'OPEN', 4),
 	('2019-12-12', 20.00, 'OPEN',5),
 	('2018-07-19', 55.00, 'OPEN',6);
 			

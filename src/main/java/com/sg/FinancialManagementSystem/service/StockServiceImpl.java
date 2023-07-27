@@ -8,6 +8,7 @@ import com.sg.FinancialManagementSystem.dto.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -55,5 +56,25 @@ public class StockServiceImpl implements StockService{
     @Override
     public List<Stock> getStocksByPortfolio(Portfolio portfolio) {
         return stockDao.getStocksByPortfolio(portfolio);
+    }
+
+    private void setFormattedStockFields(Stock stock) {
+        stock.setFormattedMarketCap(formatWithUnit(stock.getMarketCap()));
+        stock.setFormattedDailyVolume(formatWithUnit(BigDecimal.valueOf(stock.getDailyVolume())));
+        stock.setFormattedOutstandingShares(formatWithUnit(BigDecimal.valueOf(stock.getNumberOfOutstandingShares())));
+    }
+
+    private String formatWithUnit(BigDecimal value) {
+        if (value.compareTo(BigDecimal.valueOf(1_000_000_000_000L)) >= 0) {
+            return value.divide(BigDecimal.valueOf(1_000_000_000_000L)).setScale(2, BigDecimal.ROUND_HALF_UP) + "T";
+        } else if (value.compareTo(BigDecimal.valueOf(1_000_000_000L)) >= 0) {
+            return value.divide(BigDecimal.valueOf(1_000_000_000L)).setScale(2, BigDecimal.ROUND_HALF_UP) + "B";
+        } else if (value.compareTo(BigDecimal.valueOf(1_000_000L)) >= 0) {
+            return value.divide(BigDecimal.valueOf(1_000_000L)).setScale(2, BigDecimal.ROUND_HALF_UP) + "M";
+        } else if (value.compareTo(BigDecimal.valueOf(1_000L)) >= 0) {
+            return value.divide(BigDecimal.valueOf(1_000L)).setScale(2, BigDecimal.ROUND_HALF_UP) + "K";
+        } else {
+            return value.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+        }
     }
 }

@@ -44,7 +44,6 @@ JOIN Customer c ON c.customerID = a.customerID
 WHERE a.status = 'OPEN' AND c.customerID = 1;
 -- ------------------------------------------------------------------------------------------------------
 -- AccountBridge
-
 -- GET ACCOUNT BRIDGE BY CUSTOMER
 SELECT ab.* FROM AccountBridge ab
 JOIN Account a ON a.accountID = ab.accountId
@@ -53,7 +52,6 @@ WHERE c.customerID = 1;
 
 -- ------------------------------------------------------------------------------------------------------
 -- AccountTransaction
-
 -- GET ACCOUNT TRANSACTIONS BY CUSTOMER
 SELECT at.* FROM AccountTransaction at
 JOIN Account a ON a.accountID = at.accountID1 OR a.accountID = at.accountID2
@@ -94,9 +92,7 @@ JOIN Customer c ON c.customerID = a.customerID
 WHERE c.customerID = 1;
 
 -- GET BANK BY ACCOUNT 
-SELECT
-	b.*
-FROM Bank b
+SELECT b.* FROM Bank b
 JOIN BankAccountType bat ON bat.bankID = b.bankID 
 JOIN AccountBridge ba ON ba.bankID = bat.bankID AND ba.accountTypeID = bat.accountTypeID
 JOIN Account a ON a.accountID = ba.accountID
@@ -128,9 +124,7 @@ JOIN Bank b ON b.bankID = bat.bankID
 WHERE b.bankID = 4;
 
 -- GET CUSTOMERS BY ACCOUNT TYPE
-SELECT 
-	c.*
-FROM Customer c
+SELECT c.* FROM Customer c
 JOIN Account a ON a.customerID = c.customerID
 JOIN AccountBridge ba ON ba.accountID = a.accountID
 JOIN BankAccountType bat ON bat.bankID = ba.bankID AND bat.accountTypeID = ba.accountTypeID
@@ -282,7 +276,6 @@ JOIN PortfolioBridge pb ON pb.stockTransactionID = st.stockTransactionID
 JOIN Portfolio p ON p.portfolioID = pb.portfolioID
 WHERE p.portfolioID = 1;
 
-
 -- GET STOCK TRANSACTIONS BY PORTFOLIOSTOCK 
 SELECT st.* FROM stocktransaction st 
 JOIN PortfolioBridge pb ON st.stockTransactionID = pb.stockTransactionID
@@ -294,6 +287,9 @@ SELECT st.* FROM stocktransaction st
 JOIN PortfolioBridge pb ON st.stockTransactionID = pb.stockTransactionID
 JOIN Stock s ON pb.StockID = s.StockID
 WHERE s.stockID = 1 ;
+
+-- GET STOCK TRANSACTIONS BY DESC DATETIME 
+SELECT * FROM StockTransaction ORDER BY dateTime DESC;
 -- ------------------------------------------------------------------------------------------------------
 -- Transaction
 -- GET TRANSACTIONS BY ACCOUNT 

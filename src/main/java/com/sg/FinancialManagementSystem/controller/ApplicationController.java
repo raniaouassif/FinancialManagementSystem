@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -65,6 +66,13 @@ public class ApplicationController {
         return "stock-exchanges";
     }
 
+    @GetMapping("/stocks")
+    public String displayStocks(Model model) {
+        List<Stock> stocks = stockService.getAllStocks();
+
+        model.addAttribute("stocks", stocks);
+        return "stocks";
+    }
     @GetMapping("/banks")
     public String displayBanks(Model model) {
         List<Bank> banks = bankService.getAllBanks();
@@ -79,4 +87,6 @@ public class ApplicationController {
         model.addAttribute("customers", customers);
         return "customers";
     }
+
+
 }

@@ -12,6 +12,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class StockDaoDB implements StockDao {
             Stock stock = jdbcTemplate.queryForObject(GET_STOCK_BY_ID, new StockMapper(), stockID);
             //Set the company and exchange organizations
             setCompanyAndEOsForStock(stock);
+            setFormattedStockFields(stock);
             return stock;
         } catch (DataAccessException e) {
             return null;
@@ -42,6 +44,7 @@ public class StockDaoDB implements StockDao {
         List<Stock> stocks = jdbcTemplate.query(GET_ALL_STOCKS, new StockMapper());
 
         setCompanyAndEOsForStockList(stocks);
+        setFormattedStockListFields(stocks);
         return stocks;
     }
 
@@ -84,6 +87,7 @@ public class StockDaoDB implements StockDao {
                 stock.getCompany().getCompanyID(),  // Should not be able to modify company ID
                 stock.getStockID()
         );
+        setFormattedStockFields(stock);
 
         //SHOULD NOT BE ABLE TO MODIFY EOs
     }
@@ -108,6 +112,7 @@ public class StockDaoDB implements StockDao {
         final String GET_STOCK_BY_COMPANY = "SELECT * FROM Stock WHERE companyID = ?";
         Stock stock = jdbcTemplate.queryForObject(GET_STOCK_BY_COMPANY, new StockMapper(), company.getCompanyID());
         setCompanyAndEOsForStock(stock);
+        setFormattedStockFields(stock);
         return stock;
     }
 
@@ -121,6 +126,7 @@ public class StockDaoDB implements StockDao {
         List<Stock> stocks = jdbcTemplate.query(GET_STOCKS_BY_EO, new StockMapper(), eo.getExchangeOrganizationID());
         //Set the companies & eos for each stock
         setCompanyAndEOsForStockList(stocks);
+        setFormattedStockListFields(stocks);
         return stocks;
     }
 
@@ -135,6 +141,7 @@ public class StockDaoDB implements StockDao {
         List<Stock> stocks = jdbcTemplate.query(GET_STOCKS_BY_PORTFOLIO, new StockMapper(), portfolio.getPortfolioID());
         //Set the companies & eos for each stock
         setCompanyAndEOsForStockList(stocks);
+        setFormattedStockListFields(stocks);
         return stocks;
     }
 
@@ -184,4 +191,29 @@ public class StockDaoDB implements StockDao {
         }
     }
 
+    // FORMAT FIELDS
+    private void setFormattedStockListFields(List<Stock>  stockList) {
+        for(Stock stock: stockList) {
+            setFormattedStockFields(stock);
+        }
+    }
+    private void setFormattedStockFields(Stock stock) {
+        stock.setFormattedMarketCap(formatWithUnit(stock.getMarketCap()));
+        stock.setFormattedDailyVolume(formatWithUnit(BigDecimal.valueOf(stock.getDailyVolume())));
+        stock.setFormattedOutstandingShares(formatWithUnit(BigDecimal.valueOf(stock.getNumberOfOutstandingShares())));
+    }
+
+    private String formatWithUnit(BigDecimal value) {
+        if (value.compareTo(BigDecimal.valueOf(1_000_000_000_000L)) >= 0) {
+            return value.divide(BigDecimal.valueOf(1_000_000_000_000L)).setScale(2, BigDecimal.ROUND_HALF_UP) + "T";
+        } else if (value.compareTo(BigDecimal.valueOf(1_000_000_000L)) >= 0) {
+            return value.divide(BigDecimal.valueOf(1_000_000_000L)).setScale(2, BigDecimal.ROUND_HALF_UP) + "B";
+        } else if (value.compareTo(BigDecimal.valueOf(1_000_000L)) >= 0) {
+            return value.divide(BigDecimal.valueOf(1_000_000L)).setScale(2, BigDecimal.ROUND_HALF_UP) + "M";
+        } else if (value.compareTo(BigDecimal.valueOf(1_000L)) >= 0) {
+            return value.divide(BigDecimal.valueOf(1_000L)).setScale(2, BigDecimal.ROUND_HALF_UP) + "K";
+        } else {
+            return value.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+        }
+    }
 }
