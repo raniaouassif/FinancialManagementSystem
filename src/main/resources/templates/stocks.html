@@ -91,7 +91,7 @@
                 <tbody>
                 <tr th:each="stock : ${stocks}">
                     <td th:text="${stock.tickerCode}">Ticker</td>
-                    <td th:text="${stock.sharePrice}">Share Price</td>
+                    <td th:text="'$' + ${stock.sharePrice}">Share Price</td>
                     <td th:text="${stock.formattedOutstandingShares}">Outstanding Shares</td>
                     <td th:text="${stock.formattedMarketCap}">Market Cap</td>
                     <td th:text="${stock.status}">Status</td>

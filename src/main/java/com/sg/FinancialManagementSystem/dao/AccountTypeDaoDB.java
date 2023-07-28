@@ -36,7 +36,7 @@ public class AccountTypeDaoDB implements AccountTypeDao {
 
     @Override
     public List<AccountType> getAllAccountTypes() {
-        final String GET_ALL_ACCOUNT_TYPES = "SELECT * FROM AccountType";
+        final String GET_ALL_ACCOUNT_TYPES = "SELECT * FROM AccountType ORDER BY type DESC";
 
         return jdbcTemplate.query(GET_ALL_ACCOUNT_TYPES, new AccountTypeMapper());
     }
@@ -161,5 +161,12 @@ public class AccountTypeDaoDB implements AccountTypeDao {
             return null;
 
         }
+    }
+
+    @Override
+    public List<AccountType> getAccountTypeByType(AccountType type) {
+        final String GET_ACCOUNT_TYPES_BY_TYPE = "SELECT * FROM AccountType WHERE type = ? ";
+        List<AccountType> accountTypes = jdbcTemplate.query(GET_ACCOUNT_TYPES_BY_TYPE, new AccountTypeMapper(), type.toString());
+        return accountTypes.size() == 0 ? new ArrayList<>() : accountTypes;
     }
 }

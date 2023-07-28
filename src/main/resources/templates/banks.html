@@ -91,18 +91,9 @@
                 <tr th:each="bank : ${banks}">
                     <td th:text="${bank.name}">Name</td>
                     <td th:text="${bank.location}">Location</td>
-<!--                    <td th:if="${bank.accountTypes == null}" th:text="${'-'}">Account Types</td>-->
-<!--                    &lt;!&ndash;                NESTED TABLE OF ROWS OF ACCOUNT TYPE FOR EACH BANK &ndash;&gt;-->
-<!--                    <td th:if="${bank.accountTypes != null}">-->
-<!--                        <table class="mx-auto">-->
-<!--                            <tr th:each="accountType : ${bank.accountTypes}">-->
-<!--                                <td th:text="${accountType.type}">Account Type</td>-->
-<!--                            </tr>-->
-<!--                        </table>-->
-<!--                    </td>-->
-                    <td><a href="#" th:href="@{/banks/detail(ID=${bank.bankID})}">Details</a></td>
-                    <td><a href="#" th:href="@{/banks/edit(ID=${bank.bankID})}">Edit</a></td>
-                    <td><a href="#" th:href="@{/banks/delete(ID=${bank.bankID})}">Delete</a></td>
+                    <td><a href="#" th:href="@{/banks/detail(id=${bank.bankID})}">Details</a></td>
+                    <td><a href="#" th:href="@{/banks/edit(id=${bank.bankID})}">Edit</a></td>
+                    <td><a href="#" th:href="@{/banks/delete(id=${bank.bankID})}">Delete</a></td>
                 </tr>
                 </tbody>
             </table>

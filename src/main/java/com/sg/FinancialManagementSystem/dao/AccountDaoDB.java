@@ -202,8 +202,6 @@ public class AccountDaoDB implements AccountDao{
                 new TransactionMapper(),
                 account.getAccountID()
         );
-
-
         //TODO SET THE THINGS FOR TRANSACTION
         return retrievedTransactions.size() == 0 ? new ArrayList<>() : retrievedTransactions;
     }

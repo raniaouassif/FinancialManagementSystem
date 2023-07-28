@@ -1,9 +1,7 @@
 package com.sg.FinancialManagementSystem.dao;
 
 import com.sg.FinancialManagementSystem.dao.CustomerDao;
-import com.sg.FinancialManagementSystem.dao.mappers.AccountMapper;
-import com.sg.FinancialManagementSystem.dao.mappers.CustomerMapper;
-import com.sg.FinancialManagementSystem.dao.mappers.PortfolioMapper;
+import com.sg.FinancialManagementSystem.dao.mappers.*;
 import com.sg.FinancialManagementSystem.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -115,9 +113,10 @@ public class CustomerDaoDB implements CustomerDao {
                 "JOIN Bank b ON b.bankID = bat.bankID " +
                 "WHERE b.bankID = ?;";
 
-        List<Customer> retrievedCustomers = jdbcTemplate.query(GET_CUSTOMERS_BY_BANK, new CustomerMapper(), bank.getBankID());
+        List<Customer> customers = jdbcTemplate.query(GET_CUSTOMERS_BY_BANK, new CustomerMapper(), bank.getBankID());
+        setPortfolioAndAccountsByCustomersList(customers);
 
-        return retrievedCustomers.size() == 0 ? new ArrayList<>() : retrievedCustomers;
+        return customers.size() == 0 ? new ArrayList<>() : customers;
     }
 
     @Override
@@ -130,6 +129,9 @@ public class CustomerDaoDB implements CustomerDao {
                 "WHERE at.accountTypeID = ?";
 
         List<Customer> customers = jdbcTemplate.query(GET_CUSTOMERS_BY_ACCOUNT_TYPE, new CustomerMapper(), accountType.getAccountTypeID());
+        setPortfolioAndAccountsByCustomersList(customers);
+
+
         return customers.size() == 0 ? new ArrayList<>() : customers;
     }
 
@@ -153,6 +155,9 @@ public class CustomerDaoDB implements CustomerDao {
                 "WHERE c.customerID = ?";
 
         List<Account> accounts = jdbcTemplate.query(GET_ACCOUNTS_BY_CUSTOMER, new AccountMapper(), customerID);
+
+        //Set the fields for each account
+        setAccountTypeAndBankAndTransactionsForAccountList(accounts);
 
         return accounts.size() == 0 ? new ArrayList<>() : accounts;
     }
@@ -179,4 +184,73 @@ public class CustomerDaoDB implements CustomerDao {
             setPortfolioAndAccountsByCustomer(customer);
         }
     }
+
+    //FROM ACCOUNT
+    //Set account type, bank and list of transactions for a given account
+    private void setAccountTypeAndBankAndTransactionsForAccount(Account account) {
+        account.setAccountType(getAccountTypeByAccount(account)); // Set the account Type
+        account.setBank(getBankByAccount(account));  // Set the bank
+        account.setAccountTransactions(getAccountTransactionsByAccount(account)); // Set the list of transactions
+    }
+
+    //Set account type, bank and list of transactions for a list of accounts
+    private void setAccountTypeAndBankAndTransactionsForAccountList(List<Account> accountList ){
+        for(Account account : accountList) {
+            setAccountTypeAndBankAndTransactionsForAccount(account);
+        }
+    }
+
+    private Bank getBankByAccount(Account account) {
+        try {
+            final String GET_BANK_BY_ACCOUNT = "SELECT b.* FROM Bank b " +
+                    "JOIN BankAccountType bat ON bat.bankID = b.bankID " +
+                    "JOIN AccountBridge ba ON ba.bankID = bat.bankID AND ba.accountTypeID = bat.accountTypeID " +
+                    "JOIN Account a ON a.accountID = ba.accountID " +
+                    "WHERE a.accountID = ?";
+
+            // TODO : ANYTHING TO SET ?
+
+            return jdbcTemplate.queryForObject(GET_BANK_BY_ACCOUNT, new BankMapper(), account.getAccountID());
+        } catch (DataAccessException e) {
+            return null;
+        }
+    }
+
+    private AccountType getAccountTypeByAccount(Account account) {
+        try {
+            final String GET_ACCOUNT_TYPE_BY_ACCOUNT = "SELECT at.* FROM AccountType at " +
+                    "JOIN BankAccountType bat ON bat.accountTypeID = at.accountTypeID " +
+                    "JOIN AccountBridge ba ON ba.accountTypeID = bat.accountTypeID AND ba.bankID = bat.bankID " +
+                    "JOIN Account a ON a.accountID = ba.accountID " +
+                    "WHERE a.accountID = ?";
+
+            AccountType retrievedAccountType = jdbcTemplate.queryForObject(
+                    GET_ACCOUNT_TYPE_BY_ACCOUNT,
+                    new AccountTypeMapper(),
+                    account.getAccountID()
+            );
+
+            // TODO : ANYTHING TO SET ?
+            return retrievedAccountType;
+        } catch (DataAccessException e) {
+            return null;
+        }
+    }
+
+    private List<Transaction> getAccountTransactionsByAccount(Account account) {
+        //todo
+        final String GET_ACCOUNT_TRANSACTIONS_BY_ACCOUNT = "SELECT t.* FROM Transaction t " +
+                "JOIN AccountTransaction at ON at.transactionID = t.transactionID " +
+                "JOIN Account a ON a.accountID = at.accountID1 OR a.accountID = at.accountID2 " +
+                "WHERE a.accountID = ?";
+
+        List<Transaction> retrievedTransactions = jdbcTemplate.query(
+                GET_ACCOUNT_TRANSACTIONS_BY_ACCOUNT,
+                new TransactionMapper(),
+                account.getAccountID()
+        );
+        //TODO SET THE THINGS FOR TRANSACTION
+        return retrievedTransactions.size() == 0 ? new ArrayList<>() : retrievedTransactions;
+    }
+
 }

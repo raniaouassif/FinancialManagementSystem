@@ -69,14 +69,14 @@ INSERT INTO AccountType (type, minimumStartDeposit, interestRate, compoundRate) 
     ('LOW_INTEREST_SAVINGS', 25.00, 0.75, 'QUARTERLY');
 
 
-INSERT INTO Account (openingDate, depositBalance, status, customerID) VALUES 
-	('2022-01-01', 200.00, 'OPEN', 1),
-	('2022-01-01', 40.00, 'OPEN', 1),
-	('2023-11-28', 100.00, 'OPEN', 1),
-	('2020-05-05', 1000.00, 'OPEN', 3),
-	('2018-10-12', 500.00, 'OPEN', 4),
-	('2019-12-12', 20.00, 'OPEN',5),
-	('2018-07-19', 55.00, 'OPEN',6);
+INSERT INTO Account (openingDate, depositBalance, interestBalance, totalBalance, status, customerID) VALUES 
+	('2022-01-01',	1230.12,0.00,	1230.12,'OPEN',			1),
+	('2022-01-01',	40.00,	0.00,	40.00,	'OPEN',			1),
+	('2023-11-28',	2123.65,211.11,	2300.11,'OPEN',			1),
+	('2020-05-05',	1000,	123.11,	123.12,	'OPEN',			3),
+	('2018-10-12',	923.65,	0.00,	923.65,	'OPEN',			4),
+	('2019-12-12',	20.12,	131.33,	1.22,   'OPEN',			5),
+	('2018-07-19',	55.22,	5431.22,5431.22,'OPEN',			6);
 			
 INSERT INTO BankAccountType (bankID, accountTypeID ) VALUES 
 	(1,1),

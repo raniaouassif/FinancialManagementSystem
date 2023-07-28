@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+            integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+            crossorigin="anonymous"
+    />
+
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+
+
+    <title>Financial Management System</title>
+</head>
+
+
+<body>
+<!-- Main Body of Page -->
+<div class="container">
+    <div class="row m-4">
+        <div class="col text-center" id="headerSection">
+            <p><em>Simulate financial markets and trade using your bank accounts</em></p>
+            <h1>Financial Management System</h1>
+        </div>
+    </div>
+    <!-- NAVBAR -->
+    <nav
+            class="navbar navbar-expand-lg navbar-light bg-light"
+            id="navSection"
+    >
+        <!-- <a class="navbar-brand" href="#">Superhero Sightings</a> -->
+        <button
+                class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Latest trades</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/companies">Companies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/stock-exchanges">Stock Exchange</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/stocks">Stocks</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/banks">Banks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/customers">Customers</a
+                    >
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="row m-4">
+        <div class="col">
+            <h2 th:text="${bank.name}">Bank Name</h2>
+            <h4 th:text="${bank.location}">Bank Location</h4>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th class="table-main-header" colspan="4">
+                        AVAILABLE ACCOUNT TYPES
+                    </th>
+                </tr>
+                </thead>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Minimum Opening Deposit</th>
+                        <th>Interest Rate</th>
+                        <th>Compound Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr th:each="accountType : ${accountTypes}">
+                    <td th:text="${accountType.type}">Account Type</td>
+                    <td th:text="${accountType.minimumStartDeposit} +'$'">Minimum Start Deposit</td>
+
+                    <td th:if="${accountType.type.toString().equals('CHECKING')}" th:text="${'-'}">Checking Interest Rate </td>
+                    <td th:if="${accountType.type.toString().contains('SAVINGS')}" th:text="${accountType.interestRate}">Savings Interest Rate </td>
+
+                    <td th:if="${accountType.type.toString().equals('CHECKING')}" th:text="${'-'}">Checking Compound Rate </td>
+                    <td th:if="${accountType.type.toString().contains('SAVINGS')}" th:text="${accountType.compoundRate}">Savings Compound Rate </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th class="table-main-header" colspan="5">
+                        CUSTOMERS
+                    </th>
+                </tr>
+                </thead>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Client since</th>
+                    <th>#Accounts</th>
+                    <th>Aggregate balance</th>
+                    <th>#Transactions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="customer : ${customers}">
+                    <td th:text="${customer.customerID}">Customer ID</td>
+                    <td th:text="${clientSinceDateMap.get(customer.customerID)}">Since</td>
+                    <td th:text="${customersNumAccounts.get(customer.customerID)}">Count of accounts</td>
+                    <td th:text="'$' + ${customersAggBalance.get(customer.customerID)}">Aggregate balance for bank</td>
+                    <td th:text="${customersTransactions.get(customer.customerID)}">Count of transactions</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- End main body -->
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Bootstrap JS plugin bundle with Popper.js, then Bootstrap JS -->
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+        crossorigin="anonymous"
+></script>
+<!--FONT AWESOME-->
+<script
+        src="https://kit.fontawesome.com/6adcf1cfab.js"
+        crossorigin="anonymous">
+</script>
+
+</body>
+
+<style>
+    .table-main-header {
+        text-align: center;
+        font-size: larger;
+        font-weight: bold;
+        background-color: lightgray;
+        font-style: oblique;
+    }
+</style>
+
+</html>
