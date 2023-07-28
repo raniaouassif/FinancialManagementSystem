@@ -86,7 +86,7 @@
                                class="form-control" th:value="${customer.firstName}"/>
                         <div th:if="${#fields.hasErrors('customer.firstName')}">
                             <p th:each="error : ${#fields.errors('customer.firstName')}" class="alert alert-danger"
-                               th:text="${error}"> Invalid First Naem </p></div>
+                               th:text="${error}"> Invalid First Name </p></div>
                     </div>
                 </div>
                 <!-- Customer Last Name -->

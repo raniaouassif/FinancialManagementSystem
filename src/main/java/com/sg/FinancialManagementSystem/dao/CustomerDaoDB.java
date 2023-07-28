@@ -54,8 +54,19 @@ public class CustomerDaoDB implements CustomerDao {
 
     @Override
     public void updateCustomer(Customer customer) {
+        System.out.println(customer.getFirstName() + customer.getLastName())
+        ;System.out.println(customer.getPhoneNumber());
+
+        System.out.println(customer.getCustomerID());
         final String UPDATE_CUSTOMER = "UPDATE Customer SET firstName = ?, lastName = ?, phoneNumber = ? WHERE customerID = ?";
-        jdbcTemplate.update(UPDATE_CUSTOMER, customer.getFirstName(), customer.getLastName(), customer.getPhoneNumber(), customer.getCustomerID());
+        jdbcTemplate.update(
+                UPDATE_CUSTOMER,
+                customer.getFirstName(),
+                customer.getLastName(),
+                customer.getPhoneNumber(),
+                customer.getCustomerID());
+
+        Customer updated = getCustomerByID(customer.getCustomerID());
     }
 
     @Override

@@ -78,7 +78,6 @@ public class ApplicationController {
         model.addAttribute("customers", customers);
         return "customers";
     }
-
     @GetMapping("/customers-add")
     public String addCustomer(Model model) {
         model.addAttribute("customer", new Customer());
@@ -96,6 +95,27 @@ public class ApplicationController {
         customerService.addCustomer(customer);
         return "redirect:/customers";
     }
+
+    @GetMapping("/customers-edit")
+    public String editCustomer(Integer customerID, Model model) {
+        Customer customer = customerService.getCustomerByID(customerID);
+        model.addAttribute("customer", customer);
+        return "customers-edit";
+    }
+
+    @PostMapping("editCustomer")
+    public String performEditCustomer(@Valid Customer customer, BindingResult result, HttpServletRequest request, Model model) {
+        //Check for errors
+        if (result.hasErrors()) {
+            //Pass the modified customer
+            model.addAttribute("customer", customer);
+            return "customers-edit";
+        }
+
+        customerService.updateCustomer(customer);
+        return "redirect:/customers";
+    }
+
     /*
      **********************************      STOCK EXCHANGE  ****************************************************************
      */

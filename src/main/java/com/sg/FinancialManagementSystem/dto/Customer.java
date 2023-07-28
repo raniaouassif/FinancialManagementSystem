@@ -22,8 +22,8 @@ public class Customer {
     private String lastName;
 
     @NotBlank(message = "Phone number must not be blank")
-//    @Pattern(regexp = "^\\\\+1 \\\\([0-9]{3}\\\\) [0-9]{3}-[0-9]{4}$",
-//            message = "+1 (XXX) XXX-XXXX")
+    @Size(min=17, max = 17, message = "Phone number must be 10 digits.")
+    @Pattern(regexp = "^\\+1 \\([0-9]{3}\\) [0-9]{3}-[0-9]{4}$", message = "Invalid phone format")
     private String phoneNumber;
     private List<Account> accounts;
     private Portfolio portfolio;
