@@ -55,6 +55,9 @@ public class ApplicationController {
         return "latest-trades";
     }
 
+    /*
+     **********************************      COMPANIES    ***********************************************************
+     */
     @GetMapping("/companies")
     public String displayCompanies(Model model) {
         List<Company> companies = companyService.getAllCompanies();
@@ -66,6 +69,33 @@ public class ApplicationController {
         return "companies";
     }
 
+    /*
+     **********************************      CUSTOMERS       ***********************************************************
+     */
+    @GetMapping("/customers")
+    public String displayCustomers(Model model) {
+        List<Customer> customers = customerService.getAllCustomers();
+        model.addAttribute("customers", customers);
+        return "customers";
+    }
+
+    @GetMapping("/customers-add")
+    public String addCustomer(Model model) {
+        model.addAttribute("customer", new Customer());
+        return "customers-add";
+    }
+
+    @PostMapping("addCustomer")
+    public String performAddCustomer(@Valid Customer customer, BindingResult result, HttpServletRequest request, Model model) {
+        //Check for errors
+        if (result.hasErrors()) {
+            //Pass the modified customer
+            model.addAttribute("customer", customer);
+            return "/customers-add";
+        }
+        customerService.addCustomer(customer);
+        return "redirect:/customers";
+    }
     /*
      **********************************      STOCK EXCHANGE  ****************************************************************
      */
@@ -126,9 +156,6 @@ public class ApplicationController {
         return "stocks";
     }
 
-
-
-
     /*
      **********************************      BANK       ****************************************************************
      */
@@ -154,15 +181,7 @@ public class ApplicationController {
         return "/bankDetail";
     }
 
-    /*
-     **********************************      CUSTOMERS       ***********************************************************
-     */
-    @GetMapping("/customers")
-    public String displayCustomers(Model model) {
-        List<Customer> customers = customerService.getAllCustomers();
-        model.addAttribute("customers", customers);
-        return "customers";
-    }
+
 
     //  PRIVATE HELPER METHODS
 

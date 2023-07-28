@@ -37,16 +37,16 @@ INSERT INTO ExchangeOrganization (tickerCode, name) VALUES
     ('BSE', 'Bombay Stock Exchange');
     
 INSERT INTO Customer (firstName, lastName, phoneNumber) VALUES 
-	('Rania', 'Ouassif', '123-123-1234'),
-	('Jane', 'Smith', '555-5678'),
-    ('Michael', 'Johnson', '555-9876'),
-    ('Emily', 'Williams', '555-4321'),
-    ('William', 'Brown', '555-8765'),
-    ('Sophia', 'Jones', '555-3456'),
-    ('James', 'Lee', '555-6543'),
-    ('Olivia', 'Miller', '555-7890'),
-    ('Robert', 'Taylor', '555-2109'),
-    ('Emma', 'Anderson', '555-9012');
+	('Laura', 'Robertson', '+1 (514) 123-1233'),
+	('Jane', 'Smith', '+1 (234) 567-8901'),
+    ('Michael', 'Johnson', '+1 (678) 901-2345'),
+    ('Emily', 'Williams', '+1 (456) 789-0123'),
+    ('William', 'Brown', '+1 (123) 123-1233'),
+    ('Sophia', 'Jones', '+1 (890) 123-4567'),
+    ('James', 'Lee', '+1 (345) 678-9012'),
+    ('Olivia', 'Miller', '+1 (678) 901-2345'),
+    ('Robert', 'Taylor', '+1 (890) 123-4567'),
+    ('Emma', 'Anderson', '+1 (234) 567-8901');
 
 INSERT INTO Stock (tickerCode, sharePrice, status, numberOfOutstandingShares, marketCap, dailyVolume, companyID) VALUES 
     ('AMZN',  131.56, 'LISTED', 2000000000, 6940240000000.00, 1000000, 1),

@@ -1,5 +1,8 @@
 package com.sg.FinancialManagementSystem.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,8 +11,19 @@ import java.util.Objects;
  */
 public class Customer {
     private  int customerID;
+    @NotBlank(message = "First name must not be blank")
+    @Size(max = 50, message = "First name must be fewer than 50 characters")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "First name must contain only letters.")
     private String firstName;
+
+    @NotBlank(message = "Last name must not be blank")
+    @Size(max = 50, message = "Last name must be fewer than 50 characters")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Last name must contain only letters.")
     private String lastName;
+
+    @NotBlank(message = "Phone number must not be blank")
+//    @Pattern(regexp = "^\\\\+1 \\\\([0-9]{3}\\\\) [0-9]{3}-[0-9]{4}$",
+//            message = "+1 (XXX) XXX-XXXX")
     private String phoneNumber;
     private List<Account> accounts;
     private Portfolio portfolio;
