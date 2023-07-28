@@ -73,32 +73,54 @@
 
     <div class="row m-4 text-center">
         <h3>
-            FMS Stock Exchanges
+            FMS Add Stock Exchanges
         </h3>
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>Ticker</th>
-                    <th>Name</th>
-                    <th>Details</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="exchangeOrg : ${exchangeOrganizations}">
-                    <td th:text="${exchangeOrg.tickerCode}">Ticker</td>
-                    <td th:text="${exchangeOrg.name}">Name</td>
-                    <td><a href="#" th:href="@{/stock-exchanges/detail(ID=${exchangeOrg.exchangeOrganizationID})}">Details</a></td>
-                    <td><a href="#" th:href="@{/stock-exchanges/edit(ID=${exchangeOrg.exchangeOrganizationID})}">Edit</a></td>
-                    <td><a href="#" th:href="@{/stock-exchanges/delete(ID=${exchangeOrg.exchangeOrganizationID})}">Delete</a></td>
-                </tr>
-                </tbody>
-            </table>
-            <div class="col m-3">
-                <a href="/stock-exchanges-add " class="btn btn-outline-primary btn-md">+ Add Stock Exchange</a>
-            </div>
+        <div class="col-7 text-center m-3">
+            <form action="addStockExchange" method="POST">
+                <!-- Stock Exchange Ticker -->
+                <div class="form-group row">
+                    <label for="tickerCode" class="col-3 col-form-label">
+                        Ticker Code</label>
+                    <div class="col-9">
+                        <input type="text" name="tickerCode" id="tickerCode"
+                               class="form-control" th:value="${exchangeOrganization.tickerCode}"/>
+                        <div th:if="${#fields.hasErrors('exchangeOrganization.tickerCode')}">
+                            <p th:each="error : ${#fields.errors('exchangeOrganization.tickerCode')}" class="alert alert-danger"
+                               th:text="${error}"> Invalid tickerCode </p></div>
+                    </div>
+                </div>
+
+
+                <!-- Stock Exchange Name -->
+                <div class="form-group row">
+                    <label for="name" class="col-3 col-form-label">
+                        Name</label>
+                    <div class="col-9">
+                        <input type="text" name="name" id="name"
+                               class="form-control" th:value="${exchangeOrganization.name}"/>
+                        <div th:if="${#fields.hasErrors('exchangeOrganization.name')}">
+                            <p th:each="error : ${#fields.errors('exchangeOrganization.name')}" class="alert alert-danger"
+                               th:text="${error}"> Invalid Name </p></div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="stocks" class="col-3 col-form-label">
+                        Stocks</label>
+                    <div class="col-9">
+                        <select multiple id="stocks" name="stockID"
+                                class="form-control" >
+                            <option th:each="stock : ${stocks}"
+                                    th:value="${stock.stockID}"
+                                    th:text="${stock.tickerCode}">
+                                Stock Ticker</option>
+                        </select>
+                    </div>
+                </div>
+                <a href="/stock-exchanges" class="btn btn-outline-danger">Cancel</a>
+                <button type="submit" class="btn btn-primary">Add Stock Exchange</button>
+            </form>
+        </div>
         </div>
     </div>
 </div>

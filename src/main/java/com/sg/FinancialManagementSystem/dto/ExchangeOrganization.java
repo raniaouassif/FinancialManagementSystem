@@ -1,5 +1,8 @@
 package com.sg.FinancialManagementSystem.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,7 +11,12 @@ import java.util.Objects;
  */
 public class ExchangeOrganization {
     private int exchangeOrganizationID;
+    @NotBlank(message = "Ticker must not be blank")
+    @Size(max = 10, message = "Ticker must be fewer than 10 characters")
+    @Pattern(regexp = "^[A-Z]+$", message = "Ticker must contain only capital letters.")
     private String tickerCode;
+    @NotBlank(message = "Name must not be blank")
+    @Size(max = 50, message = "Name must be fewer than 50 characters")
     private String name;
     private List<Stock> stocks;
     public int getExchangeOrganizationID() {

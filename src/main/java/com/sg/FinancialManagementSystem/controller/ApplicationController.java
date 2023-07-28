@@ -5,11 +5,16 @@ import com.sg.FinancialManagementSystem.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +66,10 @@ public class ApplicationController {
         return "companies";
     }
 
+    /*
+     **********************************      STOCK EXCHANGE  ****************************************************************
+     */
+
     @GetMapping("/stock-exchanges")
     public String displayStockExchanges(Model model) {
         List<Company> companies = companyService.getAllCompanies();
@@ -73,6 +82,42 @@ public class ApplicationController {
         return "stock-exchanges";
     }
 
+    @GetMapping("/stock-exchanges-add")
+    public String addStockExchange(Model model) {
+        List<Stock> stocks = stockService.getAllStocks();
+        model.addAttribute("exchangeOrganization", new ExchangeOrganization());
+        model.addAttribute("stocks", stocks);
+        return "stock-exchanges-add";
+    }
+
+    @PostMapping("addStockExchange")
+    public String performAddStockExchange(@Valid ExchangeOrganization exchangeOrganization, BindingResult result, HttpServletRequest request, Model model) {
+        //StockEx object already coming with set ticker and name
+        //Only need to set stocks
+        String[] stockIDs = request.getParameterValues("stockID");
+
+        //Create a list of stock exchange stocks
+        List<Stock> SEstocks = new ArrayList<>();
+        if(stockIDs != null) {
+            for(String stockID : stockIDs) {
+                SEstocks.add(stockService.getStockByID(Integer.parseInt(stockID)));
+            }
+        }
+        exchangeOrganization.setStocks(SEstocks);
+
+        //Check for errors
+        if(result.hasErrors()) {
+            //Pass the modified stock ex
+            model.addAttribute("exchangeOrganization", exchangeOrganization);
+            model.addAttribute("stocks", stockService.getAllStocks());
+            return "/stock-exchanges-add";
+        }
+        exchangeOrganizationService.addExchangeOrganization(exchangeOrganization);
+        return "redirect:/stock-exchanges";
+    }
+    /*
+     **********************************      STOCK       ****************************************************************
+     */
     @GetMapping("/stocks")
     public String displayStocks(Model model) {
         List<Stock> stocks = stockService.getAllStocks();
@@ -81,6 +126,12 @@ public class ApplicationController {
         return "stocks";
     }
 
+
+
+
+    /*
+     **********************************      BANK       ****************************************************************
+     */
     @GetMapping("/banks")
     public String displayBanks(Model model) {
         List<Bank> banks = bankService.getAllBanks();
@@ -103,20 +154,9 @@ public class ApplicationController {
         return "/bankDetail";
     }
 
-    private Map<Integer, LocalDate> getClientSince(List<Customer> customers) {
-        Map<Integer, LocalDate> clientSinceMap = new HashMap<>();
-       for(Customer customer : customers) {
-           LocalDate minDate = customer.getAccounts().get(0).getOpeningDate();
-           for(Account account : customer.getAccounts() ) {
-               if(minDate.isAfter(account.getOpeningDate())) {
-                   minDate = account.getOpeningDate();
-               }
-           }
-           clientSinceMap.put(customer.getCustomerID(), minDate);
-       }
-       return clientSinceMap;
-    }
-
+    /*
+     **********************************      CUSTOMERS       ***********************************************************
+     */
     @GetMapping("/customers")
     public String displayCustomers(Model model) {
         List<Customer> customers = customerService.getAllCustomers();
@@ -125,6 +165,10 @@ public class ApplicationController {
     }
 
     //  PRIVATE HELPER METHODS
+
+    /*
+     *  Gets the aggregate balance for a list of customer of a given bank
+     */
     private Map<Integer, BigDecimal> getABForCustomers(List<Customer> customers, int bankID) {
         Map<Integer, BigDecimal> aggBalanceMap = new HashMap<>();
         for (Customer customer : customers) {
@@ -135,12 +179,14 @@ public class ApplicationController {
                     aggregateBalance = aggregateBalance.add(account.getTotalBalance());
                 }
             }
-
             aggBalanceMap.put(customer.getCustomerID(), aggregateBalance);
         }
         return aggBalanceMap;
     }
 
+    /*
+     *  Gets the number of accounts for a list of customer of a given bank
+     */
     private Map<Integer, Integer> getAccountsForCustomers(List<Customer> customers, int bankID) {
         Map<Integer, Integer> accountMap = new HashMap<>();
         for(Customer customer : customers){
@@ -156,6 +202,9 @@ public class ApplicationController {
         return accountMap;
     }
 
+    /*
+     *  Gets the total number of transactions for a list of customer of a given bank
+     */
     private Map<Integer, Integer> getTransactionsForCustomers(List<Customer> customers, int bankID) {
         Map<Integer, Integer> transactionsMap = new HashMap<>();
         for(Customer customer : customers){
@@ -171,6 +220,20 @@ public class ApplicationController {
             transactionsMap.put(customer.getCustomerID(), totalTransactions);
         }
         return transactionsMap;
+    }
+
+    private Map<Integer, LocalDate> getClientSince(List<Customer> customers) {
+        Map<Integer, LocalDate> clientSinceMap = new HashMap<>();
+        for(Customer customer : customers) {
+            LocalDate minDate = customer.getAccounts().get(0).getOpeningDate();
+            for(Account account : customer.getAccounts() ) {
+                if(minDate.isAfter(account.getOpeningDate())) {
+                    minDate = account.getOpeningDate();
+                }
+            }
+            clientSinceMap.put(customer.getCustomerID(), minDate);
+        }
+        return clientSinceMap;
     }
 
 }
