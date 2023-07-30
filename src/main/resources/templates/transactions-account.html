@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+            integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+            crossorigin="anonymous"
+    />
+
+    <title>Financial Management System</title>
+</head>
+
+
+<body>
+<!-- Main Body of Page -->
+<div class="container">
+    <div class="row m-4">
+        <div class="col text-center" id="headerSection">
+            <p><em>Simulate financial markets and trade using your bank accounts</em></p>
+            <h1>Financial Management System</h1>
+        </div>
+    </div>
+    <!-- NAVBAR -->
+    <nav
+            class="navbar navbar-expand-lg navbar-light bg-light"
+            id="navSection"
+    >
+        <!-- <a class="navbar-brand" href="#">Superhero Sightings</a> -->
+        <button
+                class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Latest trades</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="companies">Companies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="stock-exchanges">Stock Exchange</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="stocks">Stocks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="banks">Banks</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="customers">Customers</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="row m-4 text-center">
+            <div class="col border">
+                <h3>
+                    FMS ACCOUNT TRANSACTIONS
+                </h3>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Type</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="transaction : ${transactions}">
+                            <!--Date-->
+                            <td th:text="${transaction.dateTime.toLocalDate()}">Date</td>
+                            <!--Time-->
+                            <td th:text="${transaction.dateTime.toLocalTime()}">Time</td>
+
+                            <!--Transaction Type-->
+                            <td th:text="${transaction.transactionType}">Date time</td>
+
+                            <!--From & To for Cash-->
+                            <td th:if="${!transaction.transactionType.toString().equals('TRANSFER')}"
+                                th:text="'-'">From account</td>
+                            <td th:if="${!transaction.transactionType.toString().equals('TRANSFER')}"
+                                th:text="'-'">To account</td>
+
+                            <!--From-->
+                            <td th:if="${transaction.transactionType.toString().equals('TRANSFER') && transaction.from.accountID != account.accountID}"
+                                th:text="${transaction.from.customer.firstName} + ' ' + ${transaction.from.customer.lastName} + ' accountNumber: ' + ${transaction.from.accountID}">from another account</td>
+
+                            <td th:if="${transaction.transactionType.toString().equals('TRANSFER') && transaction.from.accountID == account.accountID}"
+                                th:text="'-'">from current account</td>
+
+                            <!--To-->
+                            <td th:if="${transaction.transactionType.toString().equals('TRANSFER') && transaction.to.accountID != account.accountID}"
+                                th:text="${transaction.to.customer.firstName} + ' ' + ${transaction.to.customer.lastName} + ' accountNumber: ' + ${transaction.to.accountID}">To another account</td>
+
+                            <td th:if="${transaction.transactionType.toString().equals('TRANSFER') && transaction.to.accountID == account.accountID}"
+                                th:text="'-'">To current account</td>
+
+                            <!--Amount-->
+                            <td th:if="${(transaction.transactionType.toString().equals('TRANSFER') && transaction.to.accountID == account.accountID)
+                                        ||  transaction.transactionType.toString().equals('DEPOSIT')}"
+                                th:text="'+ $' + ${transaction.amount}">Amount +</td>
+
+                            <td th:if="${(transaction.transactionType.toString().equals('TRANSFER') && transaction.from.accountID == account.accountID)
+                                        ||  transaction.transactionType.toString().equals('WITHDRAW')}"
+                                th:text="'- $' + ${transaction.amount}">Amount - </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="add-form" class="col border text-center">
+                <h4>
+                    FMS Account Details
+                </h4>
+                <p class="mb-0 text-right" th:text="${account.accountType.type}"></p>
+                <p class="mb-0 text-right" th:text="${account.accountType.interestRate} + '%'
+                                    + ' compounded '
+                                    + ${account.accountType.compoundRate.toString().toLowerCase()}
+                "></p>
+                <p class="mb-0 text-right" th:text="'Account number: ' + ${account.accountID} "></p>
+                <p class="mb-0 text-right" th:text="'Opening date: ' + ${account.getOpeningDate()}  "></p>
+                <p class="mb-0 text-right" th:text="'Total balance: $' + ${account.totalBalance}  "></p>
+                <p class="mb-0 text-right" th:text="'Total #transactions: ' + ${account.accountTransactions.size()}"></p>
+
+
+                <!--  Cash Transaction Form-->
+                <form action="cashTransaction" method="POST" class="border-top pt-4 pb-4">
+                    <h4>Cash transaction</h4>
+
+                    <!-- Error handling-->
+                    <div class="col-12 m-1 text-center"
+                         th:if="${!cashErr.isEmpty()}">
+                        <p class="alert alert-danger"
+                           th:text="${cashErr}">CashErr message</p>
+                    </div>
+
+                    <!-- Transaction DateTime-->
+                    <div class="form-group row">
+                        <label for="cashDateTime" class="col-3 col-form-label">
+                            Date time</label>
+                        <div class="col-9">
+                            <input type="datetime-local" name="dateTcashDateTimeime" id="cashDateTime"
+                                   class="form-control"/>
+                        </div>
+                    </div>
+
+                    <!-- Transaction Type-->
+                    <div class="form-group row">
+                        <label for="cashType" class="col-3 col-form-label">
+                            Type</label>
+                        <div class="col-9">
+                            <select id="cashType" name="cashType"
+                                    class="form-control" >
+                                <option>DEPOSIT</option>
+                                <option>WITHDRAW</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Transaction Amount-->
+                    <div class="form-group row">
+                        <label for="cashAmount" class="col-3 col-form-label">
+                            Cash </label>
+                        <div class="col-9">
+                            <input type="text" name="cashAmount" id="cashAmount"
+                                   class="form-control"/>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="accountID" th:value="${account.accountID}"/>
+                    <button type="submit" class="btn btn-primary" >Add transaction</button>
+                </form>
+
+
+
+                <!--  Transfer Transaction Form-->
+                <form action="transferTransaction" method="POST" class="border-top pt-4  pb-4">
+                    <h4>Transfer to </h4>
+
+                    <!-- Transfer Error handling-->
+                    <div class="col-12 m-1 text-center"
+                         th:if="${!transferErr.isEmpty()}">
+                        <p class="alert alert-danger"
+                           th:text="${transferErr}">Transfer Error message</p>
+                    </div>
+
+                    <!-- Transaction DateTime-->
+                    <div class="form-group row">
+                        <label for="transferDateTime" class="col-3 col-form-label">
+                            Date time</label>
+                        <div class="col-9">
+                            <input type="datetime-local" name="transferDateTime" id="transferDateTime"
+                                   class="form-control"/>
+                        </div>
+                    </div>
+
+                    <!-- Account Type -->
+                    <div class="form-group row">
+                        <label for="to" class="col-3 col-form-label">
+                            To account</label>
+                        <div class="col-9">
+                            <select id="to" name="to"
+                                    class="form-control" >
+                                <option th:each="accountTo : ${transferToAccounts}"
+                                        th:value="${accountTo.accountID}"
+                                        th:text="${accountTo.customer.firstName} + ' ' + ${accountTo.customer.lastName} + ' accountNumber: ' + ${accountTo.accountID}">
+                                    Transfer to</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Transaction Amount-->
+                    <div class="form-group row">
+                        <label for="transferAmount" class="col-3 col-form-label">
+                            Amount</label>
+                        <div class="col-9">
+                            <input type="text" name="transferAmount" id="transferAmount"
+                                   class="form-control"/>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="accountID" th:value="${account.accountID}"/>
+                    <button type="submit" class="btn btn-primary" >Transfer</button>
+                </form>
+            </div>
+    </div>
+</div>
+<!-- End main body -->
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Bootstrap JS plugin bundle with Popper.js, then Bootstrap JS -->
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+<script
+        src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"
+></script>
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+        crossorigin="anonymous"
+></script>
+</body>
+<style>
+    .table td {
+        vertical-align: middle;
+    }
+
+    #add-form {
+        display: flex;
+        flex-direction: column;
+    }
+</style>
+</html>

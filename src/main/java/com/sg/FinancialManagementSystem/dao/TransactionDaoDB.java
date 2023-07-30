@@ -1,8 +1,10 @@
 package com.sg.FinancialManagementSystem.dao;
 
 import com.sg.FinancialManagementSystem.dao.mappers.AccountMapper;
+import com.sg.FinancialManagementSystem.dao.mappers.CustomerMapper;
 import com.sg.FinancialManagementSystem.dao.mappers.TransactionMapper;
 import com.sg.FinancialManagementSystem.dto.Account;
+import com.sg.FinancialManagementSystem.dto.Customer;
 import com.sg.FinancialManagementSystem.dto.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -82,13 +84,45 @@ public class TransactionDaoDB implements TransactionDao {
     }
 
     @Override
-    public List<Transaction> getTransactionsByAccount(Account account) {
+    public List<Transaction> getTransactionsByAccount(int accountID) {
         final String GET_TRANSACTIONS_BY_ACCOUNT = "SELECT t.* FROM Transaction t " +
                 "JOIN AccountTransaction at ON at.transactionID = t.transactionID " +
                 "JOIN Account a ON a.accountID = at.accountID1 OR a.accountID = at.accountID2 " +
                 "WHERE a.accountID = ?";
 
-        List<Transaction> transactions = jdbcTemplate.query(GET_TRANSACTIONS_BY_ACCOUNT, new TransactionMapper(), account.getAccountID());
+        List<Transaction> transactions = jdbcTemplate.query(GET_TRANSACTIONS_BY_ACCOUNT, new TransactionMapper(), accountID);
+
+        // Set the accounts for each transaction
+        setAccountsForTransactionsList(transactions);
+
+        return transactions.size() == 0 ? new ArrayList<>() : transactions;
+    }
+
+    @Override
+    public List<Transaction> getASCTransactionsByAccount(int accountID) {
+        final String GET_ASC_TRANSACTIONS_BY_ACCOUNT = "SELECT t.* FROM Transaction t " +
+                "JOIN AccountTransaction at ON at.transactionID = t.transactionID " +
+                "JOIN Account a ON a.accountID = at.accountID1 OR a.accountID = at.accountID2 " +
+                "WHERE a.accountID = ? "+
+                "ORDER BY t.dateTime ASC";
+
+        List<Transaction> transactions = jdbcTemplate.query(GET_ASC_TRANSACTIONS_BY_ACCOUNT, new TransactionMapper(), accountID);
+
+        // Set the accounts for each transaction
+        setAccountsForTransactionsList(transactions);
+
+        return transactions.size() == 0 ? new ArrayList<>() : transactions;
+    }
+
+    @Override
+    public List<Transaction> getDESCTransactionsByAccount(Integer accountID) {
+        final String GET_DESC_TRANSACTIONS_BY_ACCOUNT = "SELECT t.* FROM Transaction t " +
+                "JOIN AccountTransaction at ON at.transactionID = t.transactionID " +
+                "JOIN Account a ON a.accountID = at.accountID1 OR a.accountID = at.accountID2 " +
+                "WHERE a.accountID = ? "+
+                "ORDER BY t.dateTime DESC";
+
+        List<Transaction> transactions = jdbcTemplate.query(GET_DESC_TRANSACTIONS_BY_ACCOUNT, new TransactionMapper(), accountID);
 
         // Set the accounts for each transaction
         setAccountsForTransactionsList(transactions);
@@ -121,11 +155,19 @@ public class TransactionDaoDB implements TransactionDao {
     private void setAccountFromAndToForTransaction(Transaction transaction) {
         int accountsPerTransaction = accountsPerTransaction(transaction);
         if(accountsPerTransaction == 2 ) {
-            transaction.setFrom(getAccountsByTransaction(transaction).get(0));
-            transaction.setTo(getAccountsByTransaction(transaction).get(1));
+            Account from = getAccountsByTransaction(transaction).get(1);
+            from.setCustomer(getCustomerByAccount(from.getAccountID()));
+
+            Account to = getAccountsByTransaction(transaction).get(0);
+            to.setCustomer(getCustomerByAccount(to.getAccountID()));
+
+            transaction.setFrom(from);
+            transaction.setTo(to);
         } else if(accountsPerTransaction == 1 ) {
-            transaction.setFrom(getAccountsByTransaction(transaction).get(0));
-            transaction.setTo(getAccountsByTransaction(transaction).get(0));
+            Account currentAccount = getAccountsByTransaction(transaction).get(0);
+            currentAccount.setCustomer(getCustomerByAccount(currentAccount.getAccountID()));
+            transaction.setFrom(currentAccount);
+            transaction.setTo(currentAccount);
         }
     }
 
@@ -143,14 +185,17 @@ public class TransactionDaoDB implements TransactionDao {
                     + "AccountTransaction (transactionID, accountID1, accountID2) "
                     + "VALUES (?,?,?) ";
 
+            jdbcTemplate.update(INSERT_ACCOUNT_TRANSACTION,
+                    transaction.getTransactionID(),
+                    transaction.getFrom().getAccountID(),
+                    transaction.getTo().getAccountID()
+            );
+
             if(transaction.getFrom().getAccountID() != transaction.getTo().getAccountID()) { // TRANSFER FROM AN ACCOUNT TO ANOTHER
                 int accountFromID = transaction.getFrom().getAccountID();
                 int accountToID = transaction.getTo().getAccountID();
 
-                jdbcTemplate.update(INSERT_ACCOUNT_TRANSACTION,
-                        transaction.getTransactionID(),
-                        accountFromID,
-                        accountToID);
+
 
             } else if(transaction.getFrom().getAccountID() == transaction.getTo().getAccountID()) { //DEPOSIT - WITHDRAW FROM SAME ACCOUNT
                 int accountID = transaction.getFrom().getAccountID();
@@ -160,6 +205,28 @@ public class TransactionDaoDB implements TransactionDao {
                         accountID,
                         accountID);
             }
+        }
+    }
+
+
+    //Get customer by account
+    private Customer getCustomerByAccount(int accountID) {
+        try {
+            final String GET_CUSTOMER_BY_ACCOUNT = "SELECT c.* FROM Customer c "
+                    + "JOIN Account a ON a.customerID = c.customerID "
+                    + "WHERE a.accountID = ?";
+
+            Customer retrievedCustomer = jdbcTemplate.queryForObject(
+                    GET_CUSTOMER_BY_ACCOUNT,
+                    new CustomerMapper(),
+                    accountID
+            );
+
+            //todo set ?
+
+            return retrievedCustomer;
+        } catch (DataAccessException e) {
+            return null;
         }
     }
 }

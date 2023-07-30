@@ -56,8 +56,8 @@ public class AccountDaoDB implements AccountDao{
 
         jdbcTemplate.update(ADD_ACCOUNT,
                 account.getOpeningDate(),
-                new BigDecimal(0).setScale(2, RoundingMode.HALF_UP), // the starting deposit balance is $0.00
-                AccountStatus.OPEN.toString(), // SET THE STATUS TO OPEN
+                account.getDepositBalance(), // the starting deposit balance is $0.00
+                account.getStatus().toString(), //
                 account.getCustomer().getCustomerID());
 
         //Set the account ID
@@ -132,8 +132,20 @@ public class AccountDaoDB implements AccountDao{
         return accounts.size() == 0 ? new ArrayList<>() : accounts;
     }
 
+    @Override
+    public List<Account> getClosedAccountsByCustomer(Customer customer) {
+        final String GET_CLOSED_ACCOUNTS_BY_CUSTOMER = "SELECT a.* FROM Account a " +
+                "JOIN Customer c ON c.customerID = a.customerID " +
+                "WHERE a.status = 'CLOSED' AND c.customerID = ?";
+
+        List<Account> accounts = jdbcTemplate.query(GET_CLOSED_ACCOUNTS_BY_CUSTOMER, new AccountMapper(), customer.getCustomerID());
+
+        setCustomerTypeAndBankAndTransactionsForAccountList(accounts);
+        return accounts.size() == 0 ? new ArrayList<>() : accounts;
+    }
+
     //Private helper functions
-    private Customer getCustomerByAccount(Account account) {
+    private Customer getCustomerByAccount(int accountID) {
         try {
             final String GET_CUSTOMER_BY_ACCOUNT = "SELECT c.* FROM Customer c "
                     + "JOIN Account a ON a.customerID = c.customerID "
@@ -142,7 +154,7 @@ public class AccountDaoDB implements AccountDao{
             Customer retrievedCustomer = jdbcTemplate.queryForObject(
                     GET_CUSTOMER_BY_ACCOUNT,
                     new CustomerMapper(),
-                    account.getAccountID()
+                    accountID
             );
 
             //todo set ?
@@ -191,7 +203,6 @@ public class AccountDaoDB implements AccountDao{
     }
 
     private List<Transaction> getAccountTransactionsByAccount(Account account) {
-        //todo
         final String GET_ACCOUNT_TRANSACTIONS_BY_ACCOUNT = "SELECT t.* FROM Transaction t " +
                 "JOIN AccountTransaction at ON at.transactionID = t.transactionID " +
                 "JOIN Account a ON a.accountID = at.accountID1 OR a.accountID = at.accountID2 " +
@@ -202,13 +213,12 @@ public class AccountDaoDB implements AccountDao{
                 new TransactionMapper(),
                 account.getAccountID()
         );
-        //TODO SET THE THINGS FOR TRANSACTION
         return retrievedTransactions.size() == 0 ? new ArrayList<>() : retrievedTransactions;
     }
 
     //Set customer, account type, bank and list of transactions for a given account
     private void setCustomerTypeAndBankAndTransactionsForAccount(Account account) {
-        account.setCustomer(getCustomerByAccount(account)); // Set the customer
+        account.setCustomer(getCustomerByAccount(account.getAccountID())); // Set the customer
         account.setAccountType(getAccountTypeByAccount(account)); // Set the account Type
         account.setBank(getBankByAccount(account));  // Set the bank
         account.setAccountTransactions(getAccountTransactionsByAccount(account)); // Set the list of transactions
@@ -225,5 +235,46 @@ public class AccountDaoDB implements AccountDao{
     private void insertAccountBridge(Account account) {
         final String INSERT_ACCOUNT_BRIDGE = "INSERT INTO AccountBridge (accountID, bankID, accountTypeID) VALUES (?,?,?)";
         jdbcTemplate.update(INSERT_ACCOUNT_BRIDGE, account.getAccountID(), account.getBank().getBankID(), account.getAccountType().getAccountTypeID());
+    }
+
+    //
+    // FROM ACCOUNT
+    private List<Account> getAccountsByTransaction(Transaction transaction) {
+        final String GET_ACCOUNTS_BY_TRANSACTION = "SELECT a.* FROM Account a " +
+                "JOIN AccountTransaction at ON at.accountID1 = a.accountID OR at.accountID2 = a.accountID " +
+                "JOIN Transaction t ON t.transactionID = at.transactionID " +
+                "WHERE t.transactionID = ?";
+
+        List<Account> accounts = jdbcTemplate.query(GET_ACCOUNTS_BY_TRANSACTION, new AccountMapper(), transaction.getTransactionID());
+
+        //TODO set anyhting for accounts ?
+
+        return accounts.size() == 0 ? new ArrayList<>() : accounts;
+    }
+
+    //Get the accounts per transaction
+    //Returns 1 if the transaction is through the same account
+    //Returns 2 if the transaction is from an account to another
+    private int accountsPerTransaction(Transaction transaction) {
+        return getAccountsByTransaction(transaction).size();
+    }
+
+    //Set the accounts From and To for a specific transaction
+    private void setAccountFromAndToForTransaction(Transaction transaction) {
+        int accountsPerTransaction = accountsPerTransaction(transaction);
+        if(accountsPerTransaction == 2 ) {
+            transaction.setFrom(getAccountsByTransaction(transaction).get(0));
+            transaction.setTo(getAccountsByTransaction(transaction).get(1));
+        } else if(accountsPerTransaction == 1 ) {
+            transaction.setFrom(getAccountsByTransaction(transaction).get(0));
+            transaction.setTo(getAccountsByTransaction(transaction).get(0));
+        }
+    }
+
+    //Set the accounts From and To for a list of transactions
+    private void setAccountsForTransactionsList(List<Transaction> transactionsList) {
+        for(Transaction transaction : transactionsList) {
+            setAccountFromAndToForTransaction(transaction);
+        }
     }
 }

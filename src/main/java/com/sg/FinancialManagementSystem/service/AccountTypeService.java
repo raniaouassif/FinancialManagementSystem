@@ -1,9 +1,6 @@
 package com.sg.FinancialManagementSystem.service;
 
-import com.sg.FinancialManagementSystem.dto.Account;
-import com.sg.FinancialManagementSystem.dto.AccountType;
-import com.sg.FinancialManagementSystem.dto.Bank;
-import com.sg.FinancialManagementSystem.dto.Customer;
+import com.sg.FinancialManagementSystem.dto.*;
 
 import java.util.List;
 
@@ -26,4 +23,5 @@ public interface AccountTypeService {
     List<AccountType> getAccountTypesByCustomer(Customer customer);
 
     AccountType getAccountTypeByAccount(Account account);
+
 }

@@ -2,10 +2,7 @@ package com.sg.FinancialManagementSystem.service;
 
 import com.sg.FinancialManagementSystem.dao.AccountDao;
 import com.sg.FinancialManagementSystem.dao.AccountTypeDao;
-import com.sg.FinancialManagementSystem.dto.Account;
-import com.sg.FinancialManagementSystem.dto.AccountType;
-import com.sg.FinancialManagementSystem.dto.Bank;
-import com.sg.FinancialManagementSystem.dto.Customer;
+import com.sg.FinancialManagementSystem.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

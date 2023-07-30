@@ -102,6 +102,18 @@ public class PortfolioDaoDB implements PortfolioDao{
         jdbcTemplate.update(DELETE_PORTFOLIO, portfolioID);
     }
 
+    @Override
+    public Portfolio getPortfolioByCustomer(int customerID) {
+        try{
+            final String GET_PORTFOLIO_BY_CUSTOMER = "SELECT * FROM Portfolio WHERE customerID = ?";
+            Portfolio portfolio = jdbcTemplate.queryForObject(GET_PORTFOLIO_BY_CUSTOMER, new PortfolioMapper(), customerID);
+            set_Customer_Transactions_Stocks_By_Portfolio(portfolio);
+            return portfolio;
+        } catch (DataAccessException e){
+            return  null;
+        }
+    }
+
     //PRIVATE HELPER FUNCTIONS
     private void set_Customer_Transactions_Stocks_By_PortfoliosList(List<Portfolio> portfoliosList) {
         for (Portfolio portfolio : portfoliosList) {

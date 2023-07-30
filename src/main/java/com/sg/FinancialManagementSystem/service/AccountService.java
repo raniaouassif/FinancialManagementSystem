@@ -2,6 +2,9 @@ package com.sg.FinancialManagementSystem.service;
 
 import com.sg.FinancialManagementSystem.dto.Account;
 import com.sg.FinancialManagementSystem.dto.Customer;
+import com.sg.FinancialManagementSystem.service.Exceptions.InsufficientMinDepositException;
+import com.sg.FinancialManagementSystem.service.Exceptions.InvalidBankAccountTypeException;
+import com.sg.FinancialManagementSystem.service.Exceptions.InvalidDateException;
 
 import java.util.List;
 
@@ -10,9 +13,10 @@ import java.util.List;
  */
 public interface AccountService {
     Account getAccountByID(int accountID);
+
     List<Account> getAllAccounts();
 
-    Account addAccount(Account account);
+    Account addAccount(Account account) throws InsufficientMinDepositException, InvalidBankAccountTypeException, InvalidDateException;
 
     void updateAccount(Account account);
 
@@ -21,4 +25,6 @@ public interface AccountService {
     List<Account> getAccountsByCustomer(Customer customer);
 
     List<Account> getOpenAccountsByCustomer(Customer customer);
+
+    public List<Account> getClosedAccountsByCustomer(Customer customer);
 }

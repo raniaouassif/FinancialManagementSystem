@@ -91,9 +91,9 @@
                 <tr th:each="bank : ${banks}">
                     <td th:text="${bank.name}">Name</td>
                     <td th:text="${bank.location}">Location</td>
-                    <td><a href="#" th:href="@{/banks/detail(id=${bank.bankID})}">Details</a></td>
-                    <td><a href="#" th:href="@{/banks/edit(id=${bank.bankID})}">Edit</a></td>
-                    <td><a href="#" th:href="@{/banks/delete(id=${bank.bankID})}">Delete</a></td>
+                    <td><a href="#" th:href="@{/bank-detail(id=${bank.bankID})}">Details</a></td>
+                    <td><a href="#" th:href="@{/bank-edit(id=${bank.bankID})}">Edit</a></td>
+                    <td><a href="#" th:href="@{/bank-delete(id=${bank.bankID})}">Delete</a></td>
                 </tr>
                 </tbody>
             </table>

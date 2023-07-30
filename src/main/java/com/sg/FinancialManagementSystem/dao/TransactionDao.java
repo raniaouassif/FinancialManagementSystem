@@ -17,7 +17,10 @@ public interface TransactionDao {
     Transaction addTransaction(Transaction transaction);
 
     void deleteTransactionByID(int transactionID);
-    List<Transaction> getTransactionsByAccount(Account account);
+    List<Transaction> getTransactionsByAccount(int accountID);
+
+    List<Transaction> getASCTransactionsByAccount(int accountID);
 
 
+    List<Transaction> getDESCTransactionsByAccount(Integer accountID);
 }

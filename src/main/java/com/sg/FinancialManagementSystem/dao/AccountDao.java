@@ -24,5 +24,5 @@ public interface AccountDao {
 
     List<Account> getOpenAccountsByCustomer(Customer customer);
 
-
+    List<Account> getClosedAccountsByCustomer(Customer customer);
 }

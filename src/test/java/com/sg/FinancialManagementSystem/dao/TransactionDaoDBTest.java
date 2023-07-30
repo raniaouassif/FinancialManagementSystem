@@ -338,12 +338,12 @@ class TransactionDaoDBTest {
         transaction4 = transactionDao.addTransaction(transaction4);
 
         //Retrieve the transaction by account ID
-        List<Transaction> transactionsFromDaoAccount1 = transactionDao.getTransactionsByAccount(account);
+        List<Transaction> transactionsFromDaoAccount1 = transactionDao.getTransactionsByAccount(account.getAccountID());
 
         assertEquals(3, transactionsFromDaoAccount1.size(), "There should be 3 transactions for this account");
 
         //Retrieve the transaction by account ID
-        List<Transaction> transactionsFromDaoAccount2 = transactionDao.getTransactionsByAccount(account2);
+        List<Transaction> transactionsFromDaoAccount2 = transactionDao.getTransactionsByAccount(account2.getAccountID());
 
         assertEquals(2, transactionsFromDaoAccount2.size(), "There should be 3 transactions for this account");
 

@@ -90,12 +90,13 @@
                 <tr th:each="customer : ${customers}">
                     <td th:text="${customer.firstName} +' ' + ${customer.lastName} ">Name</td>
                     <td th:text="${customer.phoneNumber}">Contact Info</td>
-                    <td><a href="#" th:href="@{/customers-detail(customerID=${customer.customerID})}">Details</a></td>
-                    <td><a href="#" th:href="@{/customers-edit(customerID=${customer.customerID})}">Edit</a></td>
-                    <td><a href="#" th:href="@{/customers-delete(customerID=${customer.customerID})}">Delete</a></td>
+                    <td><a href="#" th:href="@{/customer-detail(customerID=${customer.customerID})}">Details</a></td>
+                    <td><a href="#" th:href="@{/customer-edit(customerID=${customer.customerID})}">Edit</a></td>
+                    <td><a href="#" th:href="@{/customer-delete(customerID=${customer.customerID})}">Delete</a></td>
                 </tr>
                 </tbody>
             </table>
+            <!--Add Customer Button-->
             <div class="col m-3">
                 <a href="/customers-add" class="btn btn-outline-primary btn-md">+ Add Customer</a>
             </div>

@@ -1,4 +1,4 @@
-package com.sg.FinancialManagementSystem.dao;
+package com.sg.FinancialManagementSystem.service;
 
 import com.sg.FinancialManagementSystem.dto.Customer;
 import com.sg.FinancialManagementSystem.dto.Portfolio;
@@ -6,10 +6,9 @@ import com.sg.FinancialManagementSystem.dto.Portfolio;
 import java.util.List;
 
 /**
- * @author raniaouassif on 2023-07-23
+ * @author raniaouassif on 2023-07-28
  */
-public interface PortfolioDao {
-
+public interface PortfolioService {
     Portfolio getPortfolioByID(int portfolioID);
 
     List<Portfolio> getAllPortfolios();

@@ -62,7 +62,7 @@ INSERT INTO AccountType (type, minimumStartDeposit, interestRate, compoundRate) 
 	('CHECKING', 20.00, 0.00, 'NA'),
 	('CHECKING', 50.00, 0.00, 'NA'),
     ('HIGH_INTEREST_SAVINGS', 100.00, 1.5, 'MONTHLY'),
-    ('HIGH_INTEREST_SAVINGS', 1000.00, 5.0, 'ANNUALLY'),
+    ('HIGH_INTEREST_SAVINGS', 1000.00, 10.0, 'MONTHLY'),
     ('HIGH_INTEREST_SAVINGS', 25.00, 1.75, 'MONTHLY'),
     ('LOW_INTEREST_SAVINGS', 50.00, 1.25, 'SEMI_ANNUALLY'),
     ('LOW_INTEREST_SAVINGS', 50.00, 1.0, 'QUARTERLY'),
@@ -72,7 +72,7 @@ INSERT INTO AccountType (type, minimumStartDeposit, interestRate, compoundRate) 
 INSERT INTO Account (openingDate, depositBalance, interestBalance, totalBalance, status, customerID) VALUES 
 	('2022-01-01',	1230.12,0.00,	1230.12,'OPEN',			1),
 	('2022-01-01',	40.00,	0.00,	40.00,	'OPEN',			1),
-	('2023-11-28',	2123.65,211.11,	2300.11,'OPEN',			1),
+	('2018-01-01',	0,		0,		0,		'OPEN',			1),
 	('2020-05-05',	1000,	123.11,	123.12,	'OPEN',			3),
 	('2018-10-12',	923.65,	0.00,	923.65,	'OPEN',			4),
 	('2019-12-12',	20.12,	131.33,	1.22,   'OPEN',			5),
@@ -163,9 +163,9 @@ INSERT INTO PortfolioBridge (portfolioID, stockID, exchangeOrganizationID, stock
     (4,1, 1,9);
     
 INSERT INTO Transaction(dateTime, transactionType, amount) VALUES 
-	("2022-09-01 10:00:00", "DEPOSIT", 100.00),
-	("2023-01-01 11:00:00", "DEPOSIT", 200.00),
-	("2022-02-12 13:00:00", "DEPOSIT", 50.00),
+	("2018-01-02 10:00:00", "DEPOSIT", 100.00),
+	("2019-01-02 11:00:00", "TRANSFER", 100.00),
+	("2021-01-01 13:00:00", "DEPOSIT", 50.00),
 	("2012-05-16 01:00:00", "DEPOSIT", 150.00),
 	("2020-09-19 13:00:00", "DEPOSIT", 2000.00),
 	("2021-11-07 13:00:00", "DEPOSIT", 10000.00),
@@ -174,13 +174,7 @@ INSERT INTO Transaction(dateTime, transactionType, amount) VALUES
 	("2022-11-30 04:00:00", "WITHDRAW", 25.00);
 
 INSERT INTO AccountTransaction (transactionID, accountID1, accountID2) VALUES
-	(1,1,1),
-    (2,6,6),
-	(3,1,2),
-    (4,1,3),
-    (5,2,1),
-    (6,4,4),
-    (7,3,1),
-	(8,3,1),
-	(9,3,1);
+	(1,3,3),
+    (2,1,3),
+    (9,3,3);
 

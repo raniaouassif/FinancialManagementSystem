@@ -54,7 +54,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="companies">Companies</a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="stock-exchanges">Stock Exchange<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
@@ -63,7 +63,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="banks">Banks</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active" >
                     <a class="nav-link" href="customers">Customers</a
                     >
                 </li>
@@ -72,50 +72,81 @@
     </nav>
 
     <div class="row m-4 text-center">
-        <h3>
-            FMS Add Customer
-        </h3>
-        <div class="col-7 text-center m-3">
-            <form action="addCustomer" method="POST">
-                <!-- Customer First Name -->
+        <div class="col" style="text-align: left">
+            <h3>FMS Create new customer account</h3>
+            <h4 th:text="${customer.firstName} + ' ' + ${customer.lastName}">Customer ></h4>
+        </div>
+
+       <div class="col-7 text-center m-3">
+            <form action="addCustomerAccount" method="POST">
+                <!-- Account Opening Date -->
                 <div class="form-group row">
-                    <label for="firstName" class="col-3 col-form-label">
-                        First Name</label>
+                    <label for="openingDate" class="col-3 col-form-label">
+                        Opening Date</label>
                     <div class="col-9">
-                        <input type="text" name="firstName" id="firstName"
-                               class="form-control" th:value="${customer.firstName}"/>
-                        <div th:if="${#fields.hasErrors('customer.firstName')}">
-                            <p th:each="error : ${#fields.errors('customer.firstName')}" class="alert alert-danger"
-                               th:text="${error}"> Invalid First Name </p></div>
-                    </div>
-                </div>
-                <!-- Customer Last Name -->
-                <div class="form-group row">
-                    <label for="lastName" class="col-3 col-form-label">
-                        Last Name</label>
-                    <div class="col-9">
-                        <input type="text" name="lastName" id="lastName"
-                               class="form-control" th:value="${customer.lastName}"/>
-                        <div th:if="${#fields.hasErrors('customer.lastName')}">
-                            <p th:each="error : ${#fields.errors('customer.lastName')}" class="alert alert-danger"
-                               th:text="${error}"> Invalid Last Name </p></div>
+                        <input type="date" name="openingDate" id="openingDate"
+                               class="form-control" th:value="${account.openingDate}"/>
+                        <div th:if="${#fields.hasErrors('account.openingDate')}">
+                            <p th:each="error : ${#fields.errors('account.openingDate')}" class="alert alert-danger"
+                               th:text="${error}"> Invalid Opening Date </p></div>
                     </div>
                 </div>
 
-                <!-- Customer Phone Number -->
+
+                <!-- Bank -->
                 <div class="form-group row">
-                    <label for="phoneNumber" class="col-3 col-form-label">
-                        Phone Number</label>
+                    <label for="bank" class="col-3 col-form-label">
+                        Bank</label>
                     <div class="col-9">
-                        <input type="text" name="phoneNumber" id="phoneNumber"
-                               class="form-control" th:value="${customer.phoneNumber}"/>
-                        <div th:if="${#fields.hasErrors('customer.phoneNumber')}">
-                            <p th:each="error : ${#fields.errors('customer.phoneNumber')}" class="alert alert-danger"
-                               th:text="${error}"> Invalid Phone Number </p></div>
+                        <select id="bank" name="bankID"
+                                class="form-control" >
+                            <option th:each="bank : ${banks}"
+                                    th:value="${bank.bankID}"
+                                    th:text="${bank.name}">
+                                Bank</option>
+                        </select>
                     </div>
                 </div>
-                <a href="/customers" class="btn btn-outline-danger">Cancel</a>
-                <button type="submit" class="btn btn-primary">Add Customer</button>
+
+                <!-- Account Type -->
+                <div class="form-group row">
+                    <label for="accountType" class="col-3 col-form-label">
+                        Account type</label>
+                    <div class="col-9">
+                        <select id="accountType" name="accountTypeID"
+                                class="form-control" >
+                            <option th:if="${accountType.type.toString().equals('CHECKING')}"
+                                    th:each="accountType : ${accountTypes}"
+                                    th:value="${accountType.accountTypeID}"
+                                    th:text="${accountType.type} + '-MIN DEPOSIT-' + ${accountType.minimumStartDeposit}">
+                                Account tyo</option>
+                            <option th:if="${!accountType.type.toString().equals('CHECKING')}"
+                                    th:each="accountType : ${accountTypes}"
+                                    th:value="${accountType.accountTypeID}"
+                                    th:text="${accountType.type} + '_' + ${accountType.compoundRate}+ '_' + ${accountType.interestRate} + '%' +  '-MIN DEPOSIT-' + ${accountType.minimumStartDeposit}">
+                                Account type</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <!-- Initial Deposit -->
+                <div class="form-group row">
+                    <label for="depositBalance" class="col-3 col-form-label">
+                        Initial Deposit</label>
+                    <div class="col-9">
+                        <input type="text" name="depositBalance" id="depositBalance"
+                               class="form-control" th:value="${account.depositBalance}"/>
+                        <div th:if="${#fields.hasErrors('account.depositBalance')}">
+                            <p th:each="error : ${#fields.errors('account.depositBalance')}" class="alert alert-danger"
+                               th:text="${error}"> Invalid Deposit Balance </p></div>
+                    </div>
+                </div>
+                <a href="#" th:href="@{/customer-detail(customerID=${customer.customerID})}" class="btn btn-outline-danger">Cancel</a>
+
+
+                <input type="hidden" name="customerID" th:value="${customer.customerID}"/>
+                <button type="submit" class="btn btn-primary" >Create Account</button>
             </form>
         </div>
     </div>
@@ -149,4 +180,3 @@
 </body>
 
 </html>
-
