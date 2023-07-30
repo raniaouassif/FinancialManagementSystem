@@ -79,16 +79,20 @@
 
        <div class="col-7 text-center m-3">
             <form action="addCustomerAccount" method="POST">
+                <!-- Error handling-->
+                <div class="col-12 m-1 text-center"
+                     th:if="${!addError.isEmpty()}">
+                    <p class="alert alert-danger"
+                       th:text="${addError}">Add error message</p>
+                </div>
+
                 <!-- Account Opening Date -->
                 <div class="form-group row">
                     <label for="openingDate" class="col-3 col-form-label">
                         Opening Date</label>
                     <div class="col-9">
                         <input type="date" name="openingDate" id="openingDate"
-                               class="form-control" th:value="${account.openingDate}"/>
-                        <div th:if="${#fields.hasErrors('account.openingDate')}">
-                            <p th:each="error : ${#fields.errors('account.openingDate')}" class="alert alert-danger"
-                               th:text="${error}"> Invalid Opening Date </p></div>
+                               class="form-control"/>
                     </div>
                 </div>
 
@@ -136,10 +140,7 @@
                         Initial Deposit</label>
                     <div class="col-9">
                         <input type="text" name="depositBalance" id="depositBalance"
-                               class="form-control" th:value="${account.depositBalance}"/>
-                        <div th:if="${#fields.hasErrors('account.depositBalance')}">
-                            <p th:each="error : ${#fields.errors('account.depositBalance')}" class="alert alert-danger"
-                               th:text="${error}"> Invalid Deposit Balance </p></div>
+                               class="form-control"/>
                     </div>
                 </div>
                 <a href="#" th:href="@{/customer-detail(customerID=${customer.customerID})}" class="btn btn-outline-danger">Cancel</a>

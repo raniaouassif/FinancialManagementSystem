@@ -91,8 +91,8 @@
                     <td th:text="${customer.firstName} +' ' + ${customer.lastName} ">Name</td>
                     <td th:text="${customer.phoneNumber}">Contact Info</td>
                     <td><a href="#" th:href="@{/customer-detail(customerID=${customer.customerID})}">Details</a></td>
-                    <td><a href="#" th:href="@{/customer-edit(customerID=${customer.customerID})}">Edit</a></td>
-                    <td><a href="#" th:href="@{/customer-delete(customerID=${customer.customerID})}">Delete</a></td>
+                    <td><a href="#" th:href="@{/customers-edit(customerID=${customer.customerID})}">Edit</a></td>
+                    <td><a href="#" th:href="@{/customers-delete(customerID=${customer.customerID})}">Delete</a></td>
                 </tr>
                 </tbody>
             </table>

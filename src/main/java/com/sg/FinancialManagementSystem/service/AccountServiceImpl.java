@@ -55,14 +55,6 @@ public class AccountServiceImpl implements AccountService{
         boolean validBankAccountType = bankDao.getBankByID(account.getBank().getBankID()).getAccountTypes().contains(account.getAccountType());
 
         BigDecimal initialDeposit = account.getDepositBalance();
-        //Check if insufficient initial deposit for account type chosen
-        if(initialDeposit.compareTo(minDeposit) < 0) {
-            throw new InsufficientMinDepositException("Error: The minimum deposit for this account is "+ account.getAccountType().getMinimumStartDeposit());
-        } else if(!validBankAccountType) {
-            throw new InvalidBankAccountTypeException("Error:"+ account.getBank().getName() + " does not propose the selected acocunt.");
-        } else if(account.getOpeningDate().isAfter(LocalDate.now())) {
-            throw new InvalidDateException("Opening date can't be in the future. ");
-        }
 
         account.setInterestBalance(BigDecimal.ZERO);
         account.setTotalBalance(initialDeposit);

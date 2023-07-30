@@ -15,13 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.sound.sampled.Port;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +57,7 @@ public class ApplicationController {
     TransactionService transactionService;
 
     @Autowired
-    TransactionValidationService transactionValidationService;
+    ValidationService validationService;
     @GetMapping("/")
     public String displayHomeView(Model model) {
         return "redirect:/latest-trades";
@@ -88,12 +86,13 @@ public class ApplicationController {
         model.addAttribute("banks", banks);
         model.addAttribute("accountTypes", accountTypes);
         model.addAttribute("account", new Account());
-//        model.addAttribute("customerID", customerID);
+
+        model.addAttribute("addError", "");// No error on landing page
         return "account-add";
     }
 
     @PostMapping("addCustomerAccount")
-    public String performAddAccount(@Valid Account account, BindingResult result, Integer customerID, HttpServletRequest request, Model model) throws InsufficientMinDepositException, InvalidDateException, InvalidBankAccountTypeException {
+    public String performAddAccount(Account account, Integer customerID, HttpServletRequest request, Model model) throws InsufficientMinDepositException, InvalidDateException, InvalidBankAccountTypeException {
         Customer customer = customerService.getCustomerByID(customerID);
         String bankID= request.getParameter("bankID");
         String accountTypeID = request.getParameter("accountTypeID");
@@ -101,29 +100,27 @@ public class ApplicationController {
         String openingDate = request.getParameter("openingDate");
 
         account.setOpeningDate(LocalDate.parse(openingDate));
-        account.setDepositBalance(BigDecimal.valueOf(Integer.parseInt(depositBalance)));
+        account.setDepositBalance(new BigDecimal(depositBalance));
         account.setBank(bankService.getBankByID(Integer.parseInt(bankID)));
         account.setAccountType(accountTypeService.getAccountTypeByID(Integer.parseInt(accountTypeID)));
         account.setCustomer(customer);
 
-        // TODO
-//        if (accountService.addAccount(account) == ) {
-            //Pass the modified customer
-//            model.addAttribute("account", account);
-//            return "/customers-add";
-//        }
-
+        //Validate the customer account
+        String err = validationService.validateAddAccount(account);
+        if(!err.isEmpty()){
+            // Add the error
+            model.addAttribute("addError", err);
+            //And the other attributes
+            model.addAttribute("customer", customer);
+            model.addAttribute("banks",  bankService.getAllBanks());
+            model.addAttribute("accountTypes", accountTypeService.getAllAccountTypes());
+            model.addAttribute("account", account);
+            return "account-add";
+        }
 
         accountService.addAccount(account);
         return "redirect:/customer-detail?customerID="+customerID;
     }
-
-
-
-
-
-
-
 
     /*
      **********************************      BANK       ****************************************************************
@@ -185,7 +182,7 @@ public class ApplicationController {
         model.addAttribute("portfolio", portfolio);
         model.addAttribute("openAccounts", openAccounts);
         model.addAttribute("closedAccounts", closedAccounts);
-
+        model.addAttribute("addError", "");
         return "customer-detail";
     }
 
@@ -208,8 +205,8 @@ public class ApplicationController {
     }
 
     @GetMapping("/customers-edit")
-    public String editCustomer(Integer id, Model model) {
-        Customer customer = customerService.getCustomerByID(id);
+    public String editCustomer(Integer customerID, Model model) {
+        Customer customer = customerService.getCustomerByID(customerID);
         model.addAttribute("customer", customer);
         return "customers-edit";
     }
@@ -220,9 +217,15 @@ public class ApplicationController {
         if (result.hasErrors()) {
             //Pass the modified customer
             model.addAttribute("customer", customer);
-            return "customers-edit";
+            return "/customers-edit";
         }
         customerService.updateCustomer(customer);
+        return "redirect:/customers";
+    }
+
+    @GetMapping("/customers-delete")
+    public String deleteCustomer(Integer customerID) {
+        customerService.deleteCustomerByID(customerID);
         return "redirect:/customers";
     }
 
@@ -327,7 +330,7 @@ public class ApplicationController {
         transaction.setFrom(account);
         transaction.setTo(account);
 
-        String cashErr = transactionValidationService.validateCashTransaction(transaction);
+        String cashErr = validationService.validateCashTransaction(transaction);
 
         if(!cashErr.isEmpty()) {
             model.addAttribute("cashErr", cashErr);
@@ -362,7 +365,7 @@ public class ApplicationController {
         transaction.setFrom(account);
         transaction.setTo(accountTo);
 
-        String transferErr = transactionValidationService.validateTransferTransaction(transaction);
+        String transferErr = validationService.validateTransferTransaction(transaction);
 
         if(!transferErr.isEmpty()) {
             model.addAttribute("transferErr", transferErr);
