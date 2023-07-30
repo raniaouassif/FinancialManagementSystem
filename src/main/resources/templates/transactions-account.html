@@ -70,8 +70,8 @@
         </div>
     </nav>
 
-    <div class="row m-4 text-center">
-            <div class="col border">
+    <div class="row m-2 text-center">
+            <div class="col-md-9 border">
                 <h3>
                     FMS ACCOUNT TRANSACTIONS
                 </h3>
@@ -105,14 +105,14 @@
 
                             <!--From-->
                             <td th:if="${transaction.transactionType.toString().equals('TRANSFER') && transaction.from.accountID != account.accountID}"
-                                th:text="${transaction.from.customer.firstName} + ' ' + ${transaction.from.customer.lastName} + ' accountNumber: ' + ${transaction.from.accountID}">from another account</td>
+                                th:text="${transaction.from.customer.firstName} + ' ' + ${transaction.from.customer.lastName} + ' #' + ${transaction.from.accountID}">from another account</td>
 
                             <td th:if="${transaction.transactionType.toString().equals('TRANSFER') && transaction.from.accountID == account.accountID}"
                                 th:text="'-'">from current account</td>
 
                             <!--To-->
                             <td th:if="${transaction.transactionType.toString().equals('TRANSFER') && transaction.to.accountID != account.accountID}"
-                                th:text="${transaction.to.customer.firstName} + ' ' + ${transaction.to.customer.lastName} + ' accountNumber: ' + ${transaction.to.accountID}">To another account</td>
+                                th:text="${transaction.to.customer.firstName} + ' ' + ${transaction.to.customer.lastName} + ' #' + ${transaction.to.accountID}">To another account</td>
 
                             <td th:if="${transaction.transactionType.toString().equals('TRANSFER') && transaction.to.accountID == account.accountID}"
                                 th:text="'-'">To current account</td>
@@ -131,7 +131,7 @@
                 </div>
             </div>
 
-            <div id="add-form" class="col border text-center">
+            <div id="add-form" class="col-md-3 border text-center">
                 <h4>
                     FMS Account Details
                 </h4>
@@ -162,7 +162,7 @@
                         <label for="cashDateTime" class="col-3 col-form-label">
                             Date time</label>
                         <div class="col-9">
-                            <input type="datetime-local" name="dateTcashDateTimeime" id="cashDateTime"
+                            <input type="datetime-local" name="cashDateTime" id="cashDateTime"
                                    class="form-control"/>
                         </div>
                     </div>
@@ -226,7 +226,7 @@
                                     class="form-control" >
                                 <option th:each="accountTo : ${transferToAccounts}"
                                         th:value="${accountTo.accountID}"
-                                        th:text="${accountTo.customer.firstName} + ' ' + ${accountTo.customer.lastName} + ' accountNumber: ' + ${accountTo.accountID}">
+                                        th:text="${accountTo.customer.firstName} + ' ' + ${accountTo.customer.lastName} + ' #' + ${accountTo.accountID}">
                                     Transfer to</option>
                             </select>
                         </div>

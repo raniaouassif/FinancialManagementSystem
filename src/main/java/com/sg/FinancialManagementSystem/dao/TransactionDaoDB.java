@@ -190,21 +190,6 @@ public class TransactionDaoDB implements TransactionDao {
                     transaction.getFrom().getAccountID(),
                     transaction.getTo().getAccountID()
             );
-
-            if(transaction.getFrom().getAccountID() != transaction.getTo().getAccountID()) { // TRANSFER FROM AN ACCOUNT TO ANOTHER
-                int accountFromID = transaction.getFrom().getAccountID();
-                int accountToID = transaction.getTo().getAccountID();
-
-
-
-            } else if(transaction.getFrom().getAccountID() == transaction.getTo().getAccountID()) { //DEPOSIT - WITHDRAW FROM SAME ACCOUNT
-                int accountID = transaction.getFrom().getAccountID();
-
-                jdbcTemplate.update(INSERT_ACCOUNT_TRANSACTION,
-                        transaction.getTransactionID(),
-                        accountID,
-                        accountID);
-            }
         }
     }
 

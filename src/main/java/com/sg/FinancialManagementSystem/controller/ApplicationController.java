@@ -321,7 +321,7 @@ public class ApplicationController {
         String amount = request.getParameter("cashAmount");
 
         //Set the params
-        transaction.setDateTime(LocalDateTime.parse(dateTime).atZone(ZoneOffset.UTC).toLocalDateTime());
+        transaction.setDateTime(LocalDateTime.parse(dateTime));
         transaction.setTransactionType(TransactionType.valueOf(transactionType));
         transaction.setAmount(new BigDecimal(amount));
         transaction.setFrom(account);
@@ -356,7 +356,7 @@ public class ApplicationController {
         //Get account to
         Account accountTo = accountService.getAccountByID(Integer.parseInt(toAccount));
         //Set the params
-        transaction.setDateTime(LocalDateTime.parse(dateTime).atZone(ZoneOffset.UTC).toLocalDateTime());
+        transaction.setDateTime(LocalDateTime.parse(dateTime));
         transaction.setTransactionType(TransactionType.TRANSFER);
         transaction.setAmount(new BigDecimal(amount));
         transaction.setFrom(account);
