@@ -76,38 +76,32 @@ public class AccountTypeDaoDB implements AccountTypeDao {
 
     @Override
     public void deleteAccountTypeByID(int accountTypeID) {
-        // Get all accounts of this type
-        final String GET_ACCOUNT_BY_ACCOUNT_TYPE = "SELECT a.* FROM Account a " +
-                "JOIN AccountBridge ba ON ba.accountID = a.accountID " +
-                "JOIN BankAccountType bat ON bat.bankID = ba.bankID AND bat.accountTypeID = ba.accountTypeID " +
-                "JOIN AccountType at ON at.accountTypeID = bat.accountTypeID " +
-                "WHERE at.accountTypeID = ?;";
+        //Get the accounts to delete before deleting the bridge tables
+        String GET_ACCOUNTS = "SELECT a.* FROM Account a  " +
+                "JOIN AccountBridge ab ON ab.accountID = a.accountID " +
+                "JOIN BankAccountType bat ON bat.accountTypeID = ab.accountTypeID " +
+                "JOIN AccountType act ON act.accountTypeID = bat.accountTypeID " +
+                "WHERE act.accountTypeID = ?";
+        List<Account> accountsToDelete = jdbcTemplate.query(GET_ACCOUNTS, new AccountMapper(), accountTypeID);
 
-        List<Account> accounts = jdbcTemplate.query(GET_ACCOUNT_BY_ACCOUNT_TYPE, new AccountMapper(), accountTypeID);
+        // Delete account transactions
+        String DELETE_ACCOUNT_TRANSACTIONS = "DELETE at.* FROM AccountTransaction at " +
+                "JOIN Account a ON a.accountID = at.accountID1 OR a.accountID = at.accountID2 " +
+                "JOIN AccountBridge ab ON ab.accountID = a.accountID " +
+                "JOIN BankAccountType bat ON bat.accountTypeID = ab.accountTypeID " +
+                "JOIN AccountType act ON act.accountTypeID = bat.accountTypeID " +
+                "WHERE act.accountTypeID = ?";
+        jdbcTemplate.update(DELETE_ACCOUNT_TRANSACTIONS, accountTypeID);
 
-        // For all the accounts, set the status to closed
-        final String UPDATE_ACCOUNTS_TO_CLOSED = "UPDATE Account SET "
-                + "depositBalance = 0.00, "
-                + "interestBalance = 0.00, "
-                + "totalBalance = 0.00, "
-                + "closingDate = ?, "
-                + "status = 'CLOSED', "
-                + "closingReason = ? "
-                + "WHERE accountID = ?;";
-
-        AccountType accountType = getAccountTypeByID(accountTypeID);
-        String closingReason = "Account type " + accountType.getAccountTypeID() + " - " + accountType.getType() + " has been dissolved.";
-        LocalDate closingDate = LocalDate.now();
-        for(Account account : accounts) {
-            jdbcTemplate.update(UPDATE_ACCOUNTS_TO_CLOSED,
-                    closingDate,
-                    closingReason,
-                    account.getAccountID());
-        }
-
-        // Delete from the bankAccount bridge table
+        // Delete from the account bridge table
         String DELETE_BANK_ACCOUNT_BY_ACCOUNT_TYPE_ID = "DELETE FROM AccountBridge WHERE accountTypeID = ?";
         jdbcTemplate.update(DELETE_BANK_ACCOUNT_BY_ACCOUNT_TYPE_ID, accountTypeID);
+
+        // DELETE ALL THE ACCOUNTS
+        String DELETE_ACCOUNT_TO_DELETE = "DELETE FROM Account WHERE accountID = ?";
+        for(Account account : accountsToDelete) {
+            jdbcTemplate.update(DELETE_ACCOUNT_TO_DELETE, account.getAccountID());
+        }
 
         //Delete from the bankAccountType bridge table
         String DELETE_BANK_ACCOUNT_TYPE_ACCOUNT_TYPE_ID = "DELETE FROM BankAccountType WHERE accountTypeID = ?";
@@ -161,7 +155,23 @@ public class AccountTypeDaoDB implements AccountTypeDao {
     }
 
     @Override
-    public List<AccountType> getAccountTypeByType(AccountType type) {
+    public List<AccountType> getAllCheckingAccountTypes() {
+        final String GET_ACCOUNT_TYPES_BY_TYPE = "SELECT * FROM AccountType WHERE type = 'CHECKING' ";
+        List<AccountType> accountTypes = jdbcTemplate.query(GET_ACCOUNT_TYPES_BY_TYPE, new AccountTypeMapper());
+        return accountTypes.size() == 0 ? new ArrayList<>() : accountTypes;
+    }
+
+    @Override
+    public List<AccountType> getAllSavingsAccountTypes() {
+        final String GET_ACCOUNT_TYPES_BY_TYPE = "SELECT * FROM AccountType WHERE type != 'CHECKING' ";
+        List<AccountType> accountTypes = jdbcTemplate.query(GET_ACCOUNT_TYPES_BY_TYPE, new AccountTypeMapper());
+        return accountTypes.size() == 0 ? new ArrayList<>() : accountTypes;
+    }
+
+
+
+    @Override
+    public List<AccountType> getAccountTypeByType(BankAccountType type) {
         final String GET_ACCOUNT_TYPES_BY_TYPE = "SELECT * FROM AccountType WHERE type = ? ";
         List<AccountType> accountTypes = jdbcTemplate.query(GET_ACCOUNT_TYPES_BY_TYPE, new AccountTypeMapper(), type.toString());
         return accountTypes.size() == 0 ? new ArrayList<>() : accountTypes;

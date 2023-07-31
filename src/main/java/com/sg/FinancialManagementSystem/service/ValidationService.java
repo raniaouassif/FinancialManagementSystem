@@ -1,8 +1,11 @@
 package com.sg.FinancialManagementSystem.service;
 
 import com.sg.FinancialManagementSystem.dao.AccountDao;
+import com.sg.FinancialManagementSystem.dao.AccountTypeDao;
 import com.sg.FinancialManagementSystem.dao.BankDao;
 import com.sg.FinancialManagementSystem.dto.Account;
+import com.sg.FinancialManagementSystem.dto.AccountStatus;
+import com.sg.FinancialManagementSystem.dto.AccountType;
 import com.sg.FinancialManagementSystem.dto.Transaction;
 import com.sg.FinancialManagementSystem.service.Exceptions.InsufficientMinDepositException;
 import com.sg.FinancialManagementSystem.service.Exceptions.InvalidBankAccountTypeException;
@@ -11,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author raniaouassif on 2023-07-30
@@ -26,6 +31,9 @@ public class ValidationService {
 
     @Autowired
     BankDao bankDao;
+
+    @Autowired
+    AccountTypeDao accountTypeDao;
 
     public String validateAddAccount(Account account) {
         String message = "";
@@ -49,9 +57,10 @@ public class ValidationService {
         String message = "";
 
         Account account = accountDao.getAccountByID(transaction.getFrom().getAccountID());
-        if(account.getOpeningDate() == null || account.getDepositBalance() == null) {
-            message = "Please fill all the fields";
-        }else if(transaction.getDateTime().isAfter(LocalDateTime.now())) {
+
+        if(account.getStatus().equals(AccountStatus.CLOSED)) {//Account has been closed
+            message = "Account is closed. No transactions allowed.";
+        } else if (transaction.getDateTime().isAfter(LocalDateTime.now())) {
             message = "Transaction date time can't be in the future";
         }
         else if (transaction.getDateTime().toLocalDate().isBefore(account.getOpeningDate())) {
@@ -74,12 +83,11 @@ public class ValidationService {
         Account accountFrom = accountDao.getAccountByID(transaction.getFrom().getAccountID());
         Account accountTo = accountDao.getAccountByID(transaction.getTo().getAccountID());
 
-        //If any field is not inputed
-        if(transaction.getDateTime() == null || transaction.getAmount() == null) {
-            message = "Please fill all the fields before submitting.";
+        if(accountFrom.getStatus().equals(AccountStatus.CLOSED)) {//Account has been closed
+            message = "Account is closed. No transactions allowed.";
         }
         //If the transaction date time is in the future
-         else if(transaction.getDateTime().isAfter(LocalDateTime.now())) {
+        else if(transaction.getDateTime().isAfter(LocalDateTime.now())) {
             message = "Transaction date time can't be in the future";
         }
         //If the transaction date is before any of the accounts
@@ -102,6 +110,40 @@ public class ValidationService {
                 message = "Not enough funds to make this transfer";
             }
         }
+        return message;
+    }
+
+    public String validateAddCheckingAccountType(AccountType accountType) {
+        String message = "";
+        List<AccountType> accountTypes = accountTypeDao.getAllCheckingAccountTypes();
+        for(AccountType daoAccountType : accountTypes) {
+            if(daoAccountType.getMinimumStartDeposit() == accountType.getMinimumStartDeposit()) {
+                message = "A checking account with "+ accountType.getMinimumStartDeposit().setScale(2, RoundingMode.HALF_UP)+  " already exists.";
+                break;
+            }
+        }
+        return message;
+    }
+
+    public String validateAddSavingAccountType(AccountType accountType) {
+        String message="";
+        if(accountType.getInterestRate().compareTo(BigDecimal.valueOf(100)) > 0 ) {
+            message = "Interest rate cannot be greater than 100.";
+        }
+
+
+        List<AccountType> accountTypes = accountTypeDao.getAllSavingsAccountTypes();
+
+        for(AccountType daoAccountType : accountTypes) {
+            if(daoAccountType.getType().toString().equals(accountType.getType().toString())
+                    && daoAccountType.getCompoundRate().toString().equals(accountType.getCompoundRate().toString())
+                    && daoAccountType.getMinimumStartDeposit().equals(accountType.getMinimumStartDeposit())
+                    && daoAccountType.getInterestRate().setScale(2, RoundingMode.HALF_UP).equals(accountType.getInterestRate().setScale(2, RoundingMode.HALF_UP))
+            ) {
+                    message = "A savings account type with the same attributes already exists.";
+            }
+        }
+
         return message;
     }
 }

@@ -57,56 +57,54 @@
                 <li class="nav-item">
                     <a class="nav-link" href="stock-exchanges">Stock Exchange<span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="stocks">Stocks</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" href="banks">Banks</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="account-types">Account Types</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="customers">Customers</a>
+                    <a class="nav-link" href="banks">Banks</a>
+                </li>
+                <li class="nav-item active" >
+                    <a class="nav-link" href="customers">Customers</a
+                    >
                 </li>
             </ul>
         </div>
     </nav>
 
     <div class="row m-4 text-center">
-        <h3>
-            FMS Stocks
-        </h3>
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>Ticker</th>
-                    <th>Price</th>
-                    <th>Outstanding Shares</th>
-                    <th>Market Cap</th>
-                    <th>Status</th>
-                    <th>Details</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="stock : ${stocks}">
-                    <td th:text="${stock.tickerCode}">Ticker</td>
-                    <td th:text="'$' + ${stock.sharePrice}">Share Price</td>
-                    <td th:text="${stock.formattedOutstandingShares}">Outstanding Shares</td>
-                    <td th:text="${stock.formattedMarketCap}">Market Cap</td>
-                    <td th:text="${stock.status}">Status</td>
-                    <td><a href="#" th:href="@{/stocks/detail(ID=${stock.stockID})}">Details</a></td>
-                    <td><a href="#" th:href="@{/stocks/edit(ID=${stock.stockID})}">Edit</a></td>
-                    <td><a href="#" th:href="@{/stocks/delete(ID=${stock.stockID})}">Delete</a></td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="col" style="text-align: left">
+            <h3>FMS Close customer account</h3>
+            <h4 th:text="${account.customer.firstName} + ' ' + ${account.customer.lastName} + '#' +${account.accountID}">Customer</h4>
+        </div>
+
+        <div class="col-7 text-center m-3">
+            <form action="closeCustomerAccount" method="POST">
+
+                <div class="form-group row">
+                    <label for="closingReason" class="col-3 col-form-label">
+                        Please provide a closing reason</label>
+                    <div class="col-9">
+                        <input type="text" name="closingReason" id="closingReason"
+                               class="form-control" th:value="${account.closingReason}"/>
+                        <div th:if="${#fields.hasErrors('account.closingReason')}">
+                            <p th:each="error : ${#fields.errors('account.closingReason')}" class="alert alert-danger"
+                               th:text="${error}">Invalid closing reason </p></div>
+                    </div>
+                </div>
+
+                <a href="#" th:href="@{/customer-detail(customerID=${account.customer.customerID})}" class="btn btn-outline-danger">Cancel</a>
+
+                <input type="hidden" name="customerID" th:value="${account.customer.customerID}"/>
+                <input type="hidden" name="accountID" th:value="${account.accountID}"/>
+                <button type="submit" class="btn btn-primary" >Close Account</button>
+            </form>
         </div>
     </div>
 </div>
+
 <!-- End main body -->
 
 <!-- Optional JavaScript -->
@@ -117,11 +115,21 @@
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"
 ></script>
+
+<!-- InputMask library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
 <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
         crossorigin="anonymous"
 ></script>
+
+<script>
+    $(document).ready(function () {
+        // Apply input mask to phone number field
+        $("#phoneNumber").inputmask({ "mask": "+1 (999) 999-9999" });
+    });
+</script>
 </body>
 
 </html>

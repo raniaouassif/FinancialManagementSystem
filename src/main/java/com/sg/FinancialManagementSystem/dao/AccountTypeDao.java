@@ -23,5 +23,9 @@ public interface AccountTypeDao {
     List<AccountType> getAccountTypesByCustomer(Customer customer);
 
     AccountType getAccountTypeByAccount(Account account);
-    List<AccountType> getAccountTypeByType(AccountType type);
+
+    public List<AccountType> getAllSavingsAccountTypes();
+
+    public List<AccountType> getAllCheckingAccountTypes();
+    List<AccountType> getAccountTypeByType(BankAccountType type);
 }

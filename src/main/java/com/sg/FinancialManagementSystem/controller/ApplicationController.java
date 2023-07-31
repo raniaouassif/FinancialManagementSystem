@@ -20,10 +20,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -58,6 +55,8 @@ public class ApplicationController {
 
     @Autowired
     ValidationService validationService;
+
+
     @GetMapping("/")
     public String displayHomeView(Model model) {
         return "redirect:/latest-trades";
@@ -92,7 +91,7 @@ public class ApplicationController {
     }
 
     @PostMapping("addCustomerAccount")
-    public String performAddAccount(Account account, Integer customerID, HttpServletRequest request, Model model) throws InsufficientMinDepositException, InvalidDateException, InvalidBankAccountTypeException {
+    public String performAddAccount(@Valid Account account, BindingResult result, Integer customerID, HttpServletRequest request, Model model) throws InsufficientMinDepositException, InvalidDateException, InvalidBankAccountTypeException {
         Customer customer = customerService.getCustomerByID(customerID);
         String bankID= request.getParameter("bankID");
         String accountTypeID = request.getParameter("accountTypeID");
@@ -120,6 +119,150 @@ public class ApplicationController {
 
         accountService.addAccount(account);
         return "redirect:/customer-detail?customerID="+customerID;
+    }
+
+    @GetMapping("/account-close")
+    public String closeAccount(Integer accountID, Model model) {
+        Account account = accountService.getAccountByID(accountID);
+
+        model.addAttribute("account", account);
+        return "account-close";
+    }
+
+    @PostMapping("closeCustomerAccount")
+    public String performCloseAccount(@Valid Account account, BindingResult result, Integer customerID, HttpServletRequest request, Model model) {
+        String closingReason = request.getParameter("closingReason");
+        account = accountService.getAccountByID(account.getAccountID());
+        account.setClosingReason(closingReason);
+        account.setClosingDate(LocalDate.now());
+        account.setStatus(AccountStatus.CLOSED);
+        //Check for errors
+        if (result.hasErrors()) {
+            //Pass the modified account
+            model.addAttribute("account", account);
+            return "/account-close";
+        }
+        accountService.updateAccount(account);
+        return "redirect:/customer-detail?customerID="+customerID;
+    }
+
+    @GetMapping("/account-delete")
+    public String deleteAccount(Integer accountID) {
+        Account account = accountService.getAccountByID(accountID);
+        int customerID = account.getCustomer().getCustomerID();
+        accountService.deleteAccountByID(accountID);
+        return "redirect:/customer-detail?customerID="+customerID;
+    }
+
+    /*
+     **********************************      ACCOUNT TYPES       ****************************************************************
+     */
+    @GetMapping("/account-types")
+    public String displayAccountTypes(Model model) {
+        List<AccountType> checkingAccountTypes = accountTypeService.getAllCheckingAccountTypes();
+        List<AccountType> savingsAccountTypes = accountTypeService.getAllSavingsAccountTypes();
+
+        //BankAccountType enum to list
+        BankAccountType[] accountTypes = BankAccountType.values();
+        List<BankAccountType> bankAccountTypeList = new ArrayList<>(Arrays.asList(accountTypes));
+        bankAccountTypeList.remove(BankAccountType.CHECKING);
+
+
+        //BankAccountType enum to list
+        CompoundRate[] compoundRates = CompoundRate.values();
+        List<CompoundRate> compoundRateList = new ArrayList<>(Arrays.asList(compoundRates));
+        compoundRateList.remove(CompoundRate.NA);
+
+        model.addAttribute("checkingAccountTypes", checkingAccountTypes);
+        model.addAttribute("savingsAccountTypes", savingsAccountTypes);
+        model.addAttribute("accountType", new AccountType());
+        model.addAttribute("bankAccountTypes", bankAccountTypeList);
+        model.addAttribute("compoundRates", compoundRateList);
+        model.addAttribute("savingsError", "");
+        model.addAttribute("checkingError", "");
+
+        return "account-types";
+    }
+
+    @PostMapping("addCheckingAccountType")
+    public String performAddCheckingAccountType(@Valid AccountType accountType, BindingResult result, HttpServletRequest request, Model model) {
+        String minimumDeposit = request.getParameter("checkingMinimumStartDeposit");
+
+        accountType.setType(BankAccountType.CHECKING);
+        accountType.setMinimumStartDeposit(new BigDecimal(minimumDeposit));
+        accountType.setInterestRate(BigDecimal.ZERO);
+        accountType.setCompoundRate(CompoundRate.NA);
+
+        String checkingError = validationService.validateAddCheckingAccountType(accountType);
+        if(!checkingError.isEmpty()){
+            //BankAccountType enum to list
+            BankAccountType[] accountTypes = BankAccountType.values();
+            List<BankAccountType> bankAccountTypeList = new ArrayList<>(Arrays.asList(accountTypes));
+            bankAccountTypeList.remove(BankAccountType.CHECKING);
+
+
+            //BankAccountType enum to list
+            CompoundRate[] compoundRates = CompoundRate.values();
+            List<CompoundRate> compoundRateList = new ArrayList<>(Arrays.asList(compoundRates));
+            compoundRateList.remove(CompoundRate.NA);
+
+            model.addAttribute("checkingAccountTypes", accountTypeService.getAllCheckingAccountTypes());
+            model.addAttribute("savingsAccountTypes", accountTypeService.getAllSavingsAccountTypes());
+            model.addAttribute("accountType", accountType);
+            model.addAttribute("bankAccountTypes", bankAccountTypeList);
+            model.addAttribute("compoundRates", compoundRateList);
+            model.addAttribute("savingsError", "");
+            model.addAttribute("checkingError", checkingError);
+
+            return "account-types";
+        }
+        accountTypeService.addAccountType(accountType);
+        return "redirect:/account-types";
+    }
+
+    @PostMapping("addSavingAccountType")
+    public String performAddSabingsAccountType(@Valid AccountType accountType, BindingResult result, HttpServletRequest request, Model model) {
+        String minimumDeposit = request.getParameter("savingMinimumStartDeposit");
+        String interestRate = request.getParameter("savingInterestRate");
+        String compoundRate = request.getParameter("compoundRate");
+        String type = request.getParameter("bankAccountType");
+
+
+        accountType.setType(BankAccountType.valueOf(type));
+        accountType.setMinimumStartDeposit(new BigDecimal(minimumDeposit));
+        accountType.setInterestRate(new BigDecimal(interestRate).setScale(2, RoundingMode.HALF_UP));
+        accountType.setCompoundRate(CompoundRate.valueOf(compoundRate));
+
+        String savingsError = validationService.validateAddSavingAccountType(accountType);
+        if(!savingsError.isEmpty()){
+            //BankAccountType enum to list
+            BankAccountType[] accountTypes = BankAccountType.values();
+            List<BankAccountType> bankAccountTypeList = new ArrayList<>(Arrays.asList(accountTypes));
+            bankAccountTypeList.remove(BankAccountType.CHECKING);
+
+
+            //BankAccountType enum to list
+            CompoundRate[] compoundRates = CompoundRate.values();
+            List<CompoundRate> compoundRateList = new ArrayList<>(Arrays.asList(compoundRates));
+            compoundRateList.remove(CompoundRate.NA);
+
+            model.addAttribute("checkingAccountTypes", accountTypeService.getAllCheckingAccountTypes());
+            model.addAttribute("savingsAccountTypes", accountTypeService.getAllSavingsAccountTypes());
+            model.addAttribute("accountType", accountType);
+            model.addAttribute("bankAccountTypes", bankAccountTypeList);
+            model.addAttribute("compoundRates", compoundRateList);
+            model.addAttribute("savingsError", savingsError);
+            model.addAttribute("checkingError", "");
+            return "account-types";
+        }
+        accountTypeService.addAccountType(accountType);
+        return "redirect:/account-types";
+    }
+
+    @GetMapping("/account-type-delete")
+    public String deleteAccountType(Integer accountTypeID) {
+        accountTypeService.deleteAccountTypeByID(accountTypeID);
+        return "redirect:/account-types";
     }
 
     /*
@@ -314,7 +457,7 @@ public class ApplicationController {
     }
 
     @PostMapping("cashTransaction")
-    public String performCashTransaction(@Valid Transaction transaction, BindingResult result, Integer accountID, HttpServletRequest request, Model model) throws InvalidDateException, InsufficientFundsException {
+    public String performCashTransaction(@Valid Transaction transaction, Integer accountID, HttpServletRequest request, Model model) throws InvalidDateException, InsufficientFundsException {
         //Get the account by ID
         Account account = accountService.getAccountByID(accountID);
 
@@ -333,11 +476,17 @@ public class ApplicationController {
         String cashErr = validationService.validateCashTransaction(transaction);
 
         if(!cashErr.isEmpty()) {
+            List<Account> transferToAccounts = accountService.getAllAccounts();
+            //remove the current account from the list
+            transferToAccounts.remove(account);
+
             model.addAttribute("cashErr", cashErr);
-            model.addAttribute("transaction", new Transaction());
+            model.addAttribute("transaction", transaction);
             model.addAttribute("account", account);
             model.addAttribute("transactions", transactionService.getDESCTransactionsByAccounts(accountID));
             model.addAttribute("transferErr", "");
+            model.addAttribute("transferToAccounts", transferToAccounts);
+
 
             return "transactions-account";
         }
@@ -368,11 +517,17 @@ public class ApplicationController {
         String transferErr = validationService.validateTransferTransaction(transaction);
 
         if(!transferErr.isEmpty()) {
+            List<Account> transferToAccounts = accountService.getAllAccounts();
+            //remove the current account from the list
+            transferToAccounts.remove(account);
+
             model.addAttribute("transferErr", transferErr);
-            model.addAttribute("transaction", new Transaction());
+            model.addAttribute("transaction", transaction);
             model.addAttribute("account", account);
             model.addAttribute("cashErr", "");
             model.addAttribute("transactions", transactionService.getDESCTransactionsByAccounts(accountID));
+            model.addAttribute("transferToAccounts", transferToAccounts);
+
             return "transactions-account";
         }
 

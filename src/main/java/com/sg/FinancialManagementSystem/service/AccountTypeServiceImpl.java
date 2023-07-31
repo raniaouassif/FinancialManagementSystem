@@ -30,17 +30,17 @@ public class AccountTypeServiceImpl implements AccountTypeService{
 
     @Override
     public AccountType addAccountType(AccountType accountType) {
-        return null;
+        return accountTypeDao.addAccountType(accountType);
     }
 
     @Override
     public void updateAccountType(AccountType accountType) {
-
+        accountTypeDao.updateAccountType(accountType);
     }
 
     @Override
     public void deleteAccountTypeByID(int accountTypeID) {
-
+        accountTypeDao.deleteAccountTypeByID(accountTypeID);
     }
 
     @Override
@@ -50,11 +50,26 @@ public class AccountTypeServiceImpl implements AccountTypeService{
 
     @Override
     public List<AccountType> getAccountTypesByCustomer(Customer customer) {
-        return null;
+        return accountTypeDao.getAccountTypesByCustomer(customer);
     }
 
     @Override
     public AccountType getAccountTypeByAccount(Account account) {
         return accountTypeDao.getAccountTypeByAccount(account);
+    }
+
+    @Override
+    public List<AccountType> getAccountTypeByType(BankAccountType type) {
+        return accountTypeDao.getAccountTypeByType(type);
+    }
+
+    @Override
+    public List<AccountType> getAllSavingsAccountTypes() {
+        return accountTypeDao.getAllSavingsAccountTypes();
+    }
+
+    @Override
+    public List<AccountType> getAllCheckingAccountTypes() {
+        return accountTypeDao.getAllCheckingAccountTypes();
     }
 }

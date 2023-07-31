@@ -64,6 +64,9 @@
                     <a class="nav-link" href="/stocks">Stocks</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="account-types">Account Types</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/banks">Banks</a>
                 </li>
                 <li class="nav-item active">
@@ -99,7 +102,7 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th class="table-main-header" colspan="8">
+                    <th class="table-main-header" colspan="9">
                         ACTIVE ACCOUNTS
                     </th>
                 </tr>
@@ -114,11 +117,11 @@
                     <th>Interest balance</th>
                     <th>Total balance</th>
                     <th>Transactions</th>
-
+                    <th>Close account</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="openAccount : ${openAccounts}">
+                <tr th:if="openAccounts" th:each="openAccount : ${openAccounts}">
                     <td th:text="${openAccount.accountID}">Customer ID</td>
                     <td th:text="${openAccount.bank.name}">Bank Name</td>
                     <td th:text="${openAccount.accountType.type}">Account type</td>
@@ -128,7 +131,7 @@
                     <td th:if="${openAccount.accountType.type.toString().equals('CHECKING')}" th:text="'-'">Checking Interest Balance</td>
                     <td th:text="${openAccount.totalBalance}">Checking Interest Balance</td>
                     <td><a href="#" th:href="@{/transactions-account(accountID=${openAccount.accountID})}">View transactions</a></td>
-
+                    <td><a href="#" th:href="@{/account-close(accountID=${openAccount.accountID})}">Close account</a></td>
                 </tr>
             </table>
             <!--Add/View Customer Portfolio-->
@@ -139,37 +142,49 @@
             </div>
         </div>
 
-<!--        <div class="table-responsive">-->
-<!--            <table class="table table-hover">-->
-<!--                <thead>-->
-<!--                <tr>-->
-<!--                    <th class="table-main-header" colspan="7">-->
-<!--                        CLOSED ACCOUNTS-->
-<!--                    </th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <thead>-->
-<!--                <tr>-->
-<!--                    <th>ID</th>-->
-<!--                    <th>Bank</th>-->
-<!--                    <th>Type</th>-->
-<!--                    <th>Opening date</th>-->
-<!--                    <th>Closing </th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="openAccount : ${openAccounts}">-->
-<!--                    <td th:text="${openAccount.accountID}">Customer ID</td>-->
-<!--                    <td th:text="${openAccount.bank.name}">Bank Name</td>-->
-<!--                    <td th:text="${openAccount.accountType.type}">Account type</td>-->
-<!--                    <td th:text="${openAccount.openingDate}">Opening Date</td>-->
-<!--                    <td th:text="${openAccount.depositBalance}">Customer ID</td>-->
-<!--                    <td th:if="${openAccount.accountType.equals('CHECKING')}" th:text="${openAccount.interestBalance}">Savings Interest Balance</td>-->
-<!--                    <td th:if="${openAccount.accountType.equals('CHECKING') == false}" th:text="'-'">Checking Interest Balance</td>-->
-<!--                    <td th:text="${openAccount.totalBalance}">Checking Interest Balance</td>-->
-<!--                </tr>-->
-<!--            </table>-->
-<!--        </div>-->
+        <div th:if="${closedAccounts.size() != 0}" class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th class="table-main-header" colspan="11">
+                        CLOSED ACCOUNTS
+                    </th>
+                </tr>
+                </thead>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Bank</th>
+                    <th>Type</th>
+                    <th>Opening date</th>
+                    <th>Deposits balance</th>
+                    <th>Interest balance</th>
+                    <th>Closing balance</th>
+                    <th>Closing Date</th>
+                    <th>Closing Reason</th>
+                    <th>Transactions</th>
+                    <th>Delete</th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="closedAccount : ${closedAccounts}">
+                    <td th:text="${closedAccount.accountID}">Customer ID</td>
+                    <td th:text="${closedAccount.bank.name}">Bank Name</td>
+                    <td th:text="${closedAccount.accountType.type}">Account type</td>
+                    <td th:text="${closedAccount.openingDate}">Opening Date</td>
+                    <td th:text="${closedAccount.depositBalance}">Deposits balance</td>
+                    <td th:if="${closedAccount.accountType.equals('CHECKING')}" th:text="${openAccount.interestBalance}">Savings Interest Balance</td>
+                    <td th:if="${closedAccount.accountType.equals('CHECKING') == false}" th:text="'-'">Checking Interest Balance</td>
+                    <td th:text="${closedAccount.totalBalance}">Closing balance</td>
+                    <td th:text="${closedAccount.closingDate}">Closing date</td>
+                    <td th:text="${closedAccount.closingReason}">Closing reason</td>
+                    <td><a href="#" th:href="@{/transactions-account(accountID=${closedAccount.accountID})}">View transactions</a></td>
+                    <td><a href="#" th:href="@{/account-delete(accountID=${closedAccount.accountID})}">Delete Account</a></td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
 <!-- End main body -->

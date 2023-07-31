@@ -23,5 +23,10 @@ public interface AccountTypeService {
     List<AccountType> getAccountTypesByCustomer(Customer customer);
 
     AccountType getAccountTypeByAccount(Account account);
+    List<AccountType> getAccountTypeByType(BankAccountType type);
 
+
+    public List<AccountType> getAllSavingsAccountTypes();
+
+    public List<AccountType> getAllCheckingAccountTypes();
 }

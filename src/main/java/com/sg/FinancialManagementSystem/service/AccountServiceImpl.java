@@ -71,19 +71,17 @@ public class AccountServiceImpl implements AccountService{
         transaction.setAmount(initialDeposit);
         transaction = transactionDao.addTransaction(transaction); // Add the transaction to the dao
 
-
-
         return account;
     }
 
     @Override
     public void updateAccount(Account account) {
-
+        accountDao.updateAccount(account);
     }
 
     @Override
     public void deleteAccountByID(int accountID) {
-
+        accountDao.deleteAccountByID(accountID);
     }
 
     @Override
@@ -91,7 +89,7 @@ public class AccountServiceImpl implements AccountService{
         List<Account> accounts = accountDao.getAccountsByCustomer(customer);
         calculateAndSetBalancesForAccountList(accounts);
 
-        return accounts;
+        return accounts.size() == 0 ? new ArrayList<>() : accounts;
     }
 
     @Override
@@ -99,7 +97,7 @@ public class AccountServiceImpl implements AccountService{
         List<Account> accounts = accountDao.getOpenAccountsByCustomer(customer);
         calculateAndSetBalancesForAccountList(accounts);
 
-        return accounts;
+        return accounts.size() == 0 ? new ArrayList<>() : accounts;
     }
 
     @Override
@@ -107,95 +105,109 @@ public class AccountServiceImpl implements AccountService{
         List<Account> accounts = accountDao.getClosedAccountsByCustomer(customer);
         calculateAndSetBalancesForAccountList(accounts);
 
-        return accounts;
+        return accounts.size() == 0 ? new ArrayList<>() : accounts;
     }
 
     // PRIVATE HELPER FUNCTIONS
 
     /*
-     * Calculate interest balance function
+     * Calculate & set the balance based on today's date
      */
-    //todo
     private void calculateAndSetBalances(Account account) {
-        if(account.getAccountType().getType().toString().equals("CHECKING")) {
-            account.setInterestBalance(new BigDecimal(0.00));
-            account.setTotalBalance(account.getDepositBalance());
-        } else {
-            AccountType accountType = account.getAccountType();
-            BigDecimal interestRate = accountType.getInterestRate().divide(new BigDecimal(100)); //30%, 0.3
+        if(account.getAccountType() != null) {
+            //No interest is applied on checking accounts
+            if(account.getAccountType().getType().toString().equals("CHECKING")) {
+                BigDecimal interestBalance = BigDecimal.ZERO;
+                BigDecimal depositBalance = BigDecimal.ZERO;
+                BigDecimal totalBalance = BigDecimal.ZERO;
+                List<Transaction> accountTransactions = transactionDao.getASCTransactionsByAccount(account.getAccountID());
 
-            List<Transaction> accountTransactions = transactionDao.getASCTransactionsByAccount(account.getAccountID());
+                for(Transaction accountTransaction : accountTransactions) {
+                    TransactionType transactionType = accountTransaction.getTransactionType();
+                    if(transactionType.equals(TransactionType.DEPOSIT)
+                            || (transactionType.equals(TransactionType.TRANSFER) && accountTransaction.getTo().getAccountID() == account.getAccountID()))
+                    {
+                        depositBalance = depositBalance.add(accountTransaction.getAmount());
+                        totalBalance = totalBalance.add(accountTransaction.getAmount());
+                    } else if(transactionType.equals(TransactionType.WITHDRAW) || (transactionType.equals(TransactionType.TRANSFER) && accountTransaction.getFrom().getAccountID() == account.getAccountID()))
+                    {
+                        depositBalance = depositBalance.subtract(accountTransaction.getAmount());
+                        totalBalance = totalBalance.subtract(accountTransaction.getAmount());
+                    }
+                }
+                account.setDepositBalance(depositBalance.setScale(2, RoundingMode.HALF_UP));
+                account.setInterestBalance(interestBalance.setScale(2, RoundingMode.HALF_UP));
+                account.setTotalBalance(totalBalance.setScale(2, RoundingMode.HALF_UP));
+            } else {
+                AccountType accountType = account.getAccountType();
+                BigDecimal interestRate = accountType.getInterestRate().divide(new BigDecimal(100)); //30%, 0.3
 
-            //FOR LOOP
-            //10% INTEREST MONTHLY
-            //FIRST DEPOSIT DATE WAS 10 MONTHS AGO
-            //TODAYS DATE
-            /*
-                FOR EACH MONTH;
-                    SUM THE TRANSACTIONS
-                    CALCULATE THE TOTAL BALANCE
-                    CALCULATE THE INTEREST
+                List<Transaction> accountTransactions = transactionDao.getASCTransactionsByAccount(account.getAccountID());
+                LocalDate today = LocalDate.now();
+                LocalDate processedUpTo = account.getOpeningDate();
 
-             */
-            LocalDate today = LocalDate.now();
-            LocalDate processedUpTo = account.getOpeningDate();
+                BigDecimal depositBalance = BigDecimal.ZERO;
+                BigDecimal interestBalance = BigDecimal.ZERO;
+                BigDecimal totalBalance = BigDecimal.ZERO;
 
-            BigDecimal depositBalance = BigDecimal.ZERO;
-            BigDecimal interestBalance = BigDecimal.ZERO;
-            BigDecimal totalBalance = BigDecimal.ZERO;
+                int monthsPeriod = compoundDurationInMonths.get(accountType.getCompoundRate());
 
-            int monthsPeriod = compoundDurationInMonths.get(accountType.getCompoundRate());
+                // 1 transaction
+                for(Transaction accountTransaction : accountTransactions) {
+                    LocalDate transactionDate = accountTransaction.getDateTime().toLocalDate();
+                    TransactionType transactionType = accountTransaction.getTransactionType();
+                    LocalDate compoundDate = processedUpTo.plusMonths(monthsPeriod);
+                    // If the transaction is after the compound limit date
+                    if(transactionDate.isAfter(compoundDate)){
+                        long monthsBetween = ChronoUnit.MONTHS.between(processedUpTo, transactionDate);
+                        BigDecimal interest =
+                                totalBalance
+                                        .multiply(BigDecimal.ONE.add(interestRate).pow(
+                                                (int) (monthsBetween/monthsPeriod)
+                                        ))
+                                        .subtract(totalBalance) ;
 
-            // 1 transaction
-            for(Transaction accountTransaction : accountTransactions) {
-                LocalDate transactionDate = accountTransaction.getDateTime().toLocalDate();
-                TransactionType transactionType = accountTransaction.getTransactionType();
-                LocalDate compoundDate = processedUpTo.plusMonths(monthsPeriod);
-                // If the transaction is after the compound limit date
-                if(transactionDate.isAfter(compoundDate)){
-                    long monthsBetween = ChronoUnit.MONTHS.between(processedUpTo, transactionDate);
-                    BigDecimal interest =
-                            totalBalance
-                            .multiply(BigDecimal.ONE.add(interestRate).pow(
-                                    (int) (monthsBetween/monthsPeriod)
-                            ))
-                            .subtract(totalBalance) ;
+                        interestBalance = interestBalance.add(interest);
+                        totalBalance = totalBalance.add(interest);
 
-                    interestBalance = interestBalance.add(interest);
-                    totalBalance = totalBalance.add(interest);
+                        processedUpTo = processedUpTo.plusMonths( monthsBetween/monthsPeriod* monthsPeriod);
+                    }
 
-                    processedUpTo = processedUpTo.plusMonths( monthsBetween/monthsPeriod* monthsPeriod);
+                    if(transactionType.equals(TransactionType.DEPOSIT) ||
+                            (transactionType.equals(TransactionType.TRANSFER) && accountTransaction.getTo().getAccountID() == account.getAccountID())) {
+                        depositBalance = depositBalance.add(accountTransaction.getAmount());
+                        totalBalance = totalBalance.add(accountTransaction.getAmount());
+
+                    } else if(transactionType.equals(TransactionType.WITHDRAW) ||
+                            (transactionType.equals(TransactionType.TRANSFER) && accountTransaction.getFrom().getAccountID() == account.getAccountID())){
+                        depositBalance = depositBalance.subtract(accountTransaction.getAmount());
+                        totalBalance = totalBalance.subtract(accountTransaction.getAmount());
+                    }
                 }
 
-                if(transactionType.equals(TransactionType.DEPOSIT) ||
-                        (transactionType.equals(TransactionType.TRANSFER) && accountTransaction.getTo().getAccountID() == account.getAccountID())) {
-                    depositBalance = depositBalance.add(accountTransaction.getAmount());
-                    totalBalance = totalBalance.add(accountTransaction.getAmount());
+                //Calculate the last interest applied for the last transaction
+                long monthsBetween =
+                        ChronoUnit.MONTHS.between(processedUpTo,
+                                // Only apply up to closing date, or today if account open
+                                account.getStatus().equals(AccountStatus.CLOSED) ? account.getClosingDate() : today);
+                BigDecimal interest =
+                        totalBalance
+                                .multiply(BigDecimal.ONE.add(interestRate).pow(
+                                        (int) (monthsBetween/monthsPeriod)
+                                ))
+                                .subtract(totalBalance) ;
 
-                } else if(transactionType.equals(TransactionType.WITHDRAW) ||
-                        (transactionType.equals(TransactionType.TRANSFER) && accountTransaction.getFrom().getAccountID() == account.getAccountID())){
-                    depositBalance = depositBalance.subtract(accountTransaction.getAmount());
-                    totalBalance = totalBalance.subtract(accountTransaction.getAmount());
-                }
+                interestBalance = interestBalance.add(interest);
+                totalBalance = totalBalance.add(interest);
+                //Set the properties
+                account.setDepositBalance(depositBalance.setScale(2, RoundingMode.HALF_UP));
+                account.setInterestBalance(interestBalance.setScale(2, RoundingMode.HALF_UP));
+                account.setTotalBalance(totalBalance.setScale(2, RoundingMode.HALF_UP));
+
             }
-
-            long monthsBetween = ChronoUnit.MONTHS.between(processedUpTo, today);
-            BigDecimal interest =
-                    totalBalance
-                            .multiply(BigDecimal.ONE.add(interestRate).pow(
-                                    (int) (monthsBetween/monthsPeriod)
-                            ))
-                            .subtract(totalBalance) ;
-
-            interestBalance = interestBalance.add(interest);
-            totalBalance = totalBalance.add(interest);
-            //Set the properties
-            account.setDepositBalance(depositBalance.setScale(2, RoundingMode.HALF_UP));
-            account.setInterestBalance(interestBalance.setScale(2, RoundingMode.HALF_UP));
-            account.setTotalBalance(totalBalance.setScale(2, RoundingMode.HALF_UP));
-
             accountDao.updateAccount(account);
         }
+
     }
 
     private Map<CompoundRate, Integer> compoundDurationInMonths = Map.of(

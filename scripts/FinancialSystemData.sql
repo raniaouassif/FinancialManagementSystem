@@ -12,7 +12,6 @@ INSERT INTO Bank (name, location) VALUES
 	('Bank of America', 'United States'),
 	('Wells Fargo & Co.', 'United States');
 
-
 INSERT INTO Company (name, industry, status, revenue, profit, grossMargin, cashFlow ) VALUES 
 	('Amazon', 'Multinational Technology Company', 'PUBLIC', 514.22, 225.152, 41.8, 25.18), 
 	('Apple Inc.', 'Technology', 'PUBLIC', 365.98, 74.46, 39.7, 81.43),

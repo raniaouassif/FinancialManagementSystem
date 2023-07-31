@@ -61,6 +61,9 @@
                     <a class="nav-link" href="stocks">Stocks</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="account-types">Account Types</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="banks">Banks</a>
                 </li>
                 <li class="nav-item active">
@@ -135,12 +138,12 @@
                 <h4>
                     FMS Account Details
                 </h4>
-                <p class="mb-0 text-right" th:text="${account.accountType.type}"></p>
-                <p class="mb-0 text-right" th:text="${account.accountType.interestRate} + '%'
+                <p class="mb-0 text-right" th:text="${account.accountType.type}+ ' '+ ${account.status.toString()}"></p>
+                <p th:if="${!account.accountType.type.toString().equals('CHECKING')}" class="mb-0 text-right" th:text="${account.accountType.interestRate} + '%'
                                     + ' compounded '
                                     + ${account.accountType.compoundRate.toString().toLowerCase()}
                 "></p>
-                <p class="mb-0 text-right" th:text="'Account number: ' + ${account.accountID} "></p>
+                <p class="mb-0 text-right" th:text="'Account#' + ${account.accountID} "></p>
                 <p class="mb-0 text-right" th:text="'Opening date: ' + ${account.getOpeningDate()}  "></p>
                 <p class="mb-0 text-right" th:text="'Total balance: $' + ${account.totalBalance}  "></p>
                 <p class="mb-0 text-right" th:text="'Total #transactions: ' + ${account.accountTransactions.size()}"></p>

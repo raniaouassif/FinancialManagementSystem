@@ -1,5 +1,7 @@
 package com.sg.FinancialManagementSystem.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -16,6 +18,8 @@ public class Account {
     private BigDecimal totalBalance;
     private AccountStatus status;
     private LocalDate closingDate;
+    @NotBlank(message = "Please provide a closing reason.")
+    @Size(min = 10, message = "Closing reason should be at least 10 characters.")
     private String closingReason;
     private Bank bank;
     private AccountType accountType;

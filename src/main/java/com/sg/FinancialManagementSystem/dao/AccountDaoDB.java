@@ -84,11 +84,12 @@ public class AccountDaoDB implements AccountDao{
                 account.getInterestBalance(),
                 account.getTotalBalance(),
                 account.getStatus().toString(),
-                LocalDate.now(),
+                account.getClosingDate(),
                 account.getClosingReason(),
                 account.getAccountID()
                 );
 
+        Account accou1 = getAccountByID(account.getAccountID());
     }
 
     @Override
