@@ -3,10 +3,7 @@ package com.sg.FinancialManagementSystem.service;
 import com.sg.FinancialManagementSystem.dao.AccountDao;
 import com.sg.FinancialManagementSystem.dao.AccountTypeDao;
 import com.sg.FinancialManagementSystem.dao.BankDao;
-import com.sg.FinancialManagementSystem.dto.Account;
-import com.sg.FinancialManagementSystem.dto.AccountStatus;
-import com.sg.FinancialManagementSystem.dto.AccountType;
-import com.sg.FinancialManagementSystem.dto.Transaction;
+import com.sg.FinancialManagementSystem.dto.*;
 import com.sg.FinancialManagementSystem.service.Exceptions.InsufficientMinDepositException;
 import com.sg.FinancialManagementSystem.service.Exceptions.InvalidBankAccountTypeException;
 import com.sg.FinancialManagementSystem.service.Exceptions.InvalidDateException;
@@ -141,6 +138,24 @@ public class ValidationService {
                     && daoAccountType.getInterestRate().setScale(2, RoundingMode.HALF_UP).equals(accountType.getInterestRate().setScale(2, RoundingMode.HALF_UP))
             ) {
                     message = "A savings account type with the same attributes already exists.";
+            }
+        }
+
+        return message;
+    }
+
+    public String validateAddBank(Bank bank) {
+        String message = "";
+
+        List<Bank> banks = bankDao.getAllBanks();
+
+        for(Bank bankDao : banks) {
+            if(bankDao.getName().toLowerCase().replaceAll(" ", "")
+                    .equals(
+                            bank.getName().toLowerCase().replaceAll(" ", "")
+                    )) {
+                message = "The bank with name " + bank.getName() + " already exists";
+
             }
         }
 

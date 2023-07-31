@@ -221,7 +221,7 @@ public class ApplicationController {
     }
 
     @PostMapping("addSavingAccountType")
-    public String performAddSabingsAccountType(@Valid AccountType accountType, BindingResult result, HttpServletRequest request, Model model) {
+    public String performAddSavingsAccountType(@Valid AccountType accountType, BindingResult result, HttpServletRequest request, Model model) {
         String minimumDeposit = request.getParameter("savingMinimumStartDeposit");
         String interestRate = request.getParameter("savingInterestRate");
         String compoundRate = request.getParameter("compoundRate");
@@ -268,12 +268,6 @@ public class ApplicationController {
     /*
      **********************************      BANK       ****************************************************************
      */
-    @GetMapping("/banks")
-    public String displayBanks(Model model) {
-        List<Bank> banks = bankService.getAllBanks();
-        model.addAttribute("banks", banks);
-        return "banks";
-    }
 
     @GetMapping("/bank-detail")
     public String bankDetail(Integer id, Model model) {
@@ -289,6 +283,100 @@ public class ApplicationController {
         model.addAttribute("customersAggBalance", getABForCustomers(customers, id));
         return "bank-detail";
     }
+
+    @GetMapping("/banks")
+    public String displayBanks(Model model) {
+        List<Bank> banks = bankService.getAllBanks();
+        List<AccountType> accountTypes = accountTypeService.getAllAccountTypes();
+
+        model.addAttribute("accountTypes", accountTypes);
+        model.addAttribute("banks", banks);
+        model.addAttribute("bank", new Bank());
+        model.addAttribute("err", "");
+        model.addAttribute("bankAccountTypesIDs", new ArrayList<>());
+
+        return "banks";
+    }
+
+    @PostMapping("addBank")
+    public String performAddBank(@Valid Bank bank, BindingResult result, HttpServletRequest request, Model model) {
+        String[] accountTypesIDs = request.getParameterValues("accountTypeID");
+        List<AccountType> reqAccountTypes = new ArrayList<>();
+        for(String accountTypeID :accountTypesIDs ) {
+            reqAccountTypes.add(accountTypeService.getAccountTypeByID(Integer.parseInt(accountTypeID)));
+        }
+
+        bank.setAccountTypes(reqAccountTypes.size() == 0 ? new ArrayList<>() : reqAccountTypes);
+
+        String err = validationService.validateAddBank(bank);
+
+        //Check for errors
+        if (result.hasErrors() || !err.isEmpty()) {
+            //Create a list of bank account types IDS for the HTML  select
+            List<Integer> bankAccountTypesIDs = bank.getAccountTypes().stream()
+                    .map(AccountType::getAccountTypeID) // Map each Organization to its ID
+                    .collect(Collectors.toList()); // Collect the IDs into a new list
+            model.addAttribute("bankAccountTypesIDs", bankAccountTypesIDs);
+
+            model.addAttribute("accountTypes", accountTypeService.getAllAccountTypes());
+            model.addAttribute("banks", bankService.getAllBanks());
+            model.addAttribute("bank", bank);
+            model.addAttribute("err", err);
+
+            //Pass the modified customer
+            model.addAttribute("bank", bank);
+            return "/banks";
+        }
+
+        bankService.addBank(bank);
+        return "redirect:/banks";
+    }
+
+    @GetMapping("/banks-edit")
+    public String editBank(Integer bankID, Model model) {
+        Bank bank = bankService.getBankByID(bankID);
+        //Create a list of bank account types IDS for the HTML  select
+        List<Integer> bankAccountTypesIDs = bank.getAccountTypes().stream()
+                .map(AccountType::getAccountTypeID) // Map each Organization to its ID
+                .collect(Collectors.toList()); // Collect the IDs into a new list
+        model.addAttribute("bankAccountTypesIDs", bankAccountTypesIDs);
+
+        model.addAttribute("bank", bank);
+        List<AccountType> accountTypes = accountTypeService.getAllAccountTypes();
+        model.addAttribute("accountTypes", accountTypes);
+        model.addAttribute("err", "");
+        return "banks-edit";
+    }
+
+    @PostMapping("editBank")
+    public String performEditBank(@Valid Bank bank, BindingResult result, Integer bankID, HttpServletRequest request, Model model) {
+        Bank bankPrev = bankService.getBankByID(bankID);
+        //Create a list of bank account types IDS for the HTML  select
+        List<Integer> bankPrevAccountTypesIDs = bankPrev.getAccountTypes().stream()
+                .map(AccountType::getAccountTypeID) // Map each Organization to its ID
+                .collect(Collectors.toList()); // Collect the IDs into a new list
+
+
+        String[] accountTypesIDs = request.getParameterValues("accountTypeID");
+        List<AccountType> reqAccountTypes = new ArrayList<>();
+        for(String accountTypeID :accountTypesIDs ) {
+            //Skip the already selected accounts, which cannot be removed
+            if(bankPrevAccountTypesIDs.contains(Integer.parseInt(accountTypeID))){
+                continue;
+            }
+            reqAccountTypes.add(accountTypeService.getAccountTypeByID(Integer.parseInt(accountTypeID)));
+        }
+        bank.setAccountTypes(reqAccountTypes.size() == 0 ? new ArrayList<>() : reqAccountTypes);
+        //Check for errors
+        if (result.hasErrors()) {
+            //Pass the modified customer
+            model.addAttribute("bank", bank);
+            return "banks-edit";
+        }
+        bankService.updateBank(bank);
+        return "redirect:/banks";
+    }
+
 
     /*
      **********************************      COMPANIES    ***********************************************************
@@ -454,6 +542,23 @@ public class ApplicationController {
         model.addAttribute("transferToAccounts", transferToAccounts);
 
         return "transactions-account";
+    }
+
+    @GetMapping("/transactions")
+    public String displayAllTransactions(Integer accountID, Model model) {
+        Account account = accountService.getAccountByID(accountID);
+        List<Transaction> transactions = transactionService.geDESCTransactions();
+        List<Account> transferToAccounts = accountService.getAllAccounts();
+        //remove the current account from the list
+        transferToAccounts.remove(account);
+
+        //For Add transaction forms
+        List<Account> accounts = accountService.getAllAccounts();
+        accounts.remove(account); // remove the current account from the list
+        model.addAttribute("transactions", transactions);
+        model.addAttribute("transferToAccounts", transferToAccounts);
+
+        return "transactions";
     }
 
     @PostMapping("cashTransaction")

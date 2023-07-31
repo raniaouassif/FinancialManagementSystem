@@ -75,38 +75,10 @@
     </nav>
 
     <div class="row m-4 text-center">
-        <h3>
-            FMS Banks
-        </h3>
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Location</th>
-<!--                    <th>Account Types</th>-->
-                    <th>Details</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="bank : ${banks}">
-                    <td th:text="${bank.name}">Name</td>
-                    <td th:text="${bank.location}">Location</td>
-                    <td><a href="#" th:href="@{/bank-detail(id=${bank.bankID})}">Details</a></td>
-                    <td><a href="#" th:href="@{/banks-edit(bankID=${bank.bankID})}">Edit</a></td>
-                    <td><a href="#" th:href="@{/banks-delete(bankID=${bank.bankID})}">Delete</a></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="row d-flex ">
-        <div class="col-10  text-left m-0 border pt-3 pb-3">
-            <h4>Add new bank </h4>
-            <form action="addBank" method="POST">
+    <div class="row d-flex justify-content-around">
+        <div class="col-15  text-center m-0 border">
+            <h4>Edit bank </h4>
+            <form action="editBank" method="POST">
                 <!-- Error handling-->
                 <div class="col-12 m-1 text-center"
                      th:if="${!err.isEmpty()}">
@@ -140,7 +112,7 @@
                 </div>
 
                 <!-- Bank Account types -->
-                <div class="form-group row ">
+                <div class="form-group row">
                     <label for="accountTypes" class="col-3 col-form-label">
                         Account types</label>
                     <div class="col-9">
@@ -150,24 +122,25 @@
                                     th:each="accountType : ${accountTypes}"
                                     th:if="${accountType.type.toString().equals('CHECKING')}"
                                     th:value="${accountType.accountTypeID}"
-                                    th:text="${accountType.type} + '-MIN DEPOSIT-' + ${accountType.minimumStartDeposit}"
-                                    th:selected="${bankAccountTypesIDs.contains(accountType.accountTypeID)}">
+                                    th:selected="${bankAccountTypesIDs.contains(accountType.accountTypeID)}"
+                                    th:disabled="${bankAccountTypesIDs.contains(accountType.accountTypeID)}"
 
-                            >
+                                    th:text="${accountType.type} + '-MIN DEPOSIT-' + ${accountType.minimumStartDeposit}">
                                 Account type</option>
                             <option
                                     th:each="accountType : ${accountTypes}"
                                     th:if="${!accountType.type.toString().equals('CHECKING')}"
                                     th:value="${accountType.accountTypeID}"
+                                    th:disabled="${bankAccountTypesIDs.contains(accountType.accountTypeID)}"
+
                                     th:selected="${bankAccountTypesIDs.contains(accountType.accountTypeID)}"
                                     th:text="${accountType.type} + '_' + ${accountType.compoundRate}+ '_' + ${accountType.interestRate} + '%' +  '-MIN DEPOSIT-' + ${accountType.minimumStartDeposit}">
                                 Account type</option>
                         </select>
                     </div>
                 </div>
-
                 <input type="hidden" name="bankID" th:value="${bank.bankID}"/>
-                <button type="submit" class="btn btn-primary">+ Add Bank</button>
+                <button type="submit" class="btn btn-primary">+ Edit Bank</button>
             </form>
         </div>
     </div>

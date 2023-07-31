@@ -1,5 +1,7 @@
 package com.sg.FinancialManagementSystem.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,7 +10,13 @@ import java.util.Objects;
  */
 public class Bank {
     private int bankID;
+
+    @NotBlank(message = "Bank name cannot be empty.")
+    @Size(max = 50, message = "Bank name should be between 5 to 50 characters.")
     private String name;
+
+    @NotBlank(message = "Location cannot be empty.")
+    @Size(max = 50, message = "Location should be at most 50 characters.")
     private String location;
     private List<AccountType> accountTypes;
 

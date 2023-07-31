@@ -23,4 +23,6 @@ public interface TransactionDao {
 
 
     List<Transaction> getDESCTransactionsByAccount(Integer accountID);
+
+    List<Transaction> getDESCTransactions();
 }

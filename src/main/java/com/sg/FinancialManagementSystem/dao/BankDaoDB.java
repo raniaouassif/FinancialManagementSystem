@@ -72,7 +72,7 @@ public class BankDaoDB implements BankDao {
                 bank.getBankID()
         );
         //First delete the bank account types
-        deleteBankAccountTypesByBankID(bank.getBankID());
+        //deleteBankAccountTypesByBankID(bank.getBankID());
 
         //Then reset the bank account types
         insertBankAccountTypes(bank);

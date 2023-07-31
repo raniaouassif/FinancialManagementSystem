@@ -130,6 +130,19 @@ public class TransactionDaoDB implements TransactionDao {
         return transactions.size() == 0 ? new ArrayList<>() : transactions;
     }
 
+    @Override
+    public List<Transaction> getDESCTransactions() {
+
+        final String GET_ALL_TRANSACTIONS = "SELECT * FROM Transaction ORDER BY dateTime";
+
+        List<Transaction> retrievedTransactions = jdbcTemplate.query(GET_ALL_TRANSACTIONS, new TransactionMapper());
+
+        // Set the accounts for each transaction
+        setAccountsForTransactionsList(retrievedTransactions);
+
+        return retrievedTransactions;
+    }
+
     // PRIVATE HELPER FUNCTION
     private List<Account> getAccountsByTransaction(Transaction transaction) {
         final String GET_ACCOUNTS_BY_TRANSACTION = "SELECT a.* FROM Account a " +
