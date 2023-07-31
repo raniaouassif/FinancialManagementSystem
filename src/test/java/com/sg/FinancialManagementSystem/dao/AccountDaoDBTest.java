@@ -106,6 +106,7 @@ class AccountDaoDBTest {
         account.setCustomer(customer);
         account.setBank(bank);
         account.setAccountType(savingsAccount);
+        account.setDepositBalance(new BigDecimal(0));
 
         //Call the add method from DAO
         account = accountDao.addAccount(account);
@@ -186,6 +187,8 @@ class AccountDaoDBTest {
         account.setCustomer(customer);
         account.setBank(bank);
         account.setAccountType(savingsAccount);
+        account.setDepositBalance(new BigDecimal(0));
+
         account = accountDao.addAccount(account);//Call the add method from DAO
 
         //Now create account
@@ -194,6 +197,7 @@ class AccountDaoDBTest {
         account2.setCustomer(customer);
         account2.setBank(bank2);
         account2.setAccountType(savingsAccount);
+        account2.setDepositBalance(new BigDecimal(10));
         account2 = accountDao.addAccount(account2);//Call the add method from DAO
 
         //Call the getAll method from DAO
@@ -239,6 +243,7 @@ class AccountDaoDBTest {
         account.setCustomer(customer);
         account.setBank(bank);
         account.setAccountType(savingsAccount);
+        account.setDepositBalance(new BigDecimal(0));
 
         //Call the add method from DAO
         account = accountDao.addAccount(account);
@@ -321,6 +326,7 @@ class AccountDaoDBTest {
         account.setCustomer(customer);
         account.setBank(bank);
         account.setAccountType(savingsAccount);
+        account.setDepositBalance(new BigDecimal(0));
 
         //Call the add method from DAO
         account = accountDao.addAccount(account);
@@ -390,6 +396,7 @@ class AccountDaoDBTest {
         account.setCustomer(customer);
         account.setBank(bank);
         account.setAccountType(savingsAccount);
+        account.setDepositBalance(new BigDecimal(0));
         account = accountDao.addAccount(account);//Call the add method from DAO
 
         //Now create James bond 2nd account in another Bank
@@ -398,6 +405,7 @@ class AccountDaoDBTest {
         account2.setCustomer(customer2);
         account2.setBank(bank2);
         account2.setAccountType(savingsAccount);
+        account2.setDepositBalance(new BigDecimal(0));
         account2 = accountDao.addAccount(account2);//Call the add method from DAO
 
         //Not Jennifer bond 2nd account in another Bank
@@ -406,6 +414,7 @@ class AccountDaoDBTest {
         account3.setCustomer(customer2);
         account3.setBank(bank2);
         account3.setAccountType(savingsAccount);
+        account3.setDepositBalance(new BigDecimal(0));
         account3 = accountDao.addAccount(account3);//Call the add method from DAO
 
         //Call the getAll method from DAO
@@ -465,6 +474,7 @@ class AccountDaoDBTest {
         account.setCustomer(customer);
         account.setBank(bank);
         account.setAccountType(savingsAccount);
+        account.setDepositBalance(new BigDecimal(0));
         account = accountDao.addAccount(account);//Call the add method from DAO
 
         //Create James bond 2nd account in another Bank
@@ -473,6 +483,7 @@ class AccountDaoDBTest {
         account2.setCustomer(customer2);
         account2.setBank(bank2);
         account2.setAccountType(savingsAccount);
+        account2.setDepositBalance(new BigDecimal(0));
         account2 = accountDao.addAccount(account2);//Call the add method from DAO
 
         //Create James bond 2nd account
@@ -481,6 +492,7 @@ class AccountDaoDBTest {
         account3.setCustomer(customer2);
         account3.setBank(bank2);
         account3.setAccountType(savingsAccount);
+        account3.setDepositBalance(new BigDecimal(0));
         account3 = accountDao.addAccount(account3);//Call the add method from DAO
 
         //Create James bond 3rd account in another Bank
@@ -489,6 +501,7 @@ class AccountDaoDBTest {
         account4.setCustomer(customer2);
         account4.setBank(bank);
         account4.setAccountType(savingsAccount);
+        account4.setDepositBalance(new BigDecimal(0));
         account4 = accountDao.addAccount(account4);//Call the add method from DAO
 
         //Assert that all 3 accounts are automatically set to open
@@ -510,11 +523,6 @@ class AccountDaoDBTest {
 
        //Assert that James Bond only has 2 OPEN accounts
         assertEquals(2, accountsFromDao.size());
-
-    }
-
-    @Test
-    void delete() {
 
     }
 }

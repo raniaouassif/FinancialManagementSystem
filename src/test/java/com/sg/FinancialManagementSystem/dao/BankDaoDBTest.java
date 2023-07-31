@@ -133,21 +133,11 @@ class BankDaoDBTest {
     @Test
     @DisplayName("Update Bank")
     void updateBank() {
-        //Create new account type : CHECKING
-        AccountType checkingAccount = new AccountType();
-        checkingAccount.setType(BankAccountType.CHECKING);
-        checkingAccount.setMinimumStartDeposit(new BigDecimal(25).setScale(2));
-        checkingAccount.setInterestRate(new BigDecimal(0).setScale(2));
-        checkingAccount.setCompoundRate(CompoundRate.NA);
-        checkingAccount = accountTypeDao.addAccountType(checkingAccount);
-
-        List<AccountType> bankAccountTypes = new ArrayList<>();
-        bankAccountTypes.add(checkingAccount);
 
         Bank bank = new Bank();
         bank.setName("RBC Royal Bank");
         bank.setLocation("Canada");
-        bank.setAccountTypes(bankAccountTypes);
+        bank.setAccountTypes(new ArrayList<>());
         bank = bankDao.addBank(bank);
 
         Bank bankFromDao = bankDao.getBankByID(bank.getBankID());

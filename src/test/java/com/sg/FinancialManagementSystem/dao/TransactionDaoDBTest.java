@@ -102,6 +102,7 @@ class TransactionDaoDBTest {
         account.setCustomer(customer);
         account.setBank(bank);
         account.setAccountType(savingsAccount);
+        account.setDepositBalance(BigDecimal.valueOf(0));
         account = accountDao.addAccount(account);
 
         //Create a transaction
@@ -163,6 +164,7 @@ class TransactionDaoDBTest {
         account.setCustomer(customer);
         account.setBank(bank);
         account.setAccountType(savingsAccount);
+        account.setDepositBalance(BigDecimal.valueOf(0));
         account = accountDao.addAccount(account);
 
         //Create transactions
@@ -231,6 +233,7 @@ class TransactionDaoDBTest {
         account.setCustomer(customer);
         account.setBank(bank);
         account.setAccountType(savingsAccount);
+        account.setDepositBalance(BigDecimal.valueOf(0));
         account = accountDao.addAccount(account);
 
         //Create a transaction
@@ -294,6 +297,7 @@ class TransactionDaoDBTest {
         account.setCustomer(customer);
         account.setBank(bank);
         account.setAccountType(savingsAccount);
+        account.setDepositBalance(BigDecimal.valueOf(0));
         account = accountDao.addAccount(account);
 
         //Create another account
@@ -302,6 +306,7 @@ class TransactionDaoDBTest {
         account2.setCustomer(customer);
         account2.setBank(bank);
         account2.setAccountType(savingsAccount);
+        account2.setDepositBalance(BigDecimal.valueOf(0));
         account2 = accountDao.addAccount(account2);
 
         //Create transactions

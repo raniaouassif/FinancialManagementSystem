@@ -196,6 +196,7 @@ class CustomerDaoDBTest {
         account.setCustomer(customer);
         account.setBank(bank);
         account.setAccountType(savingsAccount);
+        account.setDepositBalance(BigDecimal.valueOf(0));
         account = accountDao.addAccount(account);
 
         //Now create account
@@ -205,6 +206,7 @@ class CustomerDaoDBTest {
         account2.setCustomer(customer);
         account2.setBank(bank2);
         account2.setAccountType(savingsAccount);
+        account2.setDepositBalance(BigDecimal.valueOf(0));
         account2 = accountDao.addAccount(account2);
 
         //Now create account
@@ -214,6 +216,7 @@ class CustomerDaoDBTest {
         account3.setCustomer(customer2);
         account3.setBank(bank2);
         account3.setAccountType(savingsAccount);
+        account3.setDepositBalance(BigDecimal.valueOf(0));
         account3 = accountDao.addAccount(account3);
 
         List<Customer> customersBank1 = customerDao.getCustomersByBank(bank);
@@ -288,6 +291,7 @@ class CustomerDaoDBTest {
         account.setCustomer(customer);
         account.setBank(bank);
         account.setAccountType(savingsAccount);
+        account.setDepositBalance(BigDecimal.valueOf(0));
         account = accountDao.addAccount(account);
 
         //Now create checkingAccount
@@ -296,6 +300,7 @@ class CustomerDaoDBTest {
         account2.setCustomer(customer3);
         account2.setBank(bank);
         account2.setAccountType(checkingAccount);
+        account2.setDepositBalance(BigDecimal.valueOf(0));
         account2 = accountDao.addAccount(account2);
 
         //Now create savingsAccount
@@ -305,6 +310,7 @@ class CustomerDaoDBTest {
         account3.setCustomer(customer2);
         account3.setBank(bank);
         account3.setAccountType(savingsAccount);
+        account3.setDepositBalance(BigDecimal.valueOf(0));
         account3 = accountDao.addAccount(account3);
 
         List<Customer> customersChecking = customerDao.getCustomersByAccountType(checkingAccount);
