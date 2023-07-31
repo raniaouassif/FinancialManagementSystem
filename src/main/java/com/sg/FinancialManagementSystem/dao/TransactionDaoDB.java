@@ -133,7 +133,7 @@ public class TransactionDaoDB implements TransactionDao {
     @Override
     public List<Transaction> getDESCTransactions() {
 
-        final String GET_ALL_TRANSACTIONS = "SELECT * FROM Transaction ORDER BY dateTime";
+        final String GET_ALL_TRANSACTIONS = "SELECT * FROM Transaction ORDER BY dateTime DESC";
 
         List<Transaction> retrievedTransactions = jdbcTemplate.query(GET_ALL_TRANSACTIONS, new TransactionMapper());
 
@@ -152,8 +152,7 @@ public class TransactionDaoDB implements TransactionDao {
 
         List<Account> accounts = jdbcTemplate.query(GET_ACCOUNTS_BY_TRANSACTION, new AccountMapper(), transaction.getTransactionID());
 
-        //TODO set anyhting for accounts ?
-
+        setCustomerByAccountList(accounts);
         return accounts.size() == 0 ? new ArrayList<>() : accounts;
     }
 
@@ -227,4 +226,13 @@ public class TransactionDaoDB implements TransactionDao {
             return null;
         }
     }
+
+    private void setCustomerByAccountList(List<Account> accounts) {
+        for(Account account : accounts) {
+            account.setCustomer(getCustomerByAccount(account.getAccountID()));
+        }
+    }
+
+
+
 }

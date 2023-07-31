@@ -163,17 +163,13 @@ INSERT INTO PortfolioBridge (portfolioID, stockID, exchangeOrganizationID, stock
     
 INSERT INTO Transaction(dateTime, transactionType, amount) VALUES 
 	("2018-01-02 10:00:00", "DEPOSIT", 100.00),
-	("2019-01-02 11:00:00", "TRANSFER", 100.00),
+	("2019-01-02 11:00:00", "TRANSFER", 20.00),
 	("2021-01-01 13:00:00", "DEPOSIT", 50.00),
-	("2012-05-16 01:00:00", "DEPOSIT", 150.00),
-	("2020-09-19 13:00:00", "DEPOSIT", 2000.00),
-	("2021-11-07 13:00:00", "DEPOSIT", 10000.00),
-	("2021-12-27 13:00:00", "DEPOSIT", 125.00),
-	("2022-12-21 10:30:00", "WITHDRAW", 1000.00),
-	("2022-11-30 04:00:00", "WITHDRAW", 25.00);
+	("2022-12-21 10:30:00", "WITHDRAW", 10.00);
 
 INSERT INTO AccountTransaction (transactionID, accountID1, accountID2) VALUES
 	(1,3,3),
-    (2,1,3),
-    (9,3,3);
+    (4,3,3),
+    (2,3,1),
+    (3,1,1);
 

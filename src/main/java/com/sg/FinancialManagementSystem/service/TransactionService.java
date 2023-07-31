@@ -23,4 +23,6 @@ public interface TransactionService {
     List<Transaction> getASCTransactionsByAccount(int accountID);
 
     List<Transaction> getDESCTransactionsByAccounts(Integer accountID);
+
+    List<Transaction> geDESCTransactions();
 }

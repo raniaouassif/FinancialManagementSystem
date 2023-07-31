@@ -545,18 +545,9 @@ public class ApplicationController {
     }
 
     @GetMapping("/transactions")
-    public String displayAllTransactions(Integer accountID, Model model) {
-        Account account = accountService.getAccountByID(accountID);
+    public String displayAllTransactions(Model model) {
         List<Transaction> transactions = transactionService.geDESCTransactions();
-        List<Account> transferToAccounts = accountService.getAllAccounts();
-        //remove the current account from the list
-        transferToAccounts.remove(account);
-
-        //For Add transaction forms
-        List<Account> accounts = accountService.getAllAccounts();
-        accounts.remove(account); // remove the current account from the list
         model.addAttribute("transactions", transactions);
-        model.addAttribute("transferToAccounts", transferToAccounts);
 
         return "transactions";
     }

@@ -53,4 +53,9 @@ public class TransactionServiceImpl implements  TransactionService{
     public List<Transaction> getDESCTransactionsByAccounts(Integer accountID) {
         return transactionDao.getDESCTransactionsByAccount(accountID);
     }
+
+    @Override
+    public List<Transaction> geDESCTransactions() {
+        return transactionDao.getDESCTransactions();
+    }
 }
