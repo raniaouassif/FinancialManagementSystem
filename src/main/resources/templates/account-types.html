@@ -129,7 +129,7 @@
     </div>
 
 
-    <div class="row d-flex justify-content-around">
+    <div class="row d-flex"style="justify-content: space-evenly">
         <div class="col-5  text-center m-0 border">
             <h4>Add savings account </h4>
             <form action="addSavingAccountType" method="POST">
@@ -141,10 +141,10 @@
                 </div>
 
                 <!-- Savings Account deposit -->
-                <div class="form-group row">
-                    <label for="bankAccountType" class="col-3 col-form-label">
+                <div class="form-group row row-input">
+                    <label for="bankAccountType" class="col-12 col-form-label">
                         Savings type</label>
-                    <div class="col-9">
+                    <div class="col-12">
                         <select id="bankAccountType" name="bankAccountType"
                                 class="form-control" >
                             <option th:each="bankAccountType : ${bankAccountTypes}"
@@ -156,30 +156,30 @@
                 </div>
 
                 <!-- Minimum initial deposit -->
-                <div class="form-group row">
-                    <label for="savingMinimumStartDeposit" class="col-3 col-form-label">
+                <div class="form-group row row-input">
+                    <label for="savingMinimumStartDeposit" class="col-12 col-form-label">
                         Minimum initial deposit</label>
-                    <div class="col-9">
+                    <div class="col-12">
                         <input type="text" name="savingMinimumStartDeposit" id="savingMinimumStartDeposit"
                                class="form-control"/>
                     </div>
                 </div>
 
                 <!-- Interest rate deposit -->
-                <div class="form-group row">
-                    <label for="savingInterestRate" class="col-3 col-form-label">
+                <div class="form-group row row-input">
+                    <label for="savingInterestRate" class="col-12 col-form-label">
                         Interest rate (%)</label>
-                    <div class="col-9">
+                    <div class="col-12">
                         <input type="text" name="savingInterestRate" id="savingInterestRate"
                                class="form-control"/>
                     </div>
                 </div>
 
                 <!-- Compound rate -->
-                <div class="form-group row">
-                    <label for="compoundRate" class="col-3 col-form-label">
+                <div class="form-group row row-input">
+                    <label for="compoundRate" class="col-12 col-form-label">
                         Compound rate</label>
-                    <div class="col-9">
+                    <div class="col-12">
                         <select id="compoundRate" name="compoundRate"
                                 class="form-control" >
                             <option th:each="compoundRate : ${compoundRates}"
@@ -204,10 +204,10 @@
                        th:text="${checkingError}">Checking Error message</p>
                 </div>
                 <!-- Minimum initial deposit -->
-                <div class="form-group row">
-                    <label for="checkingMinimumStartDeposit" class="col-3 col-form-label">
+                <div class="form-group row row-input">
+                    <label for="checkingMinimumStartDeposit" class="col-12 col-form-label">
                         Minimum initial deposit</label>
-                    <div class="col-9">
+                    <div class="col-12">
                         <input type="text" name="checkingMinimumStartDeposit" id="checkingMinimumStartDeposit"
                                class="form-control"/>
                     </div>
@@ -239,6 +239,14 @@
         font-weight: bold;
         background-color: lightgray;
         font-style: oblique;
+    }
+
+    .row-input{
+        display: flex;
+        flex-direction: column;
+        padding-top: 5px;
+        /*align-content: center;*/
+        text-align: left;
     }
 </style>
 
