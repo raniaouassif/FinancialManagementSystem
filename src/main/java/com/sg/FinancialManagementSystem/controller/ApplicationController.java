@@ -59,16 +59,8 @@ public class ApplicationController {
 
     @GetMapping("/")
     public String displayHomeView(Model model) {
-        return "redirect:/latest-trades";
+        return "redirect:/banks";
     }
-
-    @GetMapping("/latest-trades")
-    public String displayLatestTrades(Model model) {
-        List<StockTransaction> stockTransactions = stockTransactionService.getAllStockTransactionsDescDatetime();
-        model.addAttribute("stockTransactions",stockTransactions);
-        return "latest-trades";
-    }
-
 
 
     /*
