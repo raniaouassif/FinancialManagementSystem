@@ -5,9 +5,6 @@ import com.sg.FinancialManagementSystem.dao.BankDao;
 import com.sg.FinancialManagementSystem.dao.CustomerDao;
 import com.sg.FinancialManagementSystem.dao.TransactionDao;
 import com.sg.FinancialManagementSystem.dto.*;
-import com.sg.FinancialManagementSystem.service.Exceptions.InsufficientMinDepositException;
-import com.sg.FinancialManagementSystem.service.Exceptions.InvalidBankAccountTypeException;
-import com.sg.FinancialManagementSystem.service.Exceptions.InvalidDateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +46,7 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public Account addAccount(Account account) throws InsufficientMinDepositException, InvalidBankAccountTypeException, InvalidDateException {
+    public Account addAccount(Account account) {
         BigDecimal minDeposit = account.getAccountType().getMinimumStartDeposit();
 
         boolean validBankAccountType = bankDao.getBankByID(account.getBank().getBankID()).getAccountTypes().contains(account.getAccountType());

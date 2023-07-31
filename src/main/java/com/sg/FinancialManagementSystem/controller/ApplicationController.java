@@ -2,15 +2,10 @@ package com.sg.FinancialManagementSystem.controller;
 
 import com.sg.FinancialManagementSystem.dto.*;
 import com.sg.FinancialManagementSystem.service.*;
-import com.sg.FinancialManagementSystem.service.Exceptions.InsufficientFundsException;
-import com.sg.FinancialManagementSystem.service.Exceptions.InsufficientMinDepositException;
-import com.sg.FinancialManagementSystem.service.Exceptions.InvalidBankAccountTypeException;
-import com.sg.FinancialManagementSystem.service.Exceptions.InvalidDateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -49,8 +44,6 @@ public class ApplicationController {
     @Autowired
     AccountTypeService accountTypeService;
     @Autowired
-    StockTransactionService stockTransactionService;
-    @Autowired
     TransactionService transactionService;
 
     @Autowired
@@ -83,7 +76,7 @@ public class ApplicationController {
     }
 
     @PostMapping("addCustomerAccount")
-    public String performAddAccount(@Valid Account account, BindingResult result, Integer customerID, HttpServletRequest request, Model model) throws InsufficientMinDepositException, InvalidDateException, InvalidBankAccountTypeException {
+    public String performAddAccount(@Valid Account account, BindingResult result, Integer customerID, HttpServletRequest request, Model model) {
         Customer customer = customerService.getCustomerByID(customerID);
         String bankID= request.getParameter("bankID");
         String accountTypeID = request.getParameter("accountTypeID");
@@ -453,65 +446,6 @@ public class ApplicationController {
     }
 
     /*
-     **********************************      STOCK EXCHANGE  ****************************************************************
-     */
-
-    @GetMapping("/stock-exchanges")
-    public String displayStockExchanges(Model model) {
-        List<Company> companies = companyService.getAllCompanies();
-        List<ExchangeOrganization> exchangeOrganizations = exchangeOrganizationService.getAllExchangeOrganizations();
-        List<Stock> stocks = stockService.getAllStocks();
-
-        model.addAttribute("companies", companies);
-        model.addAttribute("stocks", stocks);
-        model.addAttribute("exchangeOrganizations", exchangeOrganizations);
-        return "stock-exchanges";
-    }
-
-    @GetMapping("/stock-exchanges-add")
-    public String addStockExchange(Model model) {
-        List<Stock> stocks = stockService.getAllStocks();
-        model.addAttribute("exchangeOrganization", new ExchangeOrganization());
-        model.addAttribute("stocks", stocks);
-        return "stock-exchanges-add";
-    }
-
-    @PostMapping("addStockExchange")
-    public String performAddStockExchange(@Valid ExchangeOrganization exchangeOrganization, BindingResult result, HttpServletRequest request, Model model) {
-        //StockEx object already coming with set ticker and name
-        //Only need to set stocks
-        String[] stockIDs = request.getParameterValues("stockID");
-
-        //Create a list of stock exchange stocks
-        List<Stock> SEstocks = new ArrayList<>();
-        if(stockIDs != null) {
-            for(String stockID : stockIDs) {
-                SEstocks.add(stockService.getStockByID(Integer.parseInt(stockID)));
-            }
-        }
-        exchangeOrganization.setStocks(SEstocks);
-
-        //Check for errors
-        if(result.hasErrors()) {
-            //Pass the modified stock ex
-            model.addAttribute("exchangeOrganization", exchangeOrganization);
-            model.addAttribute("stocks", stockService.getAllStocks());
-            return "/stock-exchanges-add";
-        }
-        exchangeOrganizationService.addExchangeOrganization(exchangeOrganization);
-        return "redirect:/stock-exchanges";
-    }
-    /*
-     **********************************      STOCK       ****************************************************************
-     */
-    @GetMapping("/stocks")
-    public String displayStocks(Model model) {
-        List<Stock> stocks = stockService.getAllStocks();
-        model.addAttribute("stocks", stocks);
-        return "stocks";
-    }
-
-    /*
      **********************************      TRANSACTIONS       ****************************************************************
      */
 
@@ -545,7 +479,7 @@ public class ApplicationController {
     }
 
     @PostMapping("cashTransaction")
-    public String performCashTransaction(@Valid Transaction transaction, Integer accountID, HttpServletRequest request, Model model) throws InvalidDateException, InsufficientFundsException {
+    public String performCashTransaction(@Valid Transaction transaction, Integer accountID, HttpServletRequest request, Model model) {
         //Get the account by ID
         Account account = accountService.getAccountByID(accountID);
 
@@ -584,7 +518,7 @@ public class ApplicationController {
     }
 
     @PostMapping("transferTransaction")
-    public String performTransferTransaction(@Valid Transaction transaction, BindingResult result, Integer accountID, HttpServletRequest request, Model model) throws InvalidDateException, InsufficientFundsException {
+    public String performTransferTransaction(@Valid Transaction transaction, BindingResult result, Integer accountID, HttpServletRequest request, Model model) {
         //Get the account by ID
         Account account = accountService.getAccountByID(accountID);
 

@@ -3,8 +3,6 @@ package com.sg.FinancialManagementSystem.service;
 import com.sg.FinancialManagementSystem.dao.AccountDao;
 import com.sg.FinancialManagementSystem.dao.TransactionDao;
 import com.sg.FinancialManagementSystem.dto.Transaction;
-import com.sg.FinancialManagementSystem.service.Exceptions.InsufficientFundsException;
-import com.sg.FinancialManagementSystem.service.Exceptions.InvalidDateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -30,7 +28,7 @@ public class TransactionServiceImpl implements  TransactionService{
     }
 
     @Override
-    public Transaction addTransaction(Transaction transaction) throws InsufficientFundsException, InvalidDateException {
+    public Transaction addTransaction(Transaction transaction)  {
         return transactionDao.addTransaction(transaction);
     }
 

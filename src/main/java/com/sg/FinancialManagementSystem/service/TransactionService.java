@@ -1,9 +1,6 @@
 package com.sg.FinancialManagementSystem.service;
 
-import com.sg.FinancialManagementSystem.dto.Account;
 import com.sg.FinancialManagementSystem.dto.Transaction;
-import com.sg.FinancialManagementSystem.service.Exceptions.InsufficientFundsException;
-import com.sg.FinancialManagementSystem.service.Exceptions.InvalidDateException;
 
 import java.util.List;
 
@@ -15,7 +12,7 @@ public interface TransactionService {
 
     List<Transaction> getAllTransactions();
 
-    Transaction addTransaction(Transaction transaction) throws InsufficientFundsException, InvalidDateException;
+    Transaction addTransaction(Transaction transaction);
 
     void deleteTransactionByID(int transactionID);
     List<Transaction> getTransactionsByAccount(int accountID);

@@ -4,9 +4,6 @@ import com.sg.FinancialManagementSystem.dao.AccountDao;
 import com.sg.FinancialManagementSystem.dao.AccountTypeDao;
 import com.sg.FinancialManagementSystem.dao.BankDao;
 import com.sg.FinancialManagementSystem.dto.*;
-import com.sg.FinancialManagementSystem.service.Exceptions.InsufficientMinDepositException;
-import com.sg.FinancialManagementSystem.service.Exceptions.InvalidBankAccountTypeException;
-import com.sg.FinancialManagementSystem.service.Exceptions.InvalidDateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
