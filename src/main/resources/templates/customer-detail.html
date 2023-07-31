@@ -74,21 +74,6 @@
             <h4 th:text="'Contact : ' + ${customer.phoneNumber}">Customer Contact</h4>
         </div>
 
-
-        <!--Add/View Customer Portfolio-->
-        <div class="col" id="portfolio-section">
-            <a href="#"
-               th:if="${portfolio == null}"
-               th:href="@{/customer-portfolio-add(customerID=${customer.customerID})}"
-               class="btn btn-outline-primary btn-md">+ Create Stock Portfolio</a>
-
-            <a href="#"
-               th:if="${portfolio != null}"
-               th:href="@{/customer-portfolio-detail(customerID=${customer.customerID})}"
-               class="btn btn-outline-primary btn-md">View Stock Portfolio</a>
-        </div>
-
-
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
@@ -125,7 +110,7 @@
                     <td><a href="#" th:href="@{/account-close(accountID=${openAccount.accountID})}">Close account</a></td>
                 </tr>
             </table>
-            <!--Add/View Customer Portfolio-->
+            <!--Add/View Customer Account-->
             <div class="col">
                 <a href="#"
                    th:href="@{/account-add(customerID=${customer.customerID})}"
