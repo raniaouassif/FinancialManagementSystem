@@ -71,8 +71,6 @@ public class BankDaoDB implements BankDao {
                 bank.getLocation(),
                 bank.getBankID()
         );
-        //First delete the bank account types
-        //deleteBankAccountTypesByBankID(bank.getBankID());
 
         //Then reset the bank account types
         insertBankAccountTypes(bank);
@@ -80,38 +78,38 @@ public class BankDaoDB implements BankDao {
 
     @Override
     public void deleteBankByID(int bankID) {
-        String bankName = getBankByID(bankID).getName();
 
-        //First retrieve the Account Transactions linked to the bank
-        List<Account> accounts = getAccountsByBankID(bankID);
+        //Get the accounts to delete before deleting the bridge tables
+        String GET_ACCOUNTS = "SELECT a.* FROM Account a  " +
+                "JOIN AccountBridge ab ON ab.accountID = a.accountID " +
+                "JOIN BankAccountType bat ON bat.accountTypeID = ab.accountTypeID " +
+                "JOIN Bank b ON b.bankID = bat.bankID " +
+                "WHERE b.bankID = ?";
 
-        // For all the accounts, set the status to closed
-        final String UPDATE_ACCOUNTS_TO_CLOSED = "UPDATE Account SET "
-                + "depositBalance = 0, "
-                + "interestBalance = 0, "
-                + "totalBalance = 0, "
-                + "closingDate = ?, "
-                + "status = 'CLOSED', "
-                + "closingReason = ? "
-                + "WHERE accountID = ?;";
+        List<Account> accountsToDelete = jdbcTemplate.query(GET_ACCOUNTS, new AccountMapper(), bankID);
 
-        String closingReason = "Bank " + bankName + " has been dissolved.";
-        LocalDate closingDate = LocalDate.now();
+        // Delete account transactions
+        String DELETE_ACCOUNT_TRANSACTIONS = "DELETE at.* FROM AccountTransaction at " +
+                "JOIN Account a ON a.accountID = at.accountID1 OR a.accountID = at.accountID2 " +
+                "JOIN AccountBridge ab ON ab.accountID = a.accountID " +
+                "JOIN BankAccountType bat ON bat.accountTypeID = ab.accountTypeID " +
+                "JOIN Bank b ON b.bankID = bat.bankID " +
+                "WHERE b.bankID = ?";
+        jdbcTemplate.update(DELETE_ACCOUNT_TRANSACTIONS, bankID);
 
-        for(Account account : accounts) {
-            jdbcTemplate.update(UPDATE_ACCOUNTS_TO_CLOSED,
-                    closingDate,
-                    closingReason,
-                    account.getAccountID());
-        }
-
-        // Delete from the bankAccount bridge table
+        // Delete from the account bridge table
         String DELETE_BANK_ACCOUNT_BY_BANK_ID = "DELETE FROM AccountBridge WHERE bankID = ?";
         jdbcTemplate.update(DELETE_BANK_ACCOUNT_BY_BANK_ID, bankID);
 
+        // DELETE ALL THE ACCOUNTS
+        String DELETE_ACCOUNT_TO_DELETE = "DELETE FROM Account WHERE accountID = ?";
+        for(Account account : accountsToDelete) {
+            jdbcTemplate.update(DELETE_ACCOUNT_TO_DELETE, account.getAccountID());
+        }
+
         //Delete from the bankAccountType bridge table
-        String DELETE_BANK_ACCOUNT_TYPE_BY_BANK_ID = "DELETE FROM BankAccountType WHERE bankID = ?";
-        jdbcTemplate.update(DELETE_BANK_ACCOUNT_TYPE_BY_BANK_ID, bankID);
+        String DELETE_BANK_ACCOUNT_TYPE_ACCOUNT_TYPE_ID = "DELETE FROM BankAccountType WHERE bankID = ?";
+        jdbcTemplate.update(DELETE_BANK_ACCOUNT_TYPE_ACCOUNT_TYPE_ID, bankID);
 
         //Finally Delete the bank
         String DELETE_BANK_BY_ID = "DELETE FROM Bank WHERE bankID = ?";

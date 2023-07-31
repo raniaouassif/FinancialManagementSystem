@@ -110,7 +110,7 @@ public class CustomerDaoDB implements CustomerDao {
 
     @Override
     public List<Customer> getCustomersByBank(Bank bank) {
-        final String GET_CUSTOMERS_BY_BANK = "SELECT  c.* " +
+        final String GET_CUSTOMERS_BY_BANK = "SELECT  DISTINCT c.* " +
                 "FROM Customer c " +
                 "JOIN Account a ON a.customerID = c.customerID " +
                 "JOIN AccountBridge ba ON ba.accountID = a.accountID " +

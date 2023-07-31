@@ -53,7 +53,7 @@ public class TransactionServiceImpl implements  TransactionService{
     }
 
     @Override
-    public List<Transaction> geDESCTransactions() {
+    public List<Transaction> getDESCTransactions() {
         return transactionDao.getDESCTransactions();
     }
 }

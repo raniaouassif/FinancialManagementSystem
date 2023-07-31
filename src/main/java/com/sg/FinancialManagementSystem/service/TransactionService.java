@@ -21,5 +21,5 @@ public interface TransactionService {
 
     List<Transaction> getDESCTransactionsByAccounts(Integer accountID);
 
-    List<Transaction> geDESCTransactions();
+    List<Transaction> getDESCTransactions();
 }

@@ -43,7 +43,8 @@ public class TransactionDaoDB implements TransactionDao {
 
     @Override
     public List<Transaction> getAllTransactions() {
-        final String GET_ALL_TRANSACTIONS = "SELECT * FROM Transaction";
+        final String GET_ALL_TRANSACTIONS = "SELECT t.* FROM Transaction t " +
+                "JOIN AccountTransaction at ON at.transactionID = t.transactionID ";
 
         List<Transaction> retrievedTransactions = jdbcTemplate.query(GET_ALL_TRANSACTIONS, new TransactionMapper());
 
@@ -133,7 +134,9 @@ public class TransactionDaoDB implements TransactionDao {
     @Override
     public List<Transaction> getDESCTransactions() {
 
-        final String GET_ALL_TRANSACTIONS = "SELECT * FROM Transaction ORDER BY dateTime DESC";
+        final String GET_ALL_TRANSACTIONS = "SELECT t.* FROM Transaction t " +
+                "JOIN AccountTransaction at ON at.transactionID = t.transactionID " +
+                "ORDER BY dateTime DESC";
 
         List<Transaction> retrievedTransactions = jdbcTemplate.query(GET_ALL_TRANSACTIONS, new TransactionMapper());
 

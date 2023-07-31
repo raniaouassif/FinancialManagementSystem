@@ -287,8 +287,11 @@ public class ApplicationController {
     public String performAddBank(@Valid Bank bank, BindingResult result, HttpServletRequest request, Model model) {
         String[] accountTypesIDs = request.getParameterValues("accountTypeID");
         List<AccountType> reqAccountTypes = new ArrayList<>();
-        for(String accountTypeID :accountTypesIDs ) {
-            reqAccountTypes.add(accountTypeService.getAccountTypeByID(Integer.parseInt(accountTypeID)));
+
+        if(accountTypesIDs != null) {
+            for (String accountTypeID : accountTypesIDs) {
+                reqAccountTypes.add(accountTypeService.getAccountTypeByID(Integer.parseInt(accountTypeID)));
+            }
         }
 
         bank.setAccountTypes(reqAccountTypes.size() == 0 ? new ArrayList<>() : reqAccountTypes);
@@ -341,40 +344,44 @@ public class ApplicationController {
                 .map(AccountType::getAccountTypeID) // Map each Organization to its ID
                 .collect(Collectors.toList()); // Collect the IDs into a new list
 
-
         String[] accountTypesIDs = request.getParameterValues("accountTypeID");
         List<AccountType> reqAccountTypes = new ArrayList<>();
-        for(String accountTypeID :accountTypesIDs ) {
-            //Skip the already selected accounts, which cannot be removed
-            if(bankPrevAccountTypesIDs.contains(Integer.parseInt(accountTypeID))){
-                continue;
+
+        if(accountTypesIDs != null) {
+            for(String accountTypeID :accountTypesIDs ) {
+                //Skip the already selected accounts, which cannot be removed
+                if(bankPrevAccountTypesIDs.contains(Integer.parseInt(accountTypeID))){
+                    continue;
+                }
+                reqAccountTypes.add(accountTypeService.getAccountTypeByID(Integer.parseInt(accountTypeID)));
             }
-            reqAccountTypes.add(accountTypeService.getAccountTypeByID(Integer.parseInt(accountTypeID)));
         }
         bank.setAccountTypes(reqAccountTypes.size() == 0 ? new ArrayList<>() : reqAccountTypes);
         //Check for errors
         if (result.hasErrors()) {
+            //Create a list of bank account types IDS for the HTML  select
+            List<Integer> bankAccountTypesIDs = bank.getAccountTypes().stream()
+                    .map(AccountType::getAccountTypeID) // Map each Organization to its ID
+                    .collect(Collectors.toList()); // Collect the IDs into a new list
+            model.addAttribute("bankAccountTypesIDs", bankAccountTypesIDs);
+            model.addAttribute("accountTypes", accountTypeService.getAllAccountTypes());
+            model.addAttribute("banks", bankService.getAllBanks());
+            model.addAttribute("bank", bank);
+            model.addAttribute("err", "");
+
             //Pass the modified customer
             model.addAttribute("bank", bank);
+
             return "banks-edit";
         }
         bankService.updateBank(bank);
         return "redirect:/banks";
     }
 
-
-    /*
-     **********************************      COMPANIES    ***********************************************************
-     */
-    @GetMapping("/companies")
-    public String displayCompanies(Model model) {
-        List<Company> companies = companyService.getAllCompanies();
-        List<ExchangeOrganization> exchangeOrganizations = exchangeOrganizationService.getAllExchangeOrganizations();
-        List<Stock> stocks = stockService.getAllStocks();
-        model.addAttribute("companies", companies);
-        model.addAttribute("stocks", stocks);
-        model.addAttribute("exchangeOrganizations", exchangeOrganizations);
-        return "companies";
+    @GetMapping("/banks-delete")
+    public String deleteBank(Integer bankID) {
+        bankService.deleteBankByID(bankID);
+        return "redirect:/banks";
     }
 
     /*
@@ -472,7 +479,7 @@ public class ApplicationController {
 
     @GetMapping("/transactions")
     public String displayAllTransactions(Model model) {
-        List<Transaction> transactions = transactionService.geDESCTransactions();
+        List<Transaction> transactions = transactionService.getDESCTransactions();
         model.addAttribute("transactions", transactions);
 
         return "transactions";

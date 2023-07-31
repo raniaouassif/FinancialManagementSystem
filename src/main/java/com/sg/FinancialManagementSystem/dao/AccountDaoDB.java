@@ -56,8 +56,8 @@ public class AccountDaoDB implements AccountDao{
 
         jdbcTemplate.update(ADD_ACCOUNT,
                 account.getOpeningDate(),
-                account.getDepositBalance(), // the starting deposit balance is $0.00
-                account.getStatus().toString(), //
+                account.getDepositBalance(),
+                AccountStatus.OPEN.toString(), //
                 account.getCustomer().getCustomerID());
 
         //Set the account ID
@@ -65,7 +65,6 @@ public class AccountDaoDB implements AccountDao{
         account.setAccountID(newID);
         //Some fields are auto-generated
         account.setStatus(AccountStatus.OPEN);
-        account.setDepositBalance(new BigDecimal(0).setScale(2, RoundingMode.HALF_UP));
 
         //Insert into the Account bridge table
         insertAccountBridge(account);

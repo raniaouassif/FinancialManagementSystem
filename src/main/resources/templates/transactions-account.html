@@ -82,7 +82,9 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="transaction : ${transactions}">
+                        <tr th:each="transaction : ${transactions}"
+                            th:if="${transaction.from != null}"
+                        >
                             <!--Date-->
                             <td th:text="${transaction.dateTime.toLocalDate()}">Date</td>
                             <!--Time-->
@@ -136,7 +138,14 @@
                 "></p>
                 <p class="mb-0 text-right" th:text="'Account#' + ${account.accountID} "></p>
                 <p class="mb-0 text-right" th:text="'Opening date: ' + ${account.getOpeningDate()}  "></p>
-                <p class="mb-0 text-right" th:text="'Total balance: $' + ${account.totalBalance}  "></p>
+                <p  th:if="${account.closingDate == null}"
+                        class="mb-0 text-right" th:text="'Total balance: $' + ${account.totalBalance}  "></p>
+
+                <div th:if="${account.closingDate != null}">
+                    <p class="mb-0 text-right" th:text="'Closing date: ' + ${account.getOpeningDate()}  "></p>
+                    <p class="mb-0 text-right" th:text="'Closing balance: $' + ${account.totalBalance}  "></p>
+                </div>
+
                 <p class="mb-0 text-right" th:text="'Total #transactions: ' + ${account.accountTransactions.size()}"></p>
 
 
